@@ -9,6 +9,7 @@ import PolicyMeta from './PolicyMeta';
 import PolicyContent from './PolicyContent';
 import Pill from './Pill';
 import { Heading, PolicySection, Region } from '@/types/policy';
+import ContactForm from '@/components/contact/ContactForm';
 
 interface PolicyPageProps {
   title: string;
@@ -139,7 +140,17 @@ export default function PolicyPage({
           This is a wireframe. Replace placeholders with your legal text before publishing.
         </div>
       </Section>
+
+      {/* Feedback / Contact */}
+      <Section className="py-10">
+        <Card className="p-6" padding="md">
+          <h2 className="text-xl font-semibold">Have questions or feedback?</h2>
+          <p className="text-sm text-slate-600 mt-1">Send us a message — we typically reply within one business day.</p>
+          <div className="mt-6">
+            <ContactForm />
+          </div>
+        </Card>
+      </Section>
     </main>
   );
 }
-
