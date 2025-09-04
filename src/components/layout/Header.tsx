@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { THEME } from '@/lib/theme';
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 
 export default function Header() {
   const pathname = usePathname();
@@ -68,17 +68,12 @@ export default function Header() {
         
         <div className="flex items-center gap-3">
           {!signedIn ? (
-            <button
-              onClick={async () => {
-                const email = window.prompt('Enter your email to receive a sign-in link:');
-                if (email) {
-                  await signIn('email', { email, callbackUrl: '/dashboard' });
-                }
-              }}
+            <Link
+              href="/auth/signin"
               className="rounded-xl bg-slate-900 hover:bg-black text-white px-4 py-2 text-sm transition-colors"
             >
-              Sign in
-            </button>
+              Log in
+            </Link>
           ) : (
             <button
               onClick={() => signOut({ callbackUrl: '/' })}
