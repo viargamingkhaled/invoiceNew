@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import Section from '@/components/layout/Section';
 import Card from '@/components/ui/Card';
@@ -70,37 +71,98 @@ export default function Testimonials() {
         <p className="mt-2 text-slate-600">Real teams. Real invoices. Real results.</p>
       </motion.div>
 
-      {/* Auto-scrolling carousel (seamless) */}
-      <style>{`@keyframes tscroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}`}</style>
-      <div className="overflow-hidden">
-        <motion.div
-          className="flex gap-6"
-          style={{ animation: 'tscroll 30s linear infinite' as any }}
-        >
-          {[...TESTIMONIALS, ...TESTIMONIALS].map((t, i) => (
-            <div key={`${t.name}-${i}`} className="w-[280px] sm:w-[320px] md:w-[360px] shrink-0">
-              <Card hover>
-                <div className="flex items-center gap-3">
-                  <div className="h-12 w-12 rounded-full overflow-hidden bg-slate-200">
-                    <Image
-                      src={t.img}
-                      alt={`${t.name} photo`}
-                      width={64}
-                      height={64}
-                      className="h-12 w-12 object-cover"
-                    />
-                  </div>
-                  <div>
-                    <div className="font-medium">{t.name}</div>
-                    <div className="text-xs text-slate-500">{t.role} · {t.location}</div>
-                  </div>
-                </div>
-                <p className="mt-4 text-slate-700 text-sm">{t.quote}</p>
-              </Card>
-            </div>
-          ))}
-        </motion.div>
-      </div>
+      {/* Бесшовная карусель с паузой при наведении и адаптивной скоростью */}
+      <Carousel />
     </Section>
+  );
+}
+
+function Carousel() {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [paused, setPaused] = useState(false);
+  const groupWidthRef = useRef(0);
+  const speedRef = useRef(0.5); // пикселей/мс
+
+  // Адаптивная скорость для телефонов (меньше ширина — медленнее)
+  useEffect(() => {
+    const setSpeed = () => {
+      const w = window.innerWidth;
+      // ~15-25 px/сек на мобильных, ~30-40 px/сек на десктопе
+      speedRef.current = w < 640 ? 0.02 : 0.035; // px per ms
+    };
+    setSpeed();
+    window.addEventListener('resize', setSpeed);
+    return () => window.removeEventListener('resize', setSpeed);
+  }, []);
+
+  // Слежение за шириной половины трека
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    const update = () => {
+      // ширина одного набора карточек = половина всего трека (двойной список)
+      groupWidthRef.current = el.scrollWidth / 2;
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    window.addEventListener('resize', update);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', update);
+    };
+  }, []);
+
+  // Бесконечный рендер с requestAnimationFrame (без рывков)
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    let raf = 0;
+    let x = 0;
+    let last = performance.now();
+
+    const loop = (now: number) => {
+      const dt = now - last;
+      last = now;
+      if (!paused && groupWidthRef.current > 0) {
+        x += speedRef.current * dt;
+        if (x >= groupWidthRef.current) x -= groupWidthRef.current; // шов незаметен
+        el.style.transform = `translateX(-${x}px)`;
+      }
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, [paused]);
+
+  const list = [...TESTIMONIALS, ...TESTIMONIALS];
+
+  return (
+    <div
+      className="overflow-hidden"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onTouchStart={() => setPaused(true)}
+      onTouchEnd={() => setPaused(false)}
+    >
+      <div ref={trackRef} className="flex gap-6 will-change-transform">
+        {list.map((t, i) => (
+          <div key={`${t.name}-${i}`} className="w-[280px] sm:w-[320px] md:w-[360px] shrink-0">
+            <Card hover>
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 rounded-full overflow-hidden bg-slate-200">
+                  <Image src={t.img} alt={`${t.name} photo`} width={64} height={64} className="h-12 w-12 object-cover" />
+                </div>
+                <div>
+                  <div className="font-medium">{t.name}</div>
+                  <div className="text-xs text-slate-500">{t.role} · {t.location}</div>
+                </div>
+              </div>
+              <p className="mt-4 text-slate-700 text-sm">{t.quote}</p>
+            </Card>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
