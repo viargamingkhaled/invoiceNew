@@ -15,6 +15,7 @@ export default function SignInPage() {
   const [loading, setLoading] = useState(false);
 
   const callbackUrl = search.get('callbackUrl') || '/dashboard';
+  const mode = search.get('mode') || 'login';
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,8 +36,8 @@ export default function SignInPage() {
     <main className="bg-slate-50 min-h-screen">
       <Section className="py-10 max-w-md">
         <Card className="p-6">
-          <h1 className="text-xl font-semibold">Log in</h1>
-          <p className="text-sm text-slate-600 mt-1">Use the test accounts we prepared.</p>
+          <h1 className="text-xl font-semibold">{mode === 'signup' ? 'Sign up' : 'Log in'}</h1>
+          <p className="text-sm text-slate-600 mt-1">Use one of the prepared test accounts.</p>
           <ul className="text-xs text-slate-600 mt-3 list-disc pl-5 space-y-1">
             <li>user-with-tokens@mail.com / password123</li>
             <li>user-without-tokens@mail.com / password123</li>
@@ -49,7 +50,7 @@ export default function SignInPage() {
             <Input label="Password" type="password" value={password} onChange={(e)=>setPassword(e.target.value)} required />
             <div className="mt-2">
               <Button type="submit" disabled={loading} variant="primary">
-                {loading ? 'Signing in…' : 'Log in'}
+                {loading ? (mode === 'signup' ? 'Creating…' : 'Signing in…') : (mode === 'signup' ? 'Create account' : 'Log in')}
               </Button>
             </div>
           </form>
@@ -58,4 +59,3 @@ export default function SignInPage() {
     </main>
   );
 }
-

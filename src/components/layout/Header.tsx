@@ -68,12 +68,20 @@ export default function Header() {
         
         <div className="flex items-center gap-3">
           {!signedIn ? (
-            <Link
-              href="/auth/signin"
-              className="rounded-xl bg-slate-900 hover:bg-black text-white px-4 py-2 text-sm transition-colors"
-            >
-              Log in
-            </Link>
+            <>
+              <Link
+                href="/auth/signin?mode=login"
+                className="rounded-xl bg-slate-900 hover:bg-black text-white px-4 py-2 text-sm transition-colors"
+              >
+                Log in
+              </Link>
+              <Link
+                href="/auth/signin?mode=signup"
+                className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm transition-colors"
+              >
+                Sign up
+              </Link>
+            </>
           ) : (
             <button
               onClick={() => signOut({ callbackUrl: '/' })}
