@@ -224,7 +224,7 @@ export default function DashboardClient() {
         </div>
 
         {/* Company settings ниже, на всю ширину */}
-        <div className="mt-6" data-reveal id="company-settings">
+        <div className="mt-6 scroll-mt-24" id="company-settings">
             <Card padding="sm">
               <div className="text-base font-semibold">Company settings</div>
               <p className="text-sm text-slate-600 mt-1">Saved details will be used as the seller on your invoices.</p>
