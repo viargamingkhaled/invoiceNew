@@ -55,7 +55,7 @@ export default function PolicyPage({
     return () => observer.disconnect();
   }, [sections]);
 
-  const lawText = region === 'UK' ? 'United Kingdom law (England & Wales)' : 'EU consumer law and GDPR';
+  const lawText = region === 'UK' ? 'England & Wales' : 'Your EU Member State (default: Republic of Ireland)';
 
   const onJump = (id: string) => {
     const el = document.getElementById(id);
@@ -136,9 +136,6 @@ export default function PolicyPage({
           </div>
         </div>
 
-        <div className="mt-10 text-center text-xs text-slate-500">
-          This is a wireframe. Replace placeholders with your legal text before publishing.
-        </div>
       </Section>
 
       {/* Feedback / Contact */}
