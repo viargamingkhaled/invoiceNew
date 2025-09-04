@@ -70,7 +70,7 @@ export default function Testimonials() {
         <p className="mt-2 text-slate-600">Real teams. Real invoices. Real results.</p>
       </motion.div>
 
-      {/* Auto-scrolling carousel */}
+      {/* Auto-scrolling carousel (seamless) */}
       <style>{`@keyframes tscroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}`}</style>
       <div className="overflow-hidden">
         <motion.div
@@ -78,7 +78,7 @@ export default function Testimonials() {
           style={{ animation: 'tscroll 30s linear infinite' as any }}
         >
           {[...TESTIMONIALS, ...TESTIMONIALS].map((t, i) => (
-            <div key={`${t.name}-${i}`} className="min-w-[280px] sm:min-w-[320px] md:min-w-[360px]">
+            <div key={`${t.name}-${i}`} className="w-[280px] sm:w-[320px] md:w-[360px] shrink-0">
               <Card hover>
                 <div className="flex items-center gap-3">
                   <div className="h-12 w-12 rounded-full overflow-hidden bg-slate-200">
@@ -95,7 +95,7 @@ export default function Testimonials() {
                     <div className="text-xs text-slate-500">{t.role} · {t.location}</div>
                   </div>
                 </div>
-                <p className="mt-4 text-slate-700 text-sm">“{t.quote}”</p>
+                <p className="mt-4 text-slate-700 text-sm">{t.quote}</p>
               </Card>
             </div>
           ))}
