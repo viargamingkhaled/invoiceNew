@@ -1,0 +1,98 @@
+'use client';
+
+import { motion } from 'framer-motion';
+import { useState } from 'react';
+import Section from '@/components/layout/Section';
+import Card from '@/components/ui/Card';
+import Input from '@/components/ui/Input';
+import Textarea from '@/components/ui/Textarea';
+import Button from '@/components/ui/Button';
+
+export default function Contact() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Form submitted:', formData);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+
+  return (
+    <Section id="contact" className="py-14">
+      <div className="grid lg:grid-cols-2 gap-8">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="text-2xl font-bold">Contact us</h2>
+          <p className="mt-2 text-slate-600">Leave a message - we'll reply within one business day.</p>
+          <div className="mt-6 grid gap-3 text-sm text-slate-700">
+            <div>Company: PREPARING BUSINESS LTD</div>
+            <div>Reg: 16107292 - VAT: on request</div>
+            <div>Address: Dept 6189 43 Owston Road, Carcroft, Doncaster, UK, DN6 8DA</div>
+            <div>Email: info@shapeai.co.uk</div>
+            <div>Phone: +44 7822016497</div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+        >
+          <Card>
+            <form onSubmit={handleSubmit} className="grid sm:grid-cols-2 gap-4">
+              <Input
+                label="Name"
+                name="name"
+                placeholder="Alex Johnson"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+              <Input
+                label="Email"
+                name="email"
+                type="email"
+                placeholder="you@company.com"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+              <div className="sm:col-span-2">
+                <Textarea
+                  label="Message"
+                  name="message"
+                  rows={5}
+                  placeholder="Tell us about your use case..."
+                  value={formData.message}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <Button type="submit" className="w-full" size="lg">
+                  Send
+                </Button>
+              </div>
+            </form>
+          </Card>
+        </motion.div>
+      </div>
+    </Section>
+  );
+}
+

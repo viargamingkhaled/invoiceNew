@@ -1,0 +1,7 @@
+{
+  "chatgpt.openOnStartup": true,
+  "chatgpt.config": {
+    "applyMode": "auto",
+    "inlineEdits": true
+  }
+}
