@@ -1,4 +1,5 @@
-﻿-- CreateEnum
+-- Prisma migration (normalized)
+-- CreateEnum
 CREATE TYPE "Currency" AS ENUM ('GBP', 'EUR');
 
 -- CreateEnum
@@ -152,4 +153,5 @@ ALTER TABLE "InvoiceItem" ADD CONSTRAINT "InvoiceItem_invoiceId_fkey" FOREIGN KE
 
 -- AddForeignKey
 ALTER TABLE "LedgerEntry" ADD CONSTRAINT "LedgerEntry_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
 
