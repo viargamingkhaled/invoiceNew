@@ -31,6 +31,8 @@ export default function DashboardClient() {
   const [me, setMe] = useState<Me | null>(null);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [ledger, setLedger] = useState<LedgerRow[]>([]);
+  const [invRange, setInvSlice] = useState<[number, number]>([0, 20]);
+  const [ledRange, setLedSlice] = useState<[number, number]>([0, 20]);
   const [savingCompany, setSavingCompany] = useState(false);
   const [savedBanner, setSavedBanner] = useState<string | null>(null);
   const [form, setForm] = useState<Company>({ name: '' });
@@ -111,6 +113,8 @@ export default function DashboardClient() {
   const userName = me?.name || 'User';
   const currency = (me?.currency || 'GBP') as Currency;
   const tokenBalance = me?.tokenBalance ?? 0;
+  const invView = invoices.slice(invRange[0], invRange[1]);
+  const ledgerView = ledger.slice(ledRange[0], ledRange[1]);
 
   return (
     <main className="bg-slate-50 min-h-screen">
@@ -128,34 +132,10 @@ export default function DashboardClient() {
             <a href="#company-settings" className="rounded-xl border border-black/10 bg-white px-4 py-2 text-sm">Company settings</a>
           </div>
         </div>
-
-        {/* Quick actions */}
-        <div className="mt-6 grid sm:grid-cols-3 gap-4" data-reveal>
-          <Card className="p-5">
-            <div className="text-sm text-slate-600">Create</div>
-            <div className="mt-1 font-semibold">New invoice</div>
-            <p className="mt-2 text-sm text-slate-600">Costs <b>10 tokens</b>. Draft & preview are free.</p>
-            <div className="mt-3"><Button onClick={createInvoice} disabled={tokenBalance<10} variant="secondary" size="md">Create invoice (−10)</Button></div>
-          </Card>
-          <Card className="p-5">
-            <div className="text-sm text-slate-600">Buy</div>
-            <div className="mt-1 font-semibold">Tokens</div>
-            <p className="mt-2 text-sm text-slate-600">1 {currency} = 100 tokens. Tokens never expire.</p>
-            <div className="mt-3 flex items-center gap-2">
-              <Button variant="outline" onClick={()=>topUp(50)}>+ {currencySym(currency)}50</Button>
-              <Button variant="outline" onClick={()=>topUp(100)}>+ {currencySym(currency)}100</Button>
-            </div>
-          </Card>
-          <Card className="p-5">
-            <div className="text-sm text-slate-600">Explore</div>
-            <div className="mt-1 font-semibold">Templates & Pricing</div>
-            <p className="mt-2 text-sm text-slate-600">See features and choose what fits your workflow.</p>
-            <div className="mt-3"><Button href="/pricing" variant="outline">Open pricing</Button></div>
-          </Card>
-        </div>
+        {/* Убрали блок быстрых действий, чтобы избежать лишних пустот */}
 
         {/* Две колонки на одном уровне: инвойсы слева, история токенов справа */}
-        <div className="mt-6 grid lg:grid-cols-2 gap-4 items-start">
+        <div className="mt-4 grid lg:grid-cols-2 gap-4 items-start">
           <Card padding="sm" data-reveal>
               <div className="flex items-center justify-between">
                 <div className="text-base font-semibold">Recent invoices</div>
@@ -174,7 +154,7 @@ export default function DashboardClient() {
                     </tr>
                   </thead>
                   <tbody>
-                    {invoices.map(inv => (
+                    {invView.map(inv => (
                       <tr key={inv.id} className="border-t border-black/10">
                         <td className="px-3 py-2 font-mono text-[12px]">{inv.number}</td>
                         <td className="px-3 py-2">{new Date(inv.date).toISOString().slice(0,10)}</td>
@@ -190,7 +170,9 @@ export default function DashboardClient() {
                       </tr>
                     ))}
                   </tbody>
-                </table>
+                 </table>
+                 {/* Пагинация инвойсов */}
+                 <InvoicePager total={invoices.length} pageSize={20} onSlice={(from, to)=>setInvSlice([from,to])} />
               </div>
           </Card>
 
@@ -208,7 +190,7 @@ export default function DashboardClient() {
                     </tr>
                   </thead>
                   <tbody>
-                    {ledger.map(row => (
+                    {ledgerView.map(row => (
                       <tr key={row.id} className="border-t border-black/10">
                         <td className="px-3 py-2 whitespace-nowrap">{new Date(row.ts).toLocaleString()}</td>
                         <td className="px-3 py-2">{row.type}</td>
@@ -218,7 +200,9 @@ export default function DashboardClient() {
                       </tr>
                     ))}
                   </tbody>
-                </table>
+                 </table>
+                 {/* Пагинация леджера */}
+                 <LedgerPager total={ledger.length} pageSize={20} onSlice={(from,to)=>setLedSlice([from,to])} />
               </div>
           </Card>
         </div>
@@ -254,3 +238,30 @@ export default function DashboardClient() {
     </main>
   );
 }
+
+function TablePager({ total, pageSize = 20, onSlice }: { total: number; pageSize?: number; onSlice: (from: number, to: number) => void }) {
+  const [page, setPage] = useState(1);
+  const pages = Math.max(1, Math.ceil(total / pageSize));
+
+  useEffect(() => {
+    const from = Math.min((page - 1) * pageSize, Math.max(0, total - (total % pageSize || pageSize)));
+    const to = Math.min(from + pageSize, total);
+    onSlice(from, to);
+  }, [page, total, pageSize, onSlice]);
+
+  if (total <= pageSize) return null;
+
+  return (
+    <div className="flex items-center justify-between p-3">
+      <div className="text-xs text-slate-600">Showing {Math.min((page - 1) * pageSize + 1, total)}–{Math.min(page * pageSize, total)} of {total}</div>
+      <div className="flex items-center gap-2">
+        <Button size="sm" variant="outline" disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Prev</Button>
+        <div className="text-xs text-slate-600">{page} / {pages}</div>
+        <Button size="sm" variant="outline" disabled={page >= pages} onClick={() => setPage((p) => Math.min(pages, p + 1))}>Next</Button>
+      </div>
+    </div>
+  );
+}
+
+const InvoicePager = TablePager;
+const LedgerPager = TablePager;
