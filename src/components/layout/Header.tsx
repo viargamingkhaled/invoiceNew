@@ -37,32 +37,13 @@ export default function Header() {
           </Link>
           
           <nav className="hidden sm:flex items-center gap-2 text-sm">
-            <Link 
-              href="/" 
-              className={`rounded-xl px-3 py-2 transition-colors ${isHome ? 'bg-black/5' : ''}`}
-            >
-              Home
-            </Link>
-            <Link 
-              href="/generator" 
-              className={`rounded-xl px-3 py-2 transition-colors ${isGenerator ? 'bg-black/5' : ''}`}
-            >
-              Invoice Generator
-            </Link>
+            <a href="/" className={`rounded-xl px-3 py-2 transition-colors ${isHome ? 'bg-black/5' : ''}`}>Home</a>
+            <a href="/generator" className={`rounded-xl px-3 py-2 transition-colors ${isGenerator ? 'bg-black/5' : ''}`}>Invoice Generator</a>
             {signedIn && (
-              <Link
-                href="/dashboard"
-                className={`rounded-xl px-3 py-2 transition-colors ${isDashboard ? 'bg-black/5' : ''}`}
-              >
-                Dashboard
-              </Link>
+              <a href="/dashboard" className={`rounded-xl px-3 py-2 transition-colors ${isDashboard ? 'bg-black/5' : ''}`}>Dashboard</a>
             )}
-            <Link href="/pricing" className={`rounded-xl px-3 py-2 hidden md:inline-block transition-colors ${isPricing ? 'bg-black/5' : 'hover:bg-black/5'}`}>
-              Pricing
-            </Link>
-            <Link href="/contact" className="rounded-xl px-3 py-2 hidden md:inline-block hover:bg-black/5 transition-colors">
-              Contact
-            </Link>
+            <a href="/pricing" className={`rounded-xl px-3 py-2 hidden md:inline-block transition-colors ${isPricing ? 'bg-black/5' : 'hover:bg-black/5'}`}>Pricing</a>
+            <a href="/contact" className="rounded-xl px-3 py-2 hidden md:inline-block hover:bg-black/5 transition-colors">Contact</a>
           </nav>
         </div>
         
