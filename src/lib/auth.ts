@@ -1,7 +1,6 @@
 import type { NextAuthOptions } from 'next-auth';
 import EmailProvider from 'next-auth/providers/email';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
 
 const hasSmtp = !!(
@@ -12,8 +11,8 @@ const hasSmtp = !!(
 );
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
-  session: { strategy: 'database' },
+  secret: process.env.NEXTAUTH_SECRET,
+  session: { strategy: 'jwt' },
   providers: [
     // Credentials provider for test users (no SMTP required)
     CredentialsProvider({
@@ -71,11 +70,26 @@ export const authOptions: NextAuthOptions = {
       : []),
   ],
   callbacks: {
-    async session({ session, user }) {
-      if (session.user) {
-        (session.user as any).id = user.id;
-        (session.user as any).tokenBalance = (user as any).tokenBalance ?? 0;
-        (session.user as any).currency = (user as any).currency ?? 'GBP';
+    async jwt({ token, user, trigger }) {
+      // On first sign-in, inject DB data
+      if (user && user.email) {
+        const dbUser = await prisma.user.findUnique({
+          where: { email: user.email as string },
+          select: { id: true, tokenBalance: true, currency: true },
+        });
+        if (dbUser) {
+          (token as any).id = dbUser.id;
+          (token as any).tokenBalance = dbUser.tokenBalance ?? 0;
+          (token as any).currency = (dbUser.currency as any) ?? 'GBP';
+        }
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user && token) {
+        (session.user as any).id = (token as any).id;
+        (session.user as any).tokenBalance = (token as any).tokenBalance ?? 0;
+        (session.user as any).currency = (token as any).currency ?? 'GBP';
       }
       return session;
     },
