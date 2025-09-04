@@ -86,10 +86,22 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      if (session.user && token) {
-        (session.user as any).id = (token as any).id;
-        (session.user as any).tokenBalance = (token as any).tokenBalance ?? 0;
-        (session.user as any).currency = (token as any).currency ?? 'GBP';
+      // Always refresh balance/currency from DB so session stays in sync
+      if (session.user && token && (token as any).id) {
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: (token as any).id as string },
+            select: { tokenBalance: true, currency: true },
+          });
+          (session.user as any).id = (token as any).id;
+          (session.user as any).tokenBalance = dbUser?.tokenBalance ?? (token as any).tokenBalance ?? 0;
+          (session.user as any).currency = (dbUser?.currency as any) ?? (token as any).currency ?? 'GBP';
+        } catch {
+          // Fallback to token values if DB not reachable
+          (session.user as any).id = (token as any).id;
+          (session.user as any).tokenBalance = (token as any).tokenBalance ?? 0;
+          (session.user as any).currency = (token as any).currency ?? 'GBP';
+        }
       }
       return session;
     },
