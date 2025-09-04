@@ -1,1 +1,3 @@
-﻿provider = " postgresql\
+﻿# Prisma Migrate lockfile v1
+# Prisma Migrate lockfile v1
+provider = "postgresql"
