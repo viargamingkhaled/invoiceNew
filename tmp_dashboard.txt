@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useEffect, useState } from 'react';
 import Section from '@/components/layout/Section';
@@ -11,16 +11,8 @@ type LedgerRow = { id: string; ts: string; type: 'Top-up' | 'Invoice' | 'Adjust'
 type Company = { name: string; vat?: string; reg?: string; address1?: string; city?: string; country?: string; iban?: string; bic?: string };
 type Me = { id: string; name: string | null; email: string | null; tokenBalance: number; currency: Currency; company: Company | null };
 
-const currencySym = (c: Currency) => (c === 'GBP' ? '£' : '€');
-const fmtMoney = (n: number, c: Currency) => {
-  const sym = currencySym(c);
-  const abs = Math.abs(n);
-  const opts: Intl.NumberFormatOptions = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
-  try { return `${n < 0 ? '-' : ''}${sym}${new Intl.NumberFormat(undefined, opts).format(abs)}`; } catch { return `${sym}${abs.toFixed(2)}`; }
-};
-
 function money(n: number, c: Currency) {
-  const sym = c === 'GBP' ? '£' : '€';
+  const sym = c === 'GBP' ? 'ВЈ' : 'в‚¬';
   const abs = Math.abs(n);
   const opts: Intl.NumberFormatOptions = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
   try { return `${n < 0 ? '-' : ''}${sym}${new Intl.NumberFormat(undefined, opts).format(abs)}`; } catch { return `${sym}${abs.toFixed(2)}`; }
@@ -116,7 +108,7 @@ export default function DashboardClient() {
     <main className="bg-slate-50 min-h-screen">
       <style>{`.reveal-in{opacity:1;transform:translateY(0);filter:blur(0)}[data-reveal]{opacity:0;transform:translateY(6px);filter:blur(4px);transition:all .45s ease}`}</style>
       <Section className="py-6">
-        {/* Greeting & balance (compact, без буллетов) */}
+        {/* Greeting & balance (compact, Р±РµР· Р±СѓР»Р»РµС‚РѕРІ) */}
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Hello, {userName}</h1>
@@ -124,7 +116,7 @@ export default function DashboardClient() {
           </div>
           <div className="flex items-center gap-2">
             <div className="inline-flex items-center gap-2 text-sm rounded-full border border-black/10 bg-white px-3 py-1">Balance: <b>{int(tokenBalance)}</b> tokens <span className="text-slate-500">(~{int(tokenBalance/10)} invoices)</span></div>
-            <Button onClick={() => topUp(10)} size="md" variant="primary">Top up {currencySym(currency)}10</Button>
+            <Button onClick={() => topUp(10)} size="md" variant="primary">Top up {currency==='GBP' ? 'ВЈ10' : 'в‚¬10'}</Button>
             <a href="#company-settings" className="rounded-xl border border-black/10 bg-white px-4 py-2 text-sm">Company settings</a>
           </div>
         </div>
@@ -135,15 +127,15 @@ export default function DashboardClient() {
             <div className="text-sm text-slate-600">Create</div>
             <div className="mt-1 font-semibold">New invoice</div>
             <p className="mt-2 text-sm text-slate-600">Costs <b>10 tokens</b>. Draft & preview are free.</p>
-            <div className="mt-3"><Button onClick={createInvoice} disabled={tokenBalance<10} variant="secondary" size="md">Create invoice (−10)</Button></div>
+            <div className="mt-3"><Button onClick={createInvoice} disabled={tokenBalance<10} variant="secondary" size="md">Create invoice (в€’10)</Button></div>
           </Card>
           <Card className="p-5">
             <div className="text-sm text-slate-600">Buy</div>
             <div className="mt-1 font-semibold">Tokens</div>
             <p className="mt-2 text-sm text-slate-600">1 {currency} = 100 tokens. Tokens never expire.</p>
             <div className="mt-3 flex items-center gap-2">
-              <Button variant="outline" onClick={()=>topUp(50)}>+ {currencySym(currency)}50</Button>
-              <Button variant="outline" onClick={()=>topUp(100)}>+ {currencySym(currency)}100</Button>
+              <Button variant="outline" onClick={()=>topUp(50)}>+ {currency==='GBP'? 'ВЈ50':'в‚¬50'}</Button>
+              <Button variant="outline" onClick={()=>topUp(100)}>+ {currency==='GBP'? 'ВЈ100':'в‚¬100'}</Button>
             </div>
           </Card>
           <Card className="p-5">
@@ -154,7 +146,7 @@ export default function DashboardClient() {
           </Card>
         </div>
 
-        {/* Две колонки на одном уровне: инвойсы слева, история токенов справа */}
+        {/* Р”РІРµ РєРѕР»РѕРЅРєРё РЅР° РѕРґРЅРѕРј СѓСЂРѕРІРЅРµ: РёРЅРІРѕР№СЃС‹ СЃР»РµРІР°, РёСЃС‚РѕСЂРёСЏ С‚РѕРєРµРЅРѕРІ СЃРїСЂР°РІР° */}
         <div className="mt-6 grid lg:grid-cols-2 gap-4 items-start">
           <Card padding="sm" data-reveal>
               <div className="flex items-center justify-between">
@@ -179,7 +171,7 @@ export default function DashboardClient() {
                         <td className="px-3 py-2 font-mono text-[12px]">{inv.number}</td>
                         <td className="px-3 py-2">{new Date(inv.date).toISOString().slice(0,10)}</td>
                         <td className="px-3 py-2">{inv.client}</td>
-                        <td className="px-3 py-2 text-right">{fmtMoney(inv.total, inv.currency)}</td>
+                        <td className="px-3 py-2 text-right">{money(inv.total, inv.currency)}</td>
                         <td className="px-3 py-2">
                           <span className={`rounded-full px-2 py-0.5 text-[11px] border ${inv.status==='Paid'?'border-emerald-200 bg-emerald-50 text-emerald-800':inv.status==='Sent'?'border-blue-200 bg-blue-50 text-blue-800':inv.status==='Overdue'?'border-rose-200 bg-rose-50 text-rose-800':'border-black/10'}`}>{inv.status}</span>
                         </td>
@@ -223,7 +215,7 @@ export default function DashboardClient() {
           </Card>
         </div>
 
-        {/* Company settings ниже, на всю ширину */}
+        {/* Company settings РЅРёР¶Рµ, РЅР° РІСЃСЋ С€РёСЂРёРЅСѓ */}
         <div className="mt-6" data-reveal id="company-settings">
             <Card padding="sm">
               <div className="text-base font-semibold">Company settings</div>
@@ -245,7 +237,7 @@ export default function DashboardClient() {
                   <Input label="BIC" value={form.bic||''} onChange={(e)=>setForm({...form, bic:e.target.value})} placeholder="BANKGB2L" />
                 </div>
                 <div className="mt-2">
-                  <Button disabled={savingCompany} variant="primary">{savingCompany? 'Saving…' : 'Save company'}</Button>
+                  <Button disabled={savingCompany} variant="primary">{savingCompany? 'SavingвЂ¦' : 'Save company'}</Button>
                 </div>
               </form>
             </Card>
@@ -254,3 +246,4 @@ export default function DashboardClient() {
     </main>
   );
 }
+
