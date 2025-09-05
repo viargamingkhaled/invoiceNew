@@ -1,7 +1,6 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Section from '@/components/layout/Section';
 import InvoiceForm from '@/components/generator/InvoiceForm';
