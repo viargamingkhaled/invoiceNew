@@ -95,7 +95,7 @@ export default function PricingClient() {
       <Section className="py-12">
         <div className="text-center">
           <div className="inline-flex items-center gap-2"><Pill>UK-first</Pill><Pill>EU-ready</Pill><Pill>Prices exclude VAT</Pill></div>
-          <h1 className="mt-4 text-3xl sm:text-4xl font-bold">Top‑Up</h1>
+          <h1 className="mt-4 text-3xl sm:text-4xl font-bold">Top-Up</h1>
           <p className="mt-2 text-slate-600">Choose a top-up, set your country & currency — we estimate VAT for transparency.</p>
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
@@ -135,7 +135,7 @@ export default function PricingClient() {
                 <div className="mt-3">
                   <Price amount={base} currency={currency} vatRate={vatRate} />
                 </div>
-                <div className="mt-1 text-xs text-slate-600">≈ {tokens} tokens (~{invoices} invoices)</div>
+                <div className="mt-1 text-xs text-slate-600">= {tokens} tokens (~{invoices} invoices)</div>
                 <ul className="mt-4 space-y-2 text-sm text-slate-700 list-disc pl-5">
                   {plan.bullets.map((b) => (
                     <li key={b}>{b}</li>
@@ -253,3 +253,4 @@ function CustomPlanCard({ currency }: { currency: Currency }) {
     </motion.div>
   );
 }
+
