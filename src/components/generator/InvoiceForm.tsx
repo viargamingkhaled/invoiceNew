@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { motion } from 'framer-motion';
 import { useState } from 'react';
@@ -29,6 +29,29 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     { desc: 'Service #2', qty: 1, rate: 200, tax: standardRate },
   ]);
 
+  // Sender / Client / Invoice metadata / Notes (for live preview)
+  const [sender, setSender] = useState({
+    company: 'Acme Ltd',
+    vat: country === 'United Kingdom' ? 'GB123456789' : 'EU VAT',
+    address: '221B Baker Street',
+    city: 'London',
+    country,
+    iban: 'GB00BANK0000000000',
+  });
+  const [client, setClient] = useState({
+    name: 'Client GmbH',
+    vat: 'DE123456789',
+    address: 'Potsdamer Platz 1',
+    city: 'Berlin',
+    country: 'Germany',
+  });
+  const [invoiceMeta, setInvoiceMeta] = useState({
+    number: 'INV-2025-000245',
+    date: '2025-09-02',
+    due: '2025-09-16',
+  });
+  const [notes, setNotes] = useState('Payment within 14 days. Late fees may apply.');
+
   const gated = !signedIn;
 
   const updateAllLineTaxes = (tax: number) => setItems(prev => prev.map(it => ({ ...it, tax })));
@@ -46,6 +69,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     const apply = (r === 'UK' || taxMode === 'domestic') ? nextStandard : 0;
     setLineTaxRate(apply);
     updateAllLineTaxes(apply);
+    setSender(prev => ({ ...prev, country: nextCountry }));
   };
 
   const onCountryChange = (c: string) => {
@@ -58,6 +82,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     const apply = taxMode === 'domestic' ? nextStandard : 0;
     setLineTaxRate(apply);
     updateAllLineTaxes(apply);
+    setSender(prev => ({ ...prev, country: c }));
   };
 
   const addItem = () => setItems(prev => [
@@ -75,7 +100,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
   const zeroNote = taxMode === 'intraEU_rc'
     ? 'VAT 0% - Intra-EU supply (reverse charge applies).'
     : taxMode === 'uk_eu_cross'
-    ? 'VAT 0% - UK ↔ EU cross-border supply (check zero-rating rules).'
+    ? 'VAT 0% - UK в†” EU cross-border supply (check zero-rating rules).'
     : taxMode === 'export'
     ? 'VAT 0% - Export outside UK/EU.'
     : undefined;
@@ -196,7 +221,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
                   updateAllLineTaxes(0);
                 }}
               />
-              <span>UK ↔ EU cross-border (zero-rated)</span>
+              <span>UK в†” EU cross-border (zero-rated)</span>
             </label>
             <label className="inline-flex items-center gap-2 text-sm">
               <input
@@ -260,12 +285,12 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
               <p className="text-xs text-slate-500 mt-1">Your company details</p>
             </div>
             <div className="grid sm:grid-cols-2 gap-3">
-              <Input label="Company name" placeholder="Acme Ltd" />
-              <Input label="VAT / Reg" placeholder={country === 'United Kingdom' ? 'GB123456789' : 'EU VAT'} />
-              <Input label="Address line" placeholder="221B Baker Street" />
-              <Input label="City" placeholder="London" />
+              <Input label="Company name" value={sender.company} onChange={(e) => setSender(s => ({ ...s, company: e.target.value }))} />
+              <Input label="VAT / Reg" value={sender.vat} onChange={(e) => setSender(s => ({ ...s, vat: e.target.value }))} />
+              <Input label="Address line" value={sender.address} onChange={(e) => setSender(s => ({ ...s, address: e.target.value }))} />
+              <Input label="City" value={sender.city} onChange={(e) => setSender(s => ({ ...s, city: e.target.value }))} />
               <Input label="Country" value={country} onChange={(e) => onCountryChange(e.target.value)} />
-              <Input label="IBAN" placeholder={currency === 'GBP' ? 'GB00BANK0000000000' : 'DE00BANK0000000000'} />
+              <Input label="IBAN" value={sender.iban} onChange={(e) => setSender(s => ({ ...s, iban: e.target.value }))} />
             </div>
 
             <hr className="my-4 border-black/10" />
@@ -275,11 +300,11 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
               <p className="text-xs text-slate-500 mt-1">Bill-to details</p>
             </div>
             <div className="grid sm:grid-cols-2 gap-3">
-              <Input label="Client name" placeholder="Client GmbH" />
-              <Input label="VAT / Reg" placeholder="DE123456789" />
-              <Input label="Address line" placeholder="Potsdamer Platz 1" />
-              <Input label="City" placeholder="Berlin" />
-              <Input label="Country" placeholder="Germany" />
+              <Input label="Client name" value={client.name} onChange={(e) => setClient(c => ({ ...c, name: e.target.value }))} />
+              <Input label="VAT / Reg" value={client.vat} onChange={(e) => setClient(c => ({ ...c, vat: e.target.value }))} />
+              <Input label="Address line" value={client.address} onChange={(e) => setClient(c => ({ ...c, address: e.target.value }))} />
+              <Input label="City" value={client.city} onChange={(e) => setClient(c => ({ ...c, city: e.target.value }))} />
+              <Input label="Country" value={client.country} onChange={(e) => setClient(c => ({ ...c, country: e.target.value }))} />
               <div className="hidden sm:block" />
             </div>
 
@@ -290,9 +315,9 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
               <p className="text-xs text-slate-500 mt-1">Metadata & numbering</p>
             </div>
             <div className="grid sm:grid-cols-3 gap-3">
-              <Input label="Number" placeholder="INV-2025-000245" />
-              <Input label="Date" type="date" defaultValue="2025-09-02" />
-              <Input label="Due" type="date" defaultValue="2025-09-16" />
+              <Input label="Number" value={invoiceMeta.number} onChange={(e) => setInvoiceMeta(m => ({ ...m, number: e.target.value }))} />
+              <Input label="Date" type="date" value={invoiceMeta.date} onChange={(e) => setInvoiceMeta(m => ({ ...m, date: e.target.value }))} />
+              <Input label="Due" type="date" value={invoiceMeta.due} onChange={(e) => setInvoiceMeta(m => ({ ...m, due: e.target.value }))} />
             </div>
 
             <hr className="my-4 border-black/10" />
@@ -319,22 +344,22 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
                   <Input
                     value={it.desc}
                     onChange={(e) => updateItem(i, 'desc', e.target.value)}
-                    className="col-span-6"
+                    wrapperClassName="col-span-6"
                   />
                   <Input
                     value={it.qty}
                     onChange={(e) => updateItem(i, 'qty', Number(e.target.value))}
-                    className="col-span-2 text-right"
+                    wrapperClassName="col-span-2" className="text-right"
                   />
                   <Input
                     value={it.rate}
                     onChange={(e) => updateItem(i, 'rate', Number(e.target.value))}
-                    className="col-span-2 text-right"
+                    wrapperClassName="col-span-2" className="text-right"
                   />
                   <Input
                     value={it.tax}
                     onChange={(e) => updateItem(i, 'tax', Number(e.target.value))}
-                    className="col-span-2 text-right"
+                    wrapperClassName="col-span-2" className="text-right"
                   />
                 </motion.div>
               ))}
@@ -353,6 +378,8 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
             </div>
             <Textarea
               rows={4}
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
               placeholder="Payment within 14 days. Late fees may apply."
             />
           </motion.div>
@@ -377,9 +404,15 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
               subtotal={subtotal}
               taxTotal={taxTotal}
               total={total}
+              sender={sender}
+              client={client}
+              invoiceNo={invoiceMeta.number}
+              invoiceDate={invoiceMeta.date}
+              invoiceDue={invoiceMeta.due}
+              notes={notes}
             />
             <div className="mt-3 text-[11px] text-slate-500">
-              Totals (auto): Subtotal <b>{currency} {subtotal.toFixed(2)}</b> · Tax <b>{currency} {taxTotal.toFixed(2)}</b> · Total <b>{currency} {total.toFixed(2)}</b>
+              Totals (auto): Subtotal <b>{currency} {subtotal.toFixed(2)}</b> — Tax <b>{currency} {taxTotal.toFixed(2)}</b> — Total <b>{currency} {total.toFixed(2)}</b>
             </div>
           </motion.div>
         </div>
@@ -387,4 +420,3 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     </div>
   );
 }
-

@@ -10,6 +10,12 @@ interface InvoicePaperProps {
   subtotal: number;
   taxTotal: number;
   total: number;
+  sender: { company: string; vat: string; address: string; city: string; country: string; iban: string };
+  client: { name: string; vat: string; address: string; city: string; country: string };
+  invoiceNo: string;
+  invoiceDate: string;
+  invoiceDue: string;
+  notes: string;
 }
 
 export default function InvoicePaper({ 
@@ -18,7 +24,13 @@ export default function InvoicePaper({
   items, 
   subtotal, 
   taxTotal, 
-  total 
+  total,
+  sender,
+  client,
+  invoiceNo,
+  invoiceDate,
+  invoiceDue,
+  notes,
 }: InvoicePaperProps) {
   return (
     <motion.div 
@@ -35,24 +47,24 @@ export default function InvoicePaper({
           transition={{ type: "spring", stiffness: 400, damping: 17 }}
         />
         <div className="text-right text-xs text-slate-600">
-          <div>Invoice #000245</div>
-          <div>Date: 02 Sep 2025</div>
-          <div>Due: 16 Sep 2025</div>
+          <div>Invoice {invoiceNo ? `#${invoiceNo}` : ''}</div>
+          <div>Date: {invoiceDate || '-'}</div>
+          <div>Due: {invoiceDue || '-'}</div>
         </div>
       </div>
       
       <div className="mt-4 grid grid-cols-2 gap-6 text-xs">
         <div>
           <div className="font-semibold">From</div>
-          <div>Acme Ltd</div>
-          <div>VAT GB123456789</div>
-          <div>London, United Kingdom</div>
+          <div>{sender.company}</div>
+          <div>VAT {sender.vat}</div>
+          <div>{sender.city}, {sender.country}</div>
         </div>
         <div>
           <div className="font-semibold">Bill To</div>
-          <div>Client GmbH</div>
-          <div>VAT DE123456789</div>
-          <div>Berlin, Germany</div>
+          <div>{client.name}</div>
+          <div>VAT {client.vat}</div>
+          <div>{client.city}, {client.country}</div>
         </div>
       </div>
       
@@ -109,7 +121,7 @@ export default function InvoicePaper({
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
-          Payment within 14 days. IBAN: GB00BANK0000000000
+          {notes || 'Payment within 14 days.'} {sender.iban ? `IBAN: ${sender.iban}` : ''}
         </motion.div>
       </div>
     </motion.div>

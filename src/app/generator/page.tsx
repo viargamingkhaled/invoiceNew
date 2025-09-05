@@ -2,11 +2,13 @@
 
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 import Section from '@/components/layout/Section';
 import InvoiceForm from '@/components/generator/InvoiceForm';
 
 export default function GeneratorPage() {
-  const [signedIn] = useState(false);
+  const { status } = useSession();
+  const signedIn = status === 'authenticated';
   const gated = !signedIn;
 
   return (
@@ -43,9 +45,8 @@ export default function GeneratorPage() {
 
         <Section className="py-6">
           <InvoiceForm signedIn={signedIn} />
-        </Section>
-      </main>
-    </motion.div>
-  );
+      </Section>
+    </main>
+  </motion.div>
+);
 }
-
