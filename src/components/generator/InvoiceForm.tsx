@@ -53,6 +53,8 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
   const [notes, setNotes] = useState('Payment within 14 days. Late fees may apply.');
 
   const gated = !signedIn;
+  const [banner, setBanner] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
+  const [busy, setBusy] = useState<'save' | 'share' | null>(null);
 
   const updateAllLineTaxes = (tax: number) => setItems(prev => prev.map(it => ({ ...it, tax })));
 
@@ -105,6 +107,57 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     ? 'VAT 0% - Export outside UK/EU.'
     : undefined;
 
+  const saveDraft = async () => {
+    setBusy('save');
+    setBanner(null);
+    try {
+      const res = await fetch('/api/drafts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          currency,
+          client: client.name,
+          subtotal: Math.round(subtotal),
+          tax: Math.round(taxTotal),
+          total: Math.round(total),
+        }),
+      });
+      if (!res.ok) throw new Error((await res.json().catch(()=>({error:'Failed'}))).error || 'Failed to save draft');
+      setBanner({ type: 'success', msg: 'Draft saved to Dashboard.' });
+    } catch (e: any) {
+      setBanner({ type: 'error', msg: e.message || 'Failed to save draft.' });
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const saveAndShare = async () => {
+    setBusy('share');
+    setBanner(null);
+    try {
+      const res = await fetch('/api/drafts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          currency,
+          client: client.name,
+          subtotal: Math.round(subtotal),
+          tax: Math.round(taxTotal),
+          total: Math.round(total),
+        }),
+      });
+      if (!res.ok) throw new Error((await res.json().catch(()=>({error:'Failed'}))).error || 'Failed to save draft');
+      const { invoice } = await res.json();
+      const url = `${window.location.origin}/s/${invoice.id}`;
+      await navigator.clipboard.writeText(url);
+      setBanner({ type: 'success', msg: 'Share link copied to clipboard.' });
+    } catch (e: any) {
+      setBanner({ type: 'error', msg: e.message || 'Failed to save or copy.' });
+    } finally {
+      setBusy(null);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Controls */}
@@ -143,7 +196,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
           <span className="px-2 py-1 rounded-lg border border-black/10 bg-white">EN</span>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="secondary" size="sm">Save draft</Button>
+          <Button onClick={saveDraft} disabled={gated || busy!==null} variant="secondary" size="sm">{busy==='save'? 'Saving…' : 'Save draft'}</Button>
           <Button
             disabled={gated}
             title={gated ? 'Available after sign-up' : 'Download PDF'}
@@ -161,17 +214,24 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
             Send email
           </Button>
           <Button
-            disabled={gated}
-            title={gated ? 'Available after sign-up' : 'Share link'}
+            onClick={saveAndShare}
+            disabled={gated || busy!==null}
+            title={gated ? 'Available after sign-up' : 'Save & share link'}
             size="sm"
             className={gated ? 'bg-slate-300' : ''}
           >
-            Share link
+            {busy==='share'? 'Saving…' : 'Save & share link'}
           </Button>
         </div>
       </div>
 
       {/* Tax Treatment */}
+      {banner && (
+        <div className={`rounded-lg border px-3 py-2 text-sm ${banner.type==='success'? 'border-emerald-200 bg-emerald-50 text-emerald-900' : 'border-red-200 bg-red-50 text-red-700'}`}>
+          {banner.msg}
+        </div>
+      )}
+
       <motion.div
         className="rounded-2xl bg-white p-5 border border-black/10 shadow-sm"
         initial={{ opacity: 0, y: 20 }}
@@ -344,22 +404,22 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
                   <Input
                     value={it.desc}
                     onChange={(e) => updateItem(i, 'desc', e.target.value)}
-                    wrapperClassName="col-span-6"
+                    wrapperClassName="col-span-6 min-w-0"
                   />
                   <Input
                     value={it.qty}
                     onChange={(e) => updateItem(i, 'qty', Number(e.target.value))}
-                    wrapperClassName="col-span-2" className="text-right"
+                    wrapperClassName="col-span-2 min-w-0" className="text-right"
                   />
                   <Input
                     value={it.rate}
                     onChange={(e) => updateItem(i, 'rate', Number(e.target.value))}
-                    wrapperClassName="col-span-2" className="text-right"
+                    wrapperClassName="col-span-2 min-w-0" className="text-right"
                   />
                   <Input
                     value={it.tax}
                     onChange={(e) => updateItem(i, 'tax', Number(e.target.value))}
-                    wrapperClassName="col-span-2" className="text-right"
+                    wrapperClassName="col-span-2 min-w-0" className="text-right"
                   />
                 </motion.div>
               ))}
