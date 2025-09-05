@@ -1,8 +1,8 @@
 import PricingClient from './pricingClient';
 
 export const metadata = {
-  title: 'Pricing - Invoicerly',
-  description: 'Simple pricing for UK/EU with transparent VAT estimation.',
+  title: 'Top-Up - Invoicerly',
+  description: 'Top up tokens with transparent VAT estimation (UK/EU).',
 };
 
 export default function PricingPage() {

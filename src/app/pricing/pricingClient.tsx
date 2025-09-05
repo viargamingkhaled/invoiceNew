@@ -7,6 +7,7 @@ import Button from '@/components/ui/Button';
 import Pill from '@/components/policy/Pill';
 import Segmented from '@/components/ui/Segmented';
 import { CC, VAT_RATES } from '@/lib/constants';
+import { useSession } from 'next-auth/react';
 
 type Currency = 'GBP' | 'EUR';
 
@@ -80,6 +81,8 @@ function ComparisonRow({ feature, free, pro, business }: { feature: string; free
 export default function PricingClient() {
   const [currency, setCurrency] = useState<Currency>('GBP');
   const [country, setCountry] = useState<string>('United Kingdom');
+  const { status } = useSession();
+  const signedIn = status === 'authenticated';
 
   const vatRate = useMemo(() => {
     const code = (CC as Record<string,string>)[country] || 'UK';
@@ -92,8 +95,8 @@ export default function PricingClient() {
       <Section className="py-12">
         <div className="text-center">
           <div className="inline-flex items-center gap-2"><Pill>UK-first</Pill><Pill>EU-ready</Pill><Pill>Prices exclude VAT</Pill></div>
-          <h1 className="mt-4 text-3xl sm:text-4xl font-bold">Simple pricing for growing businesses</h1>
-          <p className="mt-2 text-slate-600">Choose a plan, set your country & currency - we estimate VAT for transparency.</p>
+          <h1 className="mt-4 text-3xl sm:text-4xl font-bold">Top‑Up</h1>
+          <p className="mt-2 text-slate-600">Choose a top-up, set your country & currency — we estimate VAT for transparency.</p>
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             <Segmented 
@@ -149,30 +152,7 @@ export default function PricingClient() {
           <CustomPlanCard currency={currency} />
         </div>
 
-        <div className="mt-12">
-          <h2 className="text-xl font-semibold text-center">Compare plans</h2>
-          <div className="mt-4">
-            <div className="grid grid-cols-4 text-xs uppercase tracking-wide text-slate-500 mb-2">
-              <div className="px-3">Feature</div>
-              <div className="px-3">Free</div>
-              <div className="px-3">Pro</div>
-              <div className="px-3">Business</div>
-            </div>
-            <div className="rounded-xl overflow-hidden border border-black/10">
-              <ComparisonRow feature="Invoices per month" free="3" pro="Unlimited" business="Unlimited" />
-              <ComparisonRow feature="Clients" free="3" pro="Unlimited" business="Unlimited" />
-              <ComparisonRow feature="Templates" free="1" pro="All" business="All" />
-              <ComparisonRow feature="Custom logo" free={false} pro={true} business={true} />
-              <ComparisonRow feature="Payment links" free={false} pro={true} business={true} />
-              <ComparisonRow feature="Read receipts" free={false} pro={true} business={true} />
-              <ComparisonRow feature="Teams & roles" free={false} pro={false} business={true} />
-              <ComparisonRow feature="Integrations" free={false} pro="Basic" business="All" />
-              <ComparisonRow feature="API & webhooks" free={false} pro={false} business={true} />
-              <ComparisonRow feature="Audit log" free={false} pro={false} business={true} />
-              <ComparisonRow feature="Support" free="Community" pro="Email" business="Priority" />
-            </div>
-          </div>
-        </div>
+        {/* Compare plans section removed as requested */}
 
         <div className="mt-12 grid md:grid-cols-2 gap-6">
           <div className="rounded-2xl border border-black/10 bg-white p-6">
@@ -198,7 +178,6 @@ export default function PricingClient() {
           </div>
           <div className="rounded-2xl border border-black/10 bg-white p-6">
             <h3 className="text-lg font-semibold">Still not sure?</h3>
-            <p className="text-slate-600 mt-2">Try Pro free for 7 days. No credit card required.</p>
             <div className="mt-4 grid sm:grid-cols-2 gap-3 text-sm">
               <div className="rounded-xl border border-dashed border-black/15 p-4">
                 <div className="font-medium">UK & EU VAT-ready</div>
@@ -217,18 +196,18 @@ export default function PricingClient() {
                 <p className="text-slate-600 mt-1">Community (Free), Email (Pro), Priority (Business).</p>
               </div>
             </div>
-            <Button className="mt-6 w-full" size="lg">Start 7-day Pro trial</Button>
           </div>
         </div>
-
-        <div className="mt-12 rounded-2xl border border-black/10 bg-white p-6 text-center">
-          <h3 className="text-xl font-semibold">Ready to get started?</h3>
-          <p className="text-slate-600 mt-1">Create your first invoice in minutes.</p>
-          <div className="mt-3 flex items-center justify-center gap-3">
-            <Button size="lg" className="px-5">Sign up</Button>
-            <Button variant="outline" size="lg" className="px-5">Talk to sales</Button>
+        {!signedIn && (
+          <div className="mt-6 rounded-2xl border border-black/10 bg-white p-6 text-center">
+            <h3 className="text-lg font-semibold">Ready to get started?</h3>
+            <p className="mt-1 text-slate-600 text-sm">Create an account to top up tokens.</p>
+            <div className="mt-4 flex items-center justify-center gap-3">
+              <Button size="lg" href="/auth/signin?mode=signup">Sign up</Button>
+              <Button size="lg" variant="outline" href="/auth/signin?mode=login">Log in</Button>
+            </div>
           </div>
-        </div>
+        )}
       </Section>
     </div>
   );

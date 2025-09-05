@@ -10,7 +10,10 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "vercel:link": "vercel link --yes --project invoicegen",
+    "vercel:prod": "vercel deploy --prod --yes",
+    "deploy:vercel": "npm run vercel:link && npm run vercel:prod"
   },
   "dependencies": {
     "framer-motion": "^10.18.0",

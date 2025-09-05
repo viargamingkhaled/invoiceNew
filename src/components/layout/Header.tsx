@@ -42,7 +42,7 @@ export default function Header() {
             {signedIn && (
               <a href="/dashboard" className={`rounded-xl px-3 py-2 transition-colors ${isDashboard ? 'bg-black/5' : ''}`}>Dashboard</a>
             )}
-            <a href="/pricing" className={`rounded-xl px-3 py-2 hidden md:inline-block transition-colors ${isPricing ? 'bg-black/5' : 'hover:bg-black/5'}`}>Pricing</a>
+            <a href="/pricing" className={`rounded-xl px-3 py-2 hidden md:inline-block transition-colors ${isPricing ? 'bg-black/5' : 'hover:bg-black/5'}`}>Top-Up</a>
             <a href="/contact" className="rounded-xl px-3 py-2 hidden md:inline-block hover:bg-black/5 transition-colors">Contact</a>
           </nav>
         </div>
