@@ -128,10 +128,10 @@ export default function InvoiceA4({
           <table className="table">
             <thead>
               <tr>
-                <th width="54%">Item</th>
-                <th className="right" width="10%">Qty</th>
-                <th className="right" width="18%">Rate ({currency})</th>
-                <th className="right" width="18%">Tax</th>
+                <th style={{ width: '54%' }}>Item</th>
+                <th className="right" style={{ width: '10%' }}>Qty</th>
+                <th className="right" style={{ width: '18%' }}>Rate ({currency})</th>
+                <th className="right" style={{ width: '18%' }}>Tax</th>
               </tr>
             </thead>
             <tbody>
