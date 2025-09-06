@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { THEME } from '@/lib/theme';
 import { useSession, signOut } from 'next-auth/react';
@@ -11,10 +11,30 @@ export default function Header() {
   const pathname = usePathname();
   const { data: session, status } = useSession();
   const signedIn = status === 'authenticated';
+  const bcRef = useRef<BroadcastChannel | null>(null);
+  const [tokens, setTokens] = useState<number | null>(null);
   const isHome = pathname === '/';
   const isGenerator = pathname === '/generator';
   const isPricing = pathname === '/pricing';
   const isDashboard = pathname === '/dashboard';
+
+  useEffect(() => {
+    const t = (session?.user as any)?.tokenBalance;
+    if (typeof t === 'number') setTokens(t);
+  }, [session]);
+
+  useEffect(() => {
+    try {
+      bcRef.current = new BroadcastChannel('app-events');
+      bcRef.current.onmessage = (ev: MessageEvent) => {
+        const data: any = (ev as any)?.data || {};
+        if (data.type === 'tokens-updated' && typeof data.tokenBalance === 'number') {
+          setTokens(data.tokenBalance);
+        }
+      };
+    } catch {}
+    return () => { try { bcRef.current?.close(); } catch {} };
+  }, []);
 
   return (
     <motion.header 
@@ -64,12 +84,18 @@ export default function Header() {
               </Link>
             </>
           ) : (
-            <button
-              onClick={() => signOut({ callbackUrl: '/' })}
-              className="rounded-xl bg-slate-900 hover:bg-black text-white px-4 py-2 text-sm transition-colors"
-            >
-              Sign out
-            </button>
+            <div className="flex items-center gap-2">
+              <div className="rounded-xl border border-black/10 bg-white px-3 py-1.5 text-sm text-slate-700">
+                Tokens: {typeof tokens === 'number' ? tokens : ((session?.user as any)?.tokenBalance ?? 0)}
+              </div>
+              <Link href="/pricing" className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 text-sm transition-colors">Top-Up</Link>
+              <button
+                onClick={() => signOut({ callbackUrl: '/' })}
+                className="rounded-xl bg-slate-900 hover:bg-black text-white px-4 py-2 text-sm transition-colors"
+              >
+                Sign out
+              </button>
+            </div>
           )}
         </div>
       </section>

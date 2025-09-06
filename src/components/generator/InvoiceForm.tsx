@@ -193,12 +193,47 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     : undefined;
 
   const downloadPdf = async () => {
-    try {
-      window.print();
-    } catch (e) {
-      console.error('Print failed', e);
-    }
-  };
+  if (!signedIn) return;
+  if (tokenBalance !== null && tokenBalance < 100) {
+    setBanner({ type: 'error', msg: 'Not enough tokens (100 required).' });
+    return;
+  }
+  setBusy('download');
+  setBanner(null);
+  try {
+    const ok = await chargeTokens(100);
+    if (!ok) { setBusy(null); return; }
+    const el = document.getElementById('print-area');
+    if (!el) throw new Error('Print area not found');
+    const prevDisplay = el.style.display;
+    const prevPos = (el.style as any).position;
+    const prevLeft = (el.style as any).left;
+    (el.style as any).display = 'block';
+    (el.style as any).position = 'absolute';
+    (el.style as any).left = '-10000px';
+
+    const { jsPDF } = await import('jspdf');
+    const html2canvas = (await import('html2canvas')).default;
+    const canvas = await html2canvas(el as HTMLElement, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+
+    (el.style as any).display = prevDisplay;
+    (el.style as any).position = prevPos;
+    (el.style as any).left = prevLeft;
+
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, pageHeight, undefined, 'FAST');
+    const fname = Invoice - .pdf;
+    pdf.save(fname);
+    setBanner({ type: 'success', msg: 'PDF downloaded.' });
+  } catch (e: any) {
+    setBanner({ type: 'error', msg: e.message || 'PDF download failed.' });
+  } finally {
+    setBusy(null);
+  }
+};
 
   
   // Charge tokens helper and broadcast update
@@ -342,7 +377,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
           <Button onClick={saveDraft} disabled={gated || busy!==null} variant="secondary" size="sm">{busy==='save'? 'Saving…' : 'Save draft'}</Button>
           <Button
             onClick={downloadPdf}
-            disabled={gated}
+            disabled={gated || busy!==null}
             title={gated ? 'Available after sign-up' : 'Download PDF'}
             size="sm"
             className={gated ? 'bg-slate-300' : ''}
@@ -426,7 +461,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
                   updateAllLineTaxes(0);
                 }}
               />
-              <span>UK â†” EU cross-border (zero-rated)</span>
+              <span>UK to EU cross-border (zero-rated)</span>
             </label>
             <label className="inline-flex items-center gap-2 text-sm">
               <input
