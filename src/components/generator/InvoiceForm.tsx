@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Item, TaxMode } from '@/types/invoice';
 import { CURRENCY_BY_COUNTRY, CC, VAT_RATES } from '@/lib/constants';
 import Input from '@/components/ui/Input';
@@ -52,6 +52,35 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     due: '2025-09-16',
   });
   const [notes, setNotes] = useState('Payment within 14 days. Late fees may apply.');
+
+  // Initialize Sender from saved Company (if available)
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch('/api/me');
+        if (!res.ok) return;
+        const { user } = await res.json();
+        const company = user?.company as any;
+        if (company) {
+          const vatOrReg = company.vat || company.reg || '';
+          const nextCountry = company.country ?? null;
+          setSender(prev => ({
+            ...prev,
+            company: company.name ?? prev.company,
+            vat: vatOrReg,
+            address: company.address1 ?? prev.address,
+            city: company.city ?? prev.city,
+            country: nextCountry ?? prev.country,
+            iban: company.iban ?? prev.iban,
+          }));
+          if (company.country) setCountry(company.country);
+        }
+        if (user?.currency) setCurrency(user.currency);
+      } catch {
+        // ignore
+      }
+    })();
+  }, []);
 
   const gated = !signedIn;
   const [banner, setBanner] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
