@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Item, TaxMode } from '@/types/invoice';
 import { CURRENCY_BY_COUNTRY, CC, VAT_RATES } from '@/lib/constants';
 import Input from '@/components/ui/Input';
@@ -15,7 +15,6 @@ interface InvoiceFormProps {
 }
 
 export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
-  const bcRef = useRef<BroadcastChannel | null>(null);
   const [region, setRegion] = useState('UK');
   const [country, setCountry] = useState('United Kingdom');
   const [currency, setCurrency] = useState(CURRENCY_BY_COUNTRY[country] || 'GBP');
@@ -77,69 +76,15 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
           if (company.country && CURRENCY_BY_COUNTRY[company.country]) setCountry(company.country);
         }
         if (user?.currency) setCurrency(user.currency);
-        if (typeof user?.tokenBalance === 'number') setTokenBalance(user.tokenBalance);
       } catch {
         // ignore
       }
     })();
   }, []);
-  // Live sync: BroadcastChannel + focus refresh
-  useEffect(() => {
-    try {
-      bcRef.current = new BroadcastChannel('app-events');
-      bcRef.current.onmessage = (ev: MessageEvent) => {
-        const data: any = (ev as any)?.data || {};
-        if (data.type === 'company-updated' && data.company) {
-          const c = data.company;
-          const vatOrReg = c.vat || c.reg || '';
-          setSender(prev => ({
-            ...prev,
-            company: c.name ?? prev.company,
-            vat: vatOrReg,
-            address: c.address1 ?? prev.address,
-            city: c.city ?? prev.city,
-            country: c.country ?? prev.country,
-            iban: c.iban ?? prev.iban,
-          }));
-          if (c.country && CURRENCY_BY_COUNTRY[c.country]) setCountry(c.country);
-        }
-        if (data.type === 'tokens-updated' && typeof data.tokenBalance === 'number') {
-          setTokenBalance(data.tokenBalance);
-        }
-      };
-    } catch {}
-    const onFocus = async () => {
-      try {
-        const res = await fetch('/api/me');
-        if (!res.ok) return;
-        const { user } = await res.json();
-        if (typeof user?.tokenBalance === 'number') setTokenBalance(user.tokenBalance);
-        const company = user?.company as any;
-        if (company) {
-          const vatOrReg = company.vat || company.reg || '';
-          setSender(prev => ({
-            ...prev,
-            company: company.name ?? prev.company,
-            vat: vatOrReg,
-            address: company.address1 ?? prev.address,
-            city: company.city ?? prev.city,
-            country: company.country ?? prev.country,
-            iban: company.iban ?? prev.iban,
-          }));
-        }
-      } catch {}
-    };
-    window.addEventListener('focus', onFocus);
-    return () => {
-      try { bcRef.current?.close(); } catch {}
-      window.removeEventListener('focus', onFocus);
-    };
-  }, []);
 
   const gated = !signedIn;
   const [banner, setBanner] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
-  const [busy, setBusy] = useState<'save' | 'share' | 'download' | 'email' | null>(null);
-  const [tokenBalance, setTokenBalance] = useState<number | null>(null);
+  const [busy, setBusy] = useState<'save' | 'share' | null>(null);
 
   const updateAllLineTaxes = (tax: number) => setItems(prev => prev.map(it => ({ ...it, tax })));
 
@@ -187,7 +132,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
   const zeroNote = taxMode === 'intraEU_rc'
     ? 'VAT 0% - Intra-EU supply (reverse charge applies).'
     : taxMode === 'uk_eu_cross'
-    ? 'VAT 0% - UK to EU cross-border supply (check zero-rating rules).'
+    ? 'VAT 0% - UK ↔ EU cross-border supply (check zero-rating rules).'
     : taxMode === 'export'
     ? 'VAT 0% - Export outside UK/EU.'
     : undefined;
@@ -200,32 +145,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     }
   };
 
-  
-  // Charge tokens helper and broadcast update
-  const chargeTokens = async (cost: number) => {
-    try {
-      const res = await fetch('/api/ledger', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'Invoice', delta: -Math.abs(cost) }),
-      });
-      if (!res.ok) {
-        const j = await res.json().catch(()=>({error:'Failed to charge tokens'}));
-        throw new Error(j.error || 'Failed to charge tokens');
-      }
-      const { tokenBalance: newBalance } = await res.json();
-      if (typeof newBalance === 'number') {
-        setTokenBalance(newBalance);
-        try {
-          bcRef.current?.postMessage({ type: 'tokens-updated', tokenBalance: newBalance });
-        } catch {}
-      }
-      return true;
-    } catch (e: any) {
-      setBanner({ type: 'error', msg: e.message || 'Token charge failed' });
-      return false;
-    }
-  };const saveDraft = async () => {
+  const saveDraft = async () => {
     setBusy('save');
     setBanner(null);
     try {
@@ -250,57 +170,32 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
   };
 
   const saveAndShare = async () => {
-  if (!signedIn) return;
-  if (tokenBalance -ne  -and  -lt 100) {
-    setBanner({ type: 'error', msg: 'Not enough tokens (100 required).' });
-    return;
-  }
-  setBusy('share');
-  setBanner(null);
-  try {
-    const ok = await chargeTokens(100);
-    if (!ok) { setBusy(null); return; }
-    const res = await fetch('/api/drafts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        currency,
-        client: client.name,
-        subtotal: Math.round(subtotal),
-        tax: Math.round(taxTotal),
-        total: Math.round(total),
-      }),
-    });
-    if (!res.ok) throw new Error((await res.json().catch(()=>({error:'Failed'}))).error || 'Failed to save draft');
-    const { invoice } = await res.json();
-    const url = ${window.location.origin}/s/;
-    await navigator.clipboard.writeText(url);
-    setBanner({ type: 'success', msg: 'Share link copied to clipboard.' });
-  } catch (e: any) {
-    setBanner({ type: 'error', msg: e.message || 'Failed to save or copy.' });
-  } finally {
-    setBusy(null);
-  }
-};
-
-  const sendEmail = async () => {
-    if (!signedIn) return;
-    if (tokenBalance !== null && tokenBalance < 100) {
-      setBanner({ type: 'error', msg: 'Not enough tokens (100 required).' });
-      return;
-    }
-    setBusy('email');
+    setBusy('share');
     setBanner(null);
     try {
-      const ok = await chargeTokens(100);
-      if (!ok) { setBusy(null); return; }
-      setBanner({ type: 'success', msg: 'Email queued (mock).' });
-    } catch (e) {
-      setBanner({ type: 'error', msg: 'Failed to queue email.' });
+      const res = await fetch('/api/drafts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          currency,
+          client: client.name,
+          subtotal: Math.round(subtotal),
+          tax: Math.round(taxTotal),
+          total: Math.round(total),
+        }),
+      });
+      if (!res.ok) throw new Error((await res.json().catch(()=>({error:'Failed'}))).error || 'Failed to save draft');
+      const { invoice } = await res.json();
+      const url = `${window.location.origin}/s/${invoice.id}`;
+      await navigator.clipboard.writeText(url);
+      setBanner({ type: 'success', msg: 'Share link copied to clipboard.' });
+    } catch (e: any) {
+      setBanner({ type: 'error', msg: e.message || 'Failed to save or copy.' });
     } finally {
       setBusy(null);
     }
   };
+
   return (
     <div className="space-y-6">
       {/* Controls */}
@@ -350,13 +245,12 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
             Download PDF
           </Button>
           <Button
-            onClick={sendEmail}
-            disabled={gated || busy!==null}
+            disabled={gated}
             title={gated ? 'Available after sign-up' : 'Send via email'}
             size="sm"
             className={gated ? 'bg-slate-300' : ''}
           >
-            {busy==='email' ? 'Processing:' : 'Send email'}
+            Send email
           </Button>
           <Button
             onClick={saveAndShare}
@@ -655,3 +549,4 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     </div>
   );
 }
+

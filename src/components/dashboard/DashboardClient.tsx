@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Section from '@/components/layout/Section';
 import { Card, Button, Input } from '@/components';
 
@@ -28,6 +28,7 @@ function money(n: number, c: Currency) {
 function int(n: number) { try { return new Intl.NumberFormat().format(Math.round(n)); } catch { return String(Math.round(n)); } }
 
 export default function DashboardClient() {
+  const bcRef = useRef<BroadcastChannel | null>(null);
   const [me, setMe] = useState<Me | null>(null);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [ledger, setLedger] = useState<LedgerRow[]>([]);
@@ -40,6 +41,9 @@ export default function DashboardClient() {
 
   // load data
   useEffect(() => {
+    // Init BroadcastChannel for cross-tab updates
+    try { bcRef.current = new BroadcastChannel('app-events'); } catch {}
+    const cleanup = () => { try { bcRef.current?.close(); } catch {} };
     (async () => {
       const meRes = await fetch('/api/me');
       if (meRes.ok) {
@@ -58,6 +62,7 @@ export default function DashboardClient() {
         setLedger(ledger);
       }
     })();
+    return cleanup;
   }, []);
 
   const createInvoice = async () => {
@@ -68,6 +73,7 @@ export default function DashboardClient() {
       const { invoice, tokenBalance } = await res.json();
       setInvoices(prev => [ { ...invoice, date: new Date(invoice.date).toISOString().slice(0,10) }, ...prev ]);
       setMe({ ...me, tokenBalance });
+      try { bcRef.current?.postMessage({ type: 'tokens-updated', tokenBalance }); } catch {}
       // refresh ledger
       const ledRes = await fetch('/api/ledger');
       if (ledRes.ok) {
@@ -86,6 +92,7 @@ export default function DashboardClient() {
     if (res.ok) {
       const { tokenBalance } = await res.json();
       setMe({ ...me, tokenBalance });
+      try { bcRef.current?.postMessage({ type: 'tokens-updated', tokenBalance }); } catch {}
       const ledRes = await fetch('/api/ledger');
       if (ledRes.ok) {
         const { ledger } = await ledRes.json();
@@ -105,6 +112,7 @@ export default function DashboardClient() {
       setSavingCompany(false);
       setErrorBanner(null);
       setSavedBanner('Company profile saved. New invoices will use these details as the seller.');
+      try { bcRef.current?.postMessage({ type: 'company-updated', company }); } catch {}
       setTimeout(() => setSavedBanner(null), 2500);
     } else {
       setSavingCompany(false);
