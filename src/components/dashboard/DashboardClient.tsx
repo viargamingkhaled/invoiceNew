@@ -35,6 +35,7 @@ export default function DashboardClient() {
   const [ledRange, setLedSlice] = useState<[number, number]>([0, 20]);
   const [savingCompany, setSavingCompany] = useState(false);
   const [savedBanner, setSavedBanner] = useState<string | null>(null);
+  const [errorBanner, setErrorBanner] = useState<string | null>(null);
   const [form, setForm] = useState<Company>({ name: '' });
 
   // load data
@@ -102,11 +103,19 @@ export default function DashboardClient() {
       const { company } = await res.json();
       setForm(company);
       setSavingCompany(false);
+      setErrorBanner(null);
       setSavedBanner('Company profile saved. New invoices will use these details as the seller.');
       setTimeout(() => setSavedBanner(null), 2500);
     } else {
       setSavingCompany(false);
-      alert('Failed to save company');
+      let message = 'Failed to save company';
+      try {
+        const j = await res.json();
+        if (j?.error) message = j.error;
+      } catch {}
+      setSavedBanner(null);
+      setErrorBanner(message);
+      setTimeout(() => setErrorBanner(null), 3500);
     }
   };
 
@@ -213,6 +222,7 @@ export default function DashboardClient() {
               <div className="text-base font-semibold">Company settings</div>
               <p className="text-sm text-slate-600 mt-1">Saved details will be used as the seller on your invoices.</p>
               {savedBanner && <div className="mt-3 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-900 text-sm p-3">{savedBanner}</div>}
+              {errorBanner && <div className="mt-3 rounded-lg border border-red-200 bg-red-50 text-red-900 text-sm p-3">{errorBanner}</div>}
               <form className="mt-4 grid gap-3" onSubmit={(e)=>{e.preventDefault(); saveCompanyProfile(form);}}>
                 <Input label="Company name" value={form.name||''} onChange={(e)=>setForm({...form, name:e.target.value})} required />
                 <div className="grid grid-cols-2 gap-3">
@@ -229,7 +239,7 @@ export default function DashboardClient() {
                   <Input label="BIC" value={form.bic||''} onChange={(e)=>setForm({...form, bic:e.target.value})} placeholder="BANKGB2L" />
                 </div>
                 <div className="mt-2">
-                  <Button disabled={savingCompany} variant="primary">{savingCompany? 'Saving…' : 'Save company'}</Button>
+                  <Button disabled={savingCompany} variant="primary" type="submit">{savingCompany? 'Saving…' : 'Save company'}</Button>
                 </div>
               </form>
             </Card>
