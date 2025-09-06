@@ -73,7 +73,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
             country: nextCountry ?? prev.country,
             iban: company.iban ?? prev.iban,
           }));
-          if (company.country) setCountry(company.country);
+          if (company.country && CURRENCY_BY_COUNTRY[company.country]) setCountry(company.country);
         }
         if (user?.currency) setCurrency(user.currency);
       } catch {
