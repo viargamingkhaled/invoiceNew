@@ -8,6 +8,7 @@ import Input from '@/components/ui/Input';
 import Textarea from '@/components/ui/Textarea';
 import Button from '@/components/ui/Button';
 import InvoicePaper from './InvoicePaper';
+import InvoiceA4 from '@/components/pdf/InvoiceA4';
 
 interface InvoiceFormProps {
   signedIn: boolean;
@@ -107,6 +108,14 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     ? 'VAT 0% - Export outside UK/EU.'
     : undefined;
 
+  const downloadPdf = async () => {
+    try {
+      window.print();
+    } catch (e) {
+      console.error('Print failed', e);
+    }
+  };
+
   const saveDraft = async () => {
     setBusy('save');
     setBanner(null);
@@ -198,6 +207,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
         <div className="flex items-center gap-2">
           <Button onClick={saveDraft} disabled={gated || busy!==null} variant="secondary" size="sm">{busy==='save'? 'Saving…' : 'Save draft'}</Button>
           <Button
+            onClick={downloadPdf}
             disabled={gated}
             title={gated ? 'Available after sign-up' : 'Download PDF'}
             size="sm"
@@ -477,6 +487,36 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
           </motion.div>
         </div>
       </div>
+
+      {/* Print-only A4 template (isolated on print) */}
+      <InvoiceA4
+        currency={currency}
+        zeroNote={zeroNote}
+        items={items}
+        subtotal={subtotal}
+        taxTotal={taxTotal}
+        total={total}
+        sender={{
+          company: sender.company,
+          vat: sender.vat,
+          address: sender.address,
+          city: sender.city,
+          country: sender.country,
+          iban: sender.iban,
+        }}
+        client={{
+          name: client.name,
+          vat: client.vat,
+          address: client.address,
+          city: client.city,
+          country: client.country,
+        }}
+        invoiceNo={invoiceMeta.number}
+        invoiceDate={invoiceMeta.date}
+        invoiceDue={invoiceMeta.due}
+        notes={notes}
+      />
+
     </div>
   );
 }

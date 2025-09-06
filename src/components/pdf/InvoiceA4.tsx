@@ -75,11 +75,14 @@ export default function InvoiceA4({
         .avoid-break { break-inside: avoid; page-break-inside: avoid; }
         .footer { position: running(footer); font-size: 11px; color: #64748b; }
 
+        /* Keep the print area hidden on screen */
+        #print-area { display: none; }
+
         /* Print isolation: only print the print-area when printing */
         @media print {
           body * { visibility: hidden; }
           #print-area, #print-area * { visibility: visible; }
-          #print-area { position: absolute; left: 0; top: 0; width: 100%; }
+          #print-area { display: block !important; position: absolute; left: 0; top: 0; width: 100%; }
         }
       `}</style>
 
@@ -196,4 +199,3 @@ export default function InvoiceA4({
     </div>
   );
 }
-
