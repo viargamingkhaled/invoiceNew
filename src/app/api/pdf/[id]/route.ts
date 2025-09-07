@@ -32,8 +32,9 @@ export async function GET(_req: Request, { params }: any) {
       margin: { top: "14mm", right: "14mm", bottom: "16mm", left: "14mm" },
       preferCSSPageSize: true,
     });
-        const blob = new Blob([pdf], { type: 'application/pdf' });
-    return new Response(blob, {
+    // Convert Buffer to ArrayBuffer slice to satisfy Web Response types
+    const arrayBuffer = pdf.buffer.slice(pdf.byteOffset, pdf.byteOffset + pdf.byteLength);
+    return new Response(arrayBuffer, {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',
