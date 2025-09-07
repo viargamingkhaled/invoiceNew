@@ -5,7 +5,7 @@ import Section from '@/components/layout/Section';
 import { Card, Button, Input } from '@/components';
 
 type Currency = 'GBP' | 'EUR';
-type InvoiceStatus = 'Draft' | 'Sent' | 'Paid' | 'Overdue';
+type InvoiceStatus = 'Draft' | 'Ready' | 'Error' | 'Sent' | 'Paid' | 'Overdue';
 type Invoice = { id: string; number: string; date: string; client: string; currency: Currency; subtotal: number; tax: number; total: number; status: InvoiceStatus };
 type LedgerRow = { id: string; ts: string; type: 'Top-up' | 'Invoice' | 'Adjust'; delta: number; balanceAfter: number; currency?: Currency; amount?: number; receiptUrl?: string };
 type Company = { name: string; vat?: string; reg?: string; address1?: string; city?: string; country?: string; iban?: string; bic?: string };

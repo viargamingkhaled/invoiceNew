@@ -6,6 +6,7 @@ import { Item } from '@/types/invoice';
 export interface InvoiceA4Props {
   currency: string;
   zeroNote?: string;
+  logoUrl?: string;
   items: Item[];
   subtotal: number;
   taxTotal: number;
@@ -46,6 +47,7 @@ function money(v: number, currency: string) {
 export default function InvoiceA4({
   currency,
   zeroNote,
+  logoUrl,
   items,
   subtotal,
   taxTotal,
@@ -90,8 +92,15 @@ export default function InvoiceA4({
         <div className="a4 p-[10mm]">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-blue-600" />
-              <div className="text-slate-900 font-semibold text-lg">Invoicerly</div>
+              {logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={logoUrl} alt="Logo" className="h-10 w-28 object-contain" />
+              ) : (
+                <>
+                  <div className="h-10 w-10 rounded-lg bg-blue-600" />
+                  <div className="text-slate-900 font-semibold text-lg">Invoicerly</div>
+                </>
+              )}
             </div>
             <div className="text-right text-sm text-slate-600">
               <div className="font-semibold text-slate-800">Invoice {invoiceNo}</div>

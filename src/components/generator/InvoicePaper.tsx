@@ -6,6 +6,7 @@ import { Item } from '@/types/invoice';
 interface InvoicePaperProps {
   currency: string;
   zeroNote?: string;
+  logoUrl?: string;
   items: Item[];
   subtotal: number;
   taxTotal: number;
@@ -18,12 +19,13 @@ interface InvoicePaperProps {
   notes: string;
 }
 
-export default function InvoicePaper({ 
-  currency, 
-  zeroNote, 
-  items, 
-  subtotal, 
-  taxTotal, 
+export default function InvoicePaper({
+  currency,
+  zeroNote,
+  logoUrl,
+  items,
+  subtotal,
+  taxTotal,
   total,
   sender,
   client,
@@ -41,11 +43,16 @@ export default function InvoicePaper({
       whileHover={{ scale: 1.02 }}
     >
       <div className="flex items-start justify-between">
-        <motion.div 
-          className="h-10 w-10 rounded-lg bg-slate-200"
-          whileHover={{ rotate: 5 }}
-          transition={{ type: "spring", stiffness: 400, damping: 17 }}
-        />
+        <motion.div
+          className="h-10 w-10 rounded-lg bg-slate-200 overflow-hidden flex items-center justify-center"
+          whileHover={{ rotate: logoUrl ? 0 : 5 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+        >
+          {logoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={logoUrl} alt="Logo" className="h-10 w-10 object-contain" />
+          ) : null}
+        </motion.div>
         <div className="text-right text-xs text-slate-600">
           <div>Invoice {invoiceNo ? `#${invoiceNo}` : ''}</div>
           <div>Date: {invoiceDate || '-'}</div>

@@ -9,6 +9,7 @@ import Textarea from '@/components/ui/Textarea';
 import Button from '@/components/ui/Button';
 import InvoicePaper from './InvoicePaper';
 import InvoiceA4 from '@/components/pdf/InvoiceA4';
+import LogoUploader from '@/components/ui/LogoUploader';
 
 interface InvoiceFormProps {
   signedIn: boolean;
@@ -56,6 +57,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     due: '2025-09-16',
   });
   const [notes, setNotes] = useState('Payment within 14 days. Late fees may apply.');
+  const [logo, setLogo] = useState<string | null>(null);
 
   const gated = !signedIn;
   const [banner, setBanner] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
@@ -237,12 +239,39 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     }
     setBusy('download');
     setBanner(null);
+    let invoiceId: string | null = null;
     try {
-      const ok = await chargeTokens(100);
-      if (!ok) {
-        setBusy(null);
-        return;
+      // Create a draft (no charge)
+      const draftRes = await fetch('/api/drafts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          currency,
+          client: client.name,
+          subtotal: Math.round(subtotal),
+          tax: Math.round(taxTotal),
+          total: Math.round(total),
+          items: items.map((it) => ({ description: it.desc, quantity: it.qty, rate: it.rate, tax: it.tax })),
+        }),
+      });
+      if (!draftRes.ok) throw new Error((await draftRes.json().catch(() => ({ error: 'Failed' }))).error || 'Failed to create draft');
+      const { invoice } = await draftRes.json();
+      invoiceId = invoice.id as string;
+
+      // Mark Ready (charges 100 tokens)
+      const readyRes = await fetch(`/api/invoices/${invoiceId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'Ready', subtotal: Math.round(subtotal), tax: Math.round(taxTotal), total: Math.round(total) }),
+      });
+      if (!readyRes.ok) throw new Error((await readyRes.json().catch(() => ({ error: 'Failed' }))).error || 'Failed to mark Ready');
+      const j = await readyRes.json();
+      if (typeof j.tokenBalance === 'number') {
+        setTokenBalance(j.tokenBalance);
+        try { bcRef.current?.postMessage({ type: 'tokens-updated', tokenBalance: j.tokenBalance }); } catch {}
       }
+
+      // Generate PDF
       const el = document.getElementById('print-area');
       if (!el) throw new Error('Print area not found');
       const prevDisplay = el.style.display;
@@ -269,6 +298,9 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
       pdf.save(fname);
       setBanner({ type: 'success', msg: 'PDF downloaded.' });
     } catch (e: any) {
+      if (invoiceId) {
+        try { await fetch(`/api/invoices/${invoiceId}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'Error' }) }); } catch {}
+      }
       setBanner({ type: 'error', msg: e.message || 'PDF download failed.' });
     } finally {
       setBusy(null);
@@ -288,6 +320,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
           subtotal: Math.round(subtotal),
           tax: Math.round(taxTotal),
           total: Math.round(total),
+          items: items.map((it) => ({ description: it.desc, quantity: it.qty, rate: it.rate, tax: it.tax })),
         }),
       });
       if (!res.ok) throw new Error((await res.json().catch(() => ({ error: 'Failed' }))).error || 'Failed to save draft');
@@ -307,12 +340,8 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     }
     setBusy('share');
     setBanner(null);
+    let invoiceId: string | null = null;
     try {
-      const ok = await chargeTokens(100);
-      if (!ok) {
-        setBusy(null);
-        return;
-      }
       const res = await fetch('/api/drafts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -322,14 +351,32 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
           subtotal: Math.round(subtotal),
           tax: Math.round(taxTotal),
           total: Math.round(total),
+          items: items.map((it) => ({ description: it.desc, quantity: it.qty, rate: it.rate, tax: it.tax })),
         }),
       });
       if (!res.ok) throw new Error((await res.json().catch(() => ({ error: 'Failed' }))).error || 'Failed to save draft');
       const { invoice } = await res.json();
-      const url = `${window.location.origin}/s/${invoice.id}`;
+      invoiceId = invoice.id as string;
+
+      const readyRes = await fetch(`/api/invoices/${invoiceId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'Ready', subtotal: Math.round(subtotal), tax: Math.round(taxTotal), total: Math.round(total) }),
+      });
+      if (!readyRes.ok) throw new Error((await readyRes.json().catch(() => ({ error: 'Failed' }))).error || 'Failed to mark Ready');
+      const j = await readyRes.json();
+      if (typeof j.tokenBalance === 'number') {
+        setTokenBalance(j.tokenBalance);
+        try { bcRef.current?.postMessage({ type: 'tokens-updated', tokenBalance: j.tokenBalance }); } catch {}
+      }
+
+      const url = `${window.location.origin}/s/${invoiceId}`;
       await navigator.clipboard.writeText(url);
       setBanner({ type: 'success', msg: 'Share link copied to clipboard.' });
     } catch (e: any) {
+      if (invoiceId) {
+        try { await fetch(`/api/invoices/${invoiceId}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'Error' }) }); } catch {}
+      }
       setBanner({ type: 'error', msg: e.message || 'Failed to save or copy.' });
     } finally {
       setBusy(null);
@@ -344,15 +391,42 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     }
     setBusy('email');
     setBanner(null);
+    let invoiceId: string | null = null;
     try {
-      const ok = await chargeTokens(100);
-      if (!ok) {
-        setBusy(null);
-        return;
+      const res = await fetch('/api/drafts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          currency,
+          client: client.name,
+          subtotal: Math.round(subtotal),
+          tax: Math.round(taxTotal),
+          total: Math.round(total),
+          items: items.map((it) => ({ description: it.desc, quantity: it.qty, rate: it.rate, tax: it.tax })),
+        }),
+      });
+      if (!res.ok) throw new Error((await res.json().catch(() => ({ error: 'Failed' }))).error || 'Failed to save draft');
+      const { invoice } = await res.json();
+      invoiceId = invoice.id as string;
+
+      const readyRes = await fetch(`/api/invoices/${invoiceId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'Ready', subtotal: Math.round(subtotal), tax: Math.round(taxTotal), total: Math.round(total) }),
+      });
+      if (!readyRes.ok) throw new Error((await readyRes.json().catch(() => ({ error: 'Failed' }))).error || 'Failed to mark Ready');
+      const j = await readyRes.json();
+      if (typeof j.tokenBalance === 'number') {
+        setTokenBalance(j.tokenBalance);
+        try { bcRef.current?.postMessage({ type: 'tokens-updated', tokenBalance: j.tokenBalance }); } catch {}
       }
+
       // Placeholder for future email flow
       setBanner({ type: 'success', msg: 'Email queued (mock).' });
     } catch (e: any) {
+      if (invoiceId) {
+        try { await fetch(`/api/invoices/${invoiceId}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'Error' }) }); } catch {}
+      }
       setBanner({ type: 'error', msg: e.message || 'Failed to queue email.' });
     } finally {
       setBusy(null);
@@ -465,6 +539,13 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
         <div>
           <motion.div className="rounded-2xl bg-white p-5 border border-black/10 shadow-sm" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
             <div className="mb-4">
+              <h3 className="text-sm font-semibold tracking-wide text-slate-800 uppercase">Branding</h3>
+              <p className="text-xs text-slate-500 mt-1">Upload your logo to appear on the invoice</p>
+            </div>
+            <div className="mb-4">
+              <LogoUploader value={logo} onChange={setLogo} />
+            </div>
+            <div className="mb-4">
               <h3 className="text-sm font-semibold tracking-wide text-slate-800 uppercase">Sender</h3>
               <p className="text-xs text-slate-500 mt-1">Your company details</p>
             </div>
@@ -549,6 +630,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
             <InvoicePaper
               currency={currency}
               zeroNote={zeroNote}
+              logoUrl={logo || undefined}
               items={items}
               subtotal={subtotal}
               taxTotal={taxTotal}
@@ -579,6 +661,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
       <InvoiceA4
         currency={currency}
         zeroNote={zeroNote}
+        logoUrl={logo || undefined}
         items={items}
         subtotal={subtotal}
         taxTotal={taxTotal}
@@ -608,4 +691,3 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     </div>
   );
 }
-
