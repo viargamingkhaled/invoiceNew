@@ -232,6 +232,7 @@ export default function DashboardClient() {
   const ledgerView = ledger.slice(ledRange[0], ledRange[1]);
 
   return (
+    <>
     <main className="bg-slate-50 min-h-screen">
       <style>{`.reveal-in{opacity:1;transform:translateY(0);filter:blur(0)}[data-reveal]{opacity:0;transform:translateY(6px);filter:blur(4px);transition:all .45s ease}`}</style>
       <Section className="py-6">
@@ -408,6 +409,7 @@ export default function DashboardClient() {
         </div>
       </div>
     )}
+    </>
   );
 }
 
@@ -437,3 +439,4 @@ function TablePager({ total, pageSize = 20, onSlice }: { total: number; pageSize
 
 const InvoicePager = TablePager;
 const LedgerPager = TablePager;
+
