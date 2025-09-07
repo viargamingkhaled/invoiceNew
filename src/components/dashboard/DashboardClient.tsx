@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
 import Section from '@/components/layout/Section';
@@ -21,7 +21,7 @@ const fmtMoney = (n: number, c: Currency) => {
 };
 
 function money(n: number, c: Currency) {
-  const sym = c === 'GBP' ? '£' : '€';
+  const sym = c === 'GBP' ? 'ВЈ' : 'в‚¬';
   const abs = Math.abs(n);
   const opts: Intl.NumberFormatOptions = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
   try { return `${n < 0 ? '-' : ''}${sym}${new Intl.NumberFormat(undefined, opts).format(abs)}`; } catch { return `${sym}${abs.toFixed(2)}`; }
@@ -215,7 +215,7 @@ export default function DashboardClient() {
     <main className="bg-slate-50 min-h-screen">
       <style>{`.reveal-in{opacity:1;transform:translateY(0);filter:blur(0)}[data-reveal]{opacity:0;transform:translateY(6px);filter:blur(4px);transition:all .45s ease}`}</style>
       <Section className="py-6">
-        {/* Greeting & balance (compact, без буллетов) */}
+        {/* Greeting & balance (compact, Р±РµР· Р±СѓР»Р»РµС‚РѕРІ) */}
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Hello, {userName}</h1>
@@ -227,9 +227,9 @@ export default function DashboardClient() {
             <a href="#company-settings" className="rounded-xl border border-black/10 bg-white px-4 py-2 text-sm">Company settings</a>
           </div>
         </div>
-        {/* Убрали блок быстрых действий, чтобы избежать лишних пустот */}
+        {/* РЈР±СЂР°Р»Рё Р±Р»РѕРє Р±С‹СЃС‚СЂС‹С… РґРµР№СЃС‚РІРёР№, С‡С‚РѕР±С‹ РёР·Р±РµР¶Р°С‚СЊ Р»РёС€РЅРёС… РїСѓСЃС‚РѕС‚ */}
 
-        {/* Две колонки на одном уровне: инвойсы слева, история токенов справа */}
+        {/* Р”РІРµ РєРѕР»РѕРЅРєРё РЅР° РѕРґРЅРѕРј СѓСЂРѕРІРЅРµ: РёРЅРІРѕР№СЃС‹ СЃР»РµРІР°, РёСЃС‚РѕСЂРёСЏ С‚РѕРєРµРЅРѕРІ СЃРїСЂР°РІР° */}
         <div className="mt-4 grid lg:grid-cols-2 gap-4 items-start">
           <Card padding="sm" data-reveal>
               <div className="flex items-center justify-between">
@@ -251,33 +251,39 @@ export default function DashboardClient() {
                   <tbody>
   {invView.map(inv => (
     <React.Fragment key={inv.id}>
-      <tr className=\"border-t border-black/10\">
-        <td className=\"px-3 py-2 font-mono text-[12px]\">{inv.number}</td>
-        <td className=\"px-3 py-2\">{new Date(inv.date).toISOString().slice(0,10)}</td>
-        <td className=\"px-3 py-2\">{inv.client}</td>
-        <td className=\"px-3 py-2 text-right\">{fmtMoney(inv.total, inv.currency)}</td>
-        <td className=\"px-3 py-2\">
-          <span className={\ounded-full px-2 py-0.5 text-[11px] border \
-          \}>{inv.status}</span>
+      <tr className="border-t border-black/10">
+        <td className="px-3 py-2 font-mono text-[12px]">{inv.number}</td>
+        <td className="px-3 py-2">{new Date(inv.date).toISOString().slice(0,10)}</td>
+        <td className="px-3 py-2">{inv.client}</td>
+        <td className="px-3 py-2 text-right">{fmtMoney(inv.total, inv.currency)}</td>
+        <td className="px-3 py-2">
+          <span className={`rounded-full px-2 py-0.5 text-[11px] border ${
+            inv.status==='Ready' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' :
+            inv.status==='Error' ? 'border-rose-200 bg-rose-50 text-rose-800' :
+            inv.status==='Paid' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' :
+            inv.status==='Sent' ? 'border-blue-200 bg-blue-50 text-blue-800' :
+            inv.status==='Overdue' ? 'border-rose-200 bg-rose-50 text-rose-800' :
+            'border-black/10'
+          }`}>{inv.status}</span>
         </td>
-        <td className=\"px-3 py-2 text-right\">
-          <button className=\"text-sm underline mr-2\" onClick={()=>openView(inv.id)}>{viewId===inv.id? 'Hide' : 'View'}</button>
-          <button className=\"text-sm underline\" onClick={()=>ensureReadyAndDownload(inv.id)}>Download</button>
+        <td className="px-3 py-2 text-right">
+          <button className="text-sm underline mr-2" onClick={()=>openView(inv.id)}>{viewId===inv.id? 'Hide' : 'View'}</button>
+          <button className="text-sm underline" onClick={()=>ensureReadyAndDownload(inv.id)}>Download</button>
         </td>
       </tr>
       {viewId===inv.id && viewInv && (
-        <tr className=\"border-t border-black/10 bg-white\">
-          <td className=\"px-3 py-3\" colSpan={6}>
-            <div className=\"p-2\">
+        <tr className="border-t border-black/10 bg-white">
+          <td className="px-3 py-3" colSpan={6}>
+            <div className="p-2">
               <ModalInvoiceView
                 invoice={viewInv}
                 onClose={()=>{ setViewId(null); setViewInv(null); }}
                 onRefresh={async(id)=>{ const iv = await fetchInvoice(id); if(iv) setViewInv(iv); }}
                 onDownload={()=>ensureReadyAndDownload(viewInv.id)}
-                onShare={async()=>{ const r = await markReadyIfDraft(viewInv.id); if(!r.ok){ alert(r.err||'Failed'); return;} const url = ${window.location.origin}/s/; await navigator.clipboard.writeText(url); alert('Share link copied'); }}
+                onShare={async()=>{ const r = await markReadyIfDraft(viewInv.id); if(!r.ok){ alert(r.err||'Failed'); return;} const url = `${window.location.origin}/s/${viewInv.id}`; await navigator.clipboard.writeText(url); alert('Share link copied'); }}
                 onSendEmail={async()=>{ const r = await markReadyIfDraft(viewInv.id); if(r.ok){ alert('Email queued'); } else { alert(r.err||'Failed'); }}}
                 onSave={async(next)=>{
-                  const res = await fetch(/api/invoices/, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(next) });
+                  const res = await fetch(`/api/invoices/${viewInv.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(next) });
                   if (res.ok) { const j = await res.json(); setViewInv(j.invoice); setInvoices(prev=>prev.map(x=>x.id===j.invoice.id? { ...x, client: j.invoice.client, subtotal: j.invoice.subtotal, tax: j.invoice.tax, total: j.invoice.total } : x)); }
                   else { const j = await res.json().catch(()=>({error:'Failed'})); alert(j.error||'Failed to save'); }
                 }}
@@ -290,7 +296,7 @@ export default function DashboardClient() {
   ))}
 </tbody>
                  </table>
-                 {/* Пагинация инвойсов */}
+                 {/* РџР°РіРёРЅР°С†РёСЏ РёРЅРІРѕР№СЃРѕРІ */}
                  <InvoicePager total={invoices.length} pageSize={20} onSlice={(from, to)=>setInvSlice([from,to])} />
               </div>
           </Card>
@@ -320,13 +326,13 @@ export default function DashboardClient() {
                     ))}
                   </tbody>
                  </table>
-                 {/* Пагинация леджера */}
+                 {/* РџР°РіРёРЅР°С†РёСЏ Р»РµРґР¶РµСЂР° */}
                  <LedgerPager total={ledger.length} pageSize={20} onSlice={(from,to)=>setLedSlice([from,to])} />
               </div>
           </Card>
         </div>
 
-        {/* Company settings ниже, на всю ширину */}
+        {/* Company settings РЅРёР¶Рµ, РЅР° РІСЃСЋ С€РёСЂРёРЅСѓ */}
         <div className="mt-6 scroll-mt-24" id="company-settings">
             <Card padding="sm">
               <div className="text-base font-semibold">Company settings</div>
@@ -350,7 +356,7 @@ export default function DashboardClient() {
                   <Input label="SWIFT / BIC" value={form.bic||''} onChange={(e)=>setForm({...form, bic:e.target.value})} placeholder="BANKGB2L" />
                 </div>
                 <div className="mt-2">
-                  <Button disabled={savingCompany} variant="primary" type="submit">{savingCompany? 'Saving…' : 'Save company'}</Button>
+                  <Button disabled={savingCompany} variant="primary" type="submit">{savingCompany? 'SavingвЂ¦' : 'Save company'}</Button>
                 </div>
               </form>
             </Card>
@@ -418,7 +424,7 @@ function TablePager({ total, pageSize = 20, onSlice }: { total: number; pageSize
 
   return (
     <div className="flex items-center justify-between p-3">
-      <div className="text-xs text-slate-600">Showing {Math.min((page - 1) * pageSize + 1, total)}–{Math.min(page * pageSize, total)} of {total}</div>
+      <div className="text-xs text-slate-600">Showing {Math.min((page - 1) * pageSize + 1, total)}вЂ“{Math.min(page * pageSize, total)} of {total}</div>
       <div className="flex items-center gap-2">
         <Button size="sm" variant="outline" disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Prev</Button>
         <div className="text-xs text-slate-600">{page} / {pages}</div>
@@ -483,7 +489,7 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
     <div className="flex flex-col max-h-[90vh]">
       <div className="flex items-center justify-between p-3 border-b border-black/10">
         <div className="text-base font-semibold">Invoice {invoice.number}</div>
-        <button className="text-xl leading-none px-2" aria-label="Close" onClick={onClose}>×</button>
+        <button className="text-xl leading-none px-2" aria-label="Close" onClick={onClose}>Г—</button>
       </div>
 
       <div className="p-3 border-b border-black/10 flex items-center gap-2">
@@ -498,7 +504,7 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
         ) : (
           <>
             <div className="flex flex-wrap items-center gap-3 w-full">
-              <div className="text-sm text-slate-700">Totals: Subtotal <b>{fmtMoney(totals.subtotal, invoice.currency)}</b> · Tax <b>{fmtMoney(totals.tax, invoice.currency)}</b> · Total <b>{fmtMoney(totals.total, invoice.currency)}</b></div>
+              <div className="text-sm text-slate-700">Totals: Subtotal <b>{fmtMoney(totals.subtotal, invoice.currency)}</b> В· Tax <b>{fmtMoney(totals.tax, invoice.currency)}</b> В· Total <b>{fmtMoney(totals.total, invoice.currency)}</b></div>
               <div className="ml-auto flex items-center gap-2">
                 <button className="text-sm underline" onClick={async()=>{
                   // Save company first
