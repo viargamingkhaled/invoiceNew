@@ -279,32 +279,10 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
         try { bcRef.current?.postMessage({ type: 'tokens-updated', tokenBalance: j.tokenBalance }); } catch {}
       }
 
-      // Generate PDF
-      const el = document.getElementById('print-area');
-      if (!el) throw new Error('Print area not found');
-      const prevDisplay = el.style.display;
-      const prevPos = (el.style as any).position;
-      const prevLeft = (el.style as any).left;
-      (el.style as any).display = 'block';
-      (el.style as any).position = 'absolute';
-      (el.style as any).left = '-10000px';
-
-      const { jsPDF } = await import('jspdf');
-      const html2canvas = (await import('html2canvas')).default;
-      const canvas = await html2canvas(el as HTMLElement, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
-
-      (el.style as any).display = prevDisplay;
-      (el.style as any).position = prevPos;
-      (el.style as any).left = prevLeft;
-
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, pageHeight, undefined, 'FAST');
-      const fname = `Invoice - ${invoiceMeta.number || 'XXXXXX'}.pdf`;
-      pdf.save(fname);
-      setBanner({ type: 'success', msg: 'PDF downloaded.' });
+      // Open print dialog for selectable-text PDF
+      await new Promise((r) => setTimeout(r, 50));
+      try { window.print(); } catch {}
+      setBanner({ type: 'success', msg: 'Print dialog opened. Use "Save as PDF".' });
     } catch (e: any) {
       if (invoiceId) {
         try { await fetch(`/api/invoices/${invoiceId}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'Error' }) }); } catch {}
@@ -559,6 +537,19 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
             <div className="mb-4">
               <LogoUploader value={logo} onChange={setLogo} />
             </div>
+            {/* Invoice metadata directly under Branding */}
+            <div className="mb-4">
+              <h3 className="text-sm font-semibold tracking-wide text-slate-800 uppercase">Invoice</h3>
+              <p className="text-xs text-slate-500 mt-1">Metadata & numbering</p>
+            </div>
+            <div className="grid sm:grid-cols-3 gap-3">
+              <Input label="Number" value={invoiceMeta.number} onChange={(e) => setInvoiceMeta((m) => ({ ...m, number: e.target.value }))} />
+              <Input label="Date" type="date" value={invoiceMeta.date} onChange={(e) => setInvoiceMeta((m) => ({ ...m, date: e.target.value }))} />
+              <Input label="Due" type="date" value={invoiceMeta.due} onChange={(e) => setInvoiceMeta((m) => ({ ...m, due: e.target.value }))} />
+            </div>
+
+            <hr className="my-4 border-black/10" />
+
             <div className="mb-4">
               <h3 className="text-sm font-semibold tracking-wide text-slate-800 uppercase">Sender</h3>
               <p className="text-xs text-slate-500 mt-1">Your company details</p>
@@ -569,11 +560,11 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
               <Input label="Address line" value={sender.address} onChange={(e) => setSender((s) => ({ ...s, address: e.target.value }))} />
               <Input label="City" value={sender.city} onChange={(e) => setSender((s) => ({ ...s, city: e.target.value }))} />
               <Input label="Country" value={country} onChange={(e) => onCountryChange(e.target.value)} />
-              <Input label="IBAN" value={sender.iban} onChange={(e) => setSender((s) => ({ ...s, iban: e.target.value }))} />
             </div>
             <div className="mt-3">
               <div className="text-xs text-slate-600 font-medium">Bank details (Sender)</div>
-              <div className="grid sm:grid-cols-2 gap-3 mt-1.5">
+              <div className="grid sm:grid-cols-3 gap-3 mt-1.5">
+                <Input label="IBAN" value={sender.iban} onChange={(e) => setSender((s) => ({ ...s, iban: e.target.value }))} />
                 <Input label="Bank name" value={sender.bankName} onChange={(e) => setSender((s) => ({ ...s, bankName: e.target.value }))} />
                 <Input label="SWIFT / BIC" value={sender.bic} onChange={(e) => setSender((s) => ({ ...s, bic: e.target.value }))} />
               </div>

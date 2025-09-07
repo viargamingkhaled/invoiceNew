@@ -98,9 +98,18 @@ export default function InvoicePaper({
           </motion.div>
         ))}
         
-        {zeroNote && (
-          <div className="mt-3 text-[11px] text-emerald-700">{zeroNote}</div>
-        )}
+        {/* Payment details preview (like A4) */}
+        <div className="grid grid-cols-2 gap-6 text-xs mt-3">
+          <div>
+            <div className="font-medium text-slate-600 uppercase">Payment details</div>
+            <div className="mt-1">
+              {sender.iban && <div><span className="text-slate-500">IBAN:</span> {sender.iban}</div>}
+              {sender.bankName && <div><span className="text-slate-500">Bank:</span> {sender.bankName}</div>}
+              {sender.bic && <div><span className="text-slate-500">BIC:</span> {sender.bic}</div>}
+              {zeroNote && <div className="mt-2 text-emerald-700">{zeroNote}</div>}
+            </div>
+          </div>
+        </div>
         
         <motion.div 
           className="mt-4 ml-auto w-64 text-xs space-y-1"

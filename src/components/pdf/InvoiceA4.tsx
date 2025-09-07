@@ -78,13 +78,13 @@ export default function InvoiceA4({
         .footer { position: running(footer); font-size: 11px; color: #64748b; }
 
         /* Keep the print area hidden on screen */
-        #print-area { display: none; }
+        #print-area, #dash-print-area { display: none; }
 
         /* Print isolation: only print the print-area when printing */
         @media print {
           body * { visibility: hidden; }
-          #print-area, #print-area * { visibility: visible; }
-          #print-area { display: block !important; position: absolute; left: 0; top: 0; width: 100%; }
+          #print-area, #print-area *, #dash-print-area, #dash-print-area * { visibility: visible; }
+          #print-area, #dash-print-area { display: block !important; position: absolute; left: 0; top: 0; width: 100%; }
         }
       `}</style>
 

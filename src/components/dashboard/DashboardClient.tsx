@@ -143,24 +143,9 @@ export default function DashboardClient() {
     });
 
     await new Promise(r => setTimeout(r, 50));
-    try {
-      const el = document.getElementById('dash-print-area');
-      if (!el) throw new Error('Print area missing');
-      const { jsPDF } = await import('jspdf');
-      const html2canvas = (await import('html2canvas')).default;
-      const canvas = await html2canvas(el as HTMLElement, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, pageHeight, undefined, 'FAST');
-      const fname = `Invoice - ${invFull.number}.pdf`;
-      pdf.save(fname);
-    } catch (e) {
-      alert('Failed to download PDF');
-    } finally {
-      setPrinting(null);
-    }
+    const onAfterPrint = () => { setPrinting(null); window.removeEventListener('afterprint', onAfterPrint); };
+    window.addEventListener('afterprint', onAfterPrint);
+    try { window.print(); } catch { onAfterPrint(); }
   };
 
   const createInvoice = async () => {
@@ -386,25 +371,19 @@ export default function DashboardClient() {
         <div className="absolute inset-0 bg-black/30" onClick={()=>{ setViewId(null); setViewInv(null); }} />
         <div className="absolute inset-0 flex items-center justify-center p-4">
           <div className="bg-white rounded-xl shadow-xl max-w-5xl w-full overflow-hidden">
-            <div className="flex items-center justify-between p-3 border-b border-black/10">
-              <div className="text-base font-semibold">Invoice {viewInv.number}</div>
-              <div className="flex items-center gap-2">
-                <button className="text-sm underline" onClick={()=>location.assign('/generator')}>Edit</button>
-                {viewInv.status==='Draft' && (<button className="text-sm underline" onClick={()=>alert('Already saved as draft')}>Save draft</button>)}
-                <button className="text-sm underline" onClick={()=>ensureReadyAndDownload(viewInv.id)}>Download PDF</button>
-                <button className="text-sm underline" onClick={async()=>{ const r = await markReadyIfDraft(viewInv.id); if(r.ok){ alert('Email queued'); } else { alert(r.err||'Failed'); }}}>Send email</button>
-                <button className="text-sm underline" onClick={async()=>{ const r = await markReadyIfDraft(viewInv.id); if(!r.ok){ alert(r.err||'Failed'); return;} const url = `${window.location.origin}/s/${viewInv.id}`; await navigator.clipboard.writeText(url); alert('Share link copied');}}>Save & share link</button>
-                <button className="text-sm" onClick={()=>{ setViewId(null); setViewInv(null); }}>Close</button>
-              </div>
-            </div>
-            <div className="p-4 bg-slate-50">
-              <div className="bg-white border border-black/10 rounded-lg p-4">
-                {/* Use a light-weight preview table */}
-                <div className="text-sm text-slate-700"><b>Client:</b> {viewInv.client}</div>
-                <div className="text-sm text-slate-700 mt-1"><b>Date:</b> {new Date(viewInv.date).toISOString().slice(0,10)}</div>
-                <div className="text-sm text-slate-700 mt-1"><b>Total:</b> {fmtMoney(viewInv.total, viewInv.currency)}</div>
-              </div>
-            </div>
+            <ModalInvoiceView
+              invoice={viewInv}
+              onClose={() => { setViewId(null); setViewInv(null); }}
+              onRefresh={async(id)=>{ const inv = await fetchInvoice(id); if(inv) setViewInv(inv); }}
+              onDownload={()=>ensureReadyAndDownload(viewInv.id)}
+              onShare={async()=>{ const r = await markReadyIfDraft(viewInv.id); if(!r.ok){ alert(r.err||'Failed'); return;} const url = `${window.location.origin}/s/${viewInv.id}`; await navigator.clipboard.writeText(url); alert('Share link copied'); }}
+              onSendEmail={async()=>{ const r = await markReadyIfDraft(viewInv.id); if(r.ok){ alert('Email queued'); } else { alert(r.err||'Failed'); }}}
+              onSave={async(next)=>{
+                const res = await fetch(`/api/invoices/${viewInv.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(next) });
+                if (res.ok) { const j = await res.json(); setViewInv(j.invoice); setInvoices(prev=>prev.map(x=>x.id===j.invoice.id? { ...x, client: j.invoice.client, subtotal: j.invoice.subtotal, tax: j.invoice.tax, total: j.invoice.total } : x)); }
+                else { const j = await res.json().catch(()=>({error:'Failed'})); alert(j.error||'Failed to save'); }
+              }}
+            />
           </div>
         </div>
       </div>
@@ -439,4 +418,72 @@ function TablePager({ total, pageSize = 20, onSlice }: { total: number; pageSize
 
 const InvoicePager = TablePager;
 const LedgerPager = TablePager;
+
+function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, onRefresh, onSave }: {
+  invoice: any;
+  onClose: () => void;
+  onDownload: () => void;
+  onSendEmail: () => void;
+  onShare: () => void;
+  onRefresh: (id: string) => Promise<void>;
+  onSave: (next: { client?: string; subtotal?: number; tax?: number; total?: number }) => Promise<void>;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [form, setForm] = useState<{ client: string; subtotal: number; tax: number; total: number }>({ client: invoice.client, subtotal: invoice.subtotal, tax: invoice.tax, total: invoice.total });
+
+  useEffect(() => { setForm({ client: invoice.client, subtotal: invoice.subtotal, tax: invoice.tax, total: invoice.total }); }, [invoice]);
+
+  return (
+    <div className="flex flex-col max-h-[90vh]">
+      <div className="flex items-center justify-between p-3 border-b border-black/10">
+        <div className="text-base font-semibold">Invoice {invoice.number}</div>
+        <button className="text-xl leading-none px-2" aria-label="Close" onClick={onClose}>×</button>
+      </div>
+
+      <div className="p-3 border-b border-black/10 flex items-center gap-2">
+        {!editing ? (
+          <>
+            <button className="text-sm underline" onClick={() => setEditing(true)}>Edit</button>
+            {invoice.status==='Draft' && (<button className="text-sm underline" onClick={()=>alert('Already saved as draft')}>Save draft</button>)}
+            <button className="text-sm underline" onClick={onDownload}>Download PDF</button>
+            <button className="text-sm underline" onClick={onSendEmail}>Send email</button>
+            <button className="text-sm underline" onClick={onShare}>Save & share link</button>
+          </>
+        ) : (
+          <>
+            <div className="flex items-center gap-2">
+              <input className="rounded border px-2 py-1 text-sm" value={form.client} onChange={(e)=>setForm({ ...form, client: e.target.value })} placeholder="Client" />
+              <input className="rounded border px-2 py-1 text-sm w-24" type="number" value={form.subtotal} onChange={(e)=>setForm({ ...form, subtotal: Number(e.target.value) })} placeholder="Subtotal" />
+              <input className="rounded border px-2 py-1 text-sm w-20" type="number" value={form.tax} onChange={(e)=>setForm({ ...form, tax: Number(e.target.value) })} placeholder="Tax" />
+              <input className="rounded border px-2 py-1 text-sm w-24" type="number" value={form.total} onChange={(e)=>setForm({ ...form, total: Number(e.target.value) })} placeholder="Total" />
+            </div>
+            <div className="ml-auto flex items-center gap-2">
+              <button className="text-sm underline" onClick={async()=>{ await onSave(form); setEditing(false); await onRefresh(invoice.id); }}>Save</button>
+              <button className="text-sm" onClick={()=>{ setEditing(false); setForm({ client: invoice.client, subtotal: invoice.subtotal, tax: invoice.tax, total: invoice.total }); }}>Cancel</button>
+            </div>
+          </>
+        )}
+      </div>
+
+      <div className="p-4 overflow-auto" style={{ maxHeight: 'calc(90vh - 110px)' }}>
+        <div className="max-w-[800px] mx-auto">
+          {/* Full invoice preview */}
+          <InvoiceA4
+            currency={invoice.currency}
+            items={(invoice.items||[]).map((it:any)=>({ desc: it.description, qty: it.quantity, rate: it.rate, tax: it.tax }))}
+            subtotal={invoice.subtotal}
+            taxTotal={invoice.tax}
+            total={invoice.total}
+            sender={{ company: invoice.user?.company?.name || 'Company', vat: invoice.user?.company?.vat, address: invoice.user?.company?.address1, city: invoice.user?.company?.city, country: invoice.user?.company?.country, iban: invoice.user?.company?.iban, bankName: invoice.user?.company?.bankName, bic: invoice.user?.company?.bic }}
+            client={{ name: invoice.client }}
+            invoiceNo={invoice.number}
+            invoiceDate={new Date(invoice.date).toISOString().slice(0,10)}
+            invoiceDue={''}
+            notes={''}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
 
