@@ -61,7 +61,8 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     date: '2025-09-02',
     due: '2025-09-16',
   });
-  const [notes, setNotes] = useState('Payment within 14 days. Late fees may apply.');
+  const [paymentTerm, setPaymentTerm] = useState<'pre' | 7 | 14 | 30 | 45 | 60>(14);
+  const [notes, setNotes] = useState('');
   const [logo, setLogo] = useState<string | null>(null);
 
   const gated = !signedIn;
@@ -124,6 +125,23 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
       : taxMode === 'export'
       ? 'VAT 0% - Export outside UK/EU.'
       : undefined;
+
+  // Auto-calc Due when payment term or Date changes
+  useEffect(() => {
+    try {
+      const base = new Date(invoiceMeta.date);
+      if (Number.isNaN(base.getTime())) return;
+      if (paymentTerm === 'pre') {
+        setInvoiceMeta((m) => ({ ...m, due: m.date }));
+      } else {
+        const days = Number(paymentTerm) || 0;
+        const d = new Date(base.getTime());
+        d.setDate(base.getDate() + days);
+        const dueStr = d.toISOString().slice(0, 10);
+        setInvoiceMeta((m) => ({ ...m, due: dueStr }));
+      }
+    } catch {}
+  }, [invoiceMeta.date, paymentTerm]);
 
   // Initialize from /api/me
   useEffect(() => {
@@ -279,10 +297,32 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
         try { bcRef.current?.postMessage({ type: 'tokens-updated', tokenBalance: j.tokenBalance }); } catch {}
       }
 
-      // Open print dialog for selectable-text PDF
-      await new Promise((r) => setTimeout(r, 50));
-      try { window.print(); } catch {}
-      setBanner({ type: 'success', msg: 'Print dialog opened. Use "Save as PDF".' });
+      // Generate downloadable PDF from the hidden print area
+      const el = document.getElementById('print-area');
+      if (!el) throw new Error('Print area not found');
+      const prevDisplay = el.style.display;
+      const prevPos = (el.style as any).position;
+      const prevLeft = (el.style as any).left;
+      (el.style as any).display = 'block';
+      (el.style as any).position = 'absolute';
+      (el.style as any).left = '-10000px';
+
+      const { jsPDF } = await import('jspdf');
+      const html2canvas = (await import('html2canvas')).default;
+      const canvas = await html2canvas(el as HTMLElement, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+
+      (el.style as any).display = prevDisplay;
+      (el.style as any).position = prevPos;
+      (el.style as any).left = prevLeft;
+
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, pageHeight, undefined, 'FAST');
+      const fname = `Invoice - ${invoiceMeta.number || 'XXXXXX'}.pdf`;
+      pdf.save(fname);
+      setBanner({ type: 'success', msg: 'PDF downloaded.' });
     } catch (e: any) {
       if (invoiceId) {
         try { await fetch(`/api/invoices/${invoiceId}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'Error' }) }); } catch {}
@@ -542,10 +582,24 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
               <h3 className="text-sm font-semibold tracking-wide text-slate-800 uppercase">Invoice</h3>
               <p className="text-xs text-slate-500 mt-1">Metadata & numbering</p>
             </div>
-            <div className="grid sm:grid-cols-3 gap-3">
+            <div className="grid sm:grid-cols-4 gap-3 items-end">
               <Input label="Number" value={invoiceMeta.number} onChange={(e) => setInvoiceMeta((m) => ({ ...m, number: e.target.value }))} />
               <Input label="Date" type="date" value={invoiceMeta.date} onChange={(e) => setInvoiceMeta((m) => ({ ...m, date: e.target.value }))} />
               <Input label="Due" type="date" value={invoiceMeta.due} onChange={(e) => setInvoiceMeta((m) => ({ ...m, due: e.target.value }))} />
+              <div className="grid gap-1.5">
+                <label className="text-xs text-slate-600">Payment terms</label>
+                <select className="rounded-lg border border-black/10 bg-white px-2.5 py-2 text-sm" value={String(paymentTerm)} onChange={(e)=>{
+                  const v = e.target.value === 'pre' ? 'pre' : (Number(e.target.value) as any);
+                  setPaymentTerm(v);
+                }}>
+                  <option value="7">7 days</option>
+                  <option value="14">14 days</option>
+                  <option value="30">30 days</option>
+                  <option value="45">45 days</option>
+                  <option value="60">60 days</option>
+                  <option value="pre">Pre-payment</option>
+                </select>
+              </div>
             </div>
 
             <hr className="my-4 border-black/10" />
@@ -591,18 +645,6 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
                 <Input label="Bank name" value={client.bankName} onChange={(e) => setClient((c) => ({ ...c, bankName: e.target.value }))} />
                 <Input label="SWIFT / BIC" value={client.bic} onChange={(e) => setClient((c) => ({ ...c, bic: e.target.value }))} />
               </div>
-            </div>
-
-            <hr className="my-4 border-black/10" />
-
-            <div className="mb-4">
-              <h3 className="text-sm font-semibold tracking-wide text-slate-800 uppercase">Invoice</h3>
-              <p className="text-xs text-slate-500 mt-1">Metadata & numbering</p>
-            </div>
-            <div className="grid sm:grid-cols-3 gap-3">
-              <Input label="Number" value={invoiceMeta.number} onChange={(e) => setInvoiceMeta((m) => ({ ...m, number: e.target.value }))} />
-              <Input label="Date" type="date" value={invoiceMeta.date} onChange={(e) => setInvoiceMeta((m) => ({ ...m, date: e.target.value }))} />
-              <Input label="Due" type="date" value={invoiceMeta.due} onChange={(e) => setInvoiceMeta((m) => ({ ...m, due: e.target.value }))} />
             </div>
 
             <hr className="my-4 border-black/10" />

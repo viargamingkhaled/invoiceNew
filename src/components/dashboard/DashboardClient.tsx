@@ -9,7 +9,7 @@ type Currency = 'GBP' | 'EUR';
 type InvoiceStatus = 'Draft' | 'Ready' | 'Error' | 'Sent' | 'Paid' | 'Overdue';
 type Invoice = { id: string; number: string; date: string; client: string; currency: Currency; subtotal: number; tax: number; total: number; status: InvoiceStatus };
 type LedgerRow = { id: string; ts: string; type: 'Top-up' | 'Invoice' | 'Adjust'; delta: number; balanceAfter: number; currency?: Currency; amount?: number; receiptUrl?: string };
-type Company = { name: string; vat?: string; reg?: string; address1?: string; city?: string; country?: string; iban?: string; bic?: string };
+type Company = { name: string; vat?: string; reg?: string; address1?: string; city?: string; country?: string; iban?: string; bankName?: string; bic?: string };
 type Me = { id: string; name: string | null; email: string | null; tokenBalance: number; currency: Currency; company: Company | null };
 
 const currencySym = (c: Currency) => (c === 'GBP' ? 'GBP ' : 'EUR ');
@@ -55,12 +55,13 @@ export default function DashboardClient() {
     // Init BroadcastChannel for cross-tab updates
     try { bcRef.current = new BroadcastChannel('app-events'); } catch {}
     const cleanup = () => { try { bcRef.current?.close(); } catch {} };
-    (async () => {
+    const loadAll = async () => {
       const meRes = await fetch('/api/me');
       if (meRes.ok) {
         const { user } = await meRes.json();
         setMe(user);
         setForm(user.company || { name: '' });
+        try { bcRef.current?.postMessage({ type: 'tokens-updated', tokenBalance: user.tokenBalance }); } catch {}
       }
       const invRes = await fetch('/api/invoices');
       if (invRes.ok) {
@@ -72,8 +73,14 @@ export default function DashboardClient() {
         const { ledger } = await ledRes.json();
         setLedger(ledger);
       }
-    })();
-    return cleanup;
+    };
+    loadAll();
+    const onFocus = () => { loadAll(); };
+    try { window.addEventListener('focus', onFocus); } catch {}
+    return () => {
+      try { window.removeEventListener('focus', onFocus); } catch {}
+      cleanup();
+    };
   }, []);
 
   const fetchInvoice = async (id: string) => {
@@ -142,10 +149,25 @@ export default function DashboardClient() {
       notes: '',
     });
 
-    await new Promise(r => setTimeout(r, 50));
-    const onAfterPrint = () => { setPrinting(null); window.removeEventListener('afterprint', onAfterPrint); };
-    window.addEventListener('afterprint', onAfterPrint);
-    try { window.print(); } catch { onAfterPrint(); }
+    await new Promise(r => setTimeout(r, 60));
+    try {
+      const el = document.getElementById('dash-print-area');
+      if (!el) throw new Error('Print area missing');
+      const { jsPDF } = await import('jspdf');
+      const html2canvas = (await import('html2canvas')).default;
+      const canvas = await html2canvas(el as HTMLElement, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, pageHeight, undefined, 'FAST');
+      const fname = `Invoice - ${invFull.number}.pdf`;
+      pdf.save(fname);
+    } catch (e) {
+      alert('Failed to download PDF');
+    } finally {
+      setPrinting(null);
+    }
   };
 
   const createInvoice = async () => {
@@ -333,9 +355,10 @@ export default function DashboardClient() {
                   <Input label="City" value={form.city||''} onChange={(e)=>setForm({...form, city:e.target.value})} />
                   <Input label="Country" value={form.country||''} onChange={(e)=>setForm({...form, country:e.target.value})} />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-3 gap-3">
                   <Input label="IBAN" value={form.iban||''} onChange={(e)=>setForm({...form, iban:e.target.value})} placeholder={currency==='GBP'? 'GB00 BANK 0000 0000 0000 00' : 'DE00 BANK 0000 0000 0000 00'} />
-                  <Input label="BIC" value={form.bic||''} onChange={(e)=>setForm({...form, bic:e.target.value})} placeholder="BANKGB2L" />
+                  <Input label="Bank name" value={(form as any).bankName||''} onChange={(e)=>setForm({...form, bankName:e.target.value} as any)} placeholder="Your Bank" />
+                  <Input label="SWIFT / BIC" value={form.bic||''} onChange={(e)=>setForm({...form, bic:e.target.value})} placeholder="BANKGB2L" />
                 </div>
                 <div className="mt-2">
                   <Button disabled={savingCompany} variant="primary" type="submit">{savingCompany? 'Saving…' : 'Save company'}</Button>
@@ -430,8 +453,42 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
 }) {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState<{ client: string; subtotal: number; tax: number; total: number }>({ client: invoice.client, subtotal: invoice.subtotal, tax: invoice.tax, total: invoice.total });
+  const [company, setCompany] = useState<any>({
+    name: invoice.user?.company?.name || '',
+    vat: invoice.user?.company?.vat || '',
+    reg: invoice.user?.company?.reg || '',
+    address1: invoice.user?.company?.address1 || '',
+    city: invoice.user?.company?.city || '',
+    country: invoice.user?.company?.country || '',
+    iban: invoice.user?.company?.iban || '',
+    bankName: invoice.user?.company?.bankName || '',
+    bic: invoice.user?.company?.bic || '',
+  });
+  const [items, setItems] = useState<Array<{ desc: string; qty: number; rate: number; tax: number }>>(
+    (invoice.items || []).map((it: any) => ({ desc: it.description, qty: it.quantity, rate: it.rate, tax: it.tax }))
+  );
 
-  useEffect(() => { setForm({ client: invoice.client, subtotal: invoice.subtotal, tax: invoice.tax, total: invoice.total }); }, [invoice]);
+  const totals = (() => {
+    const subtotal = items.reduce((s, it) => s + (Number(it.qty)||0)*(Number(it.rate)||0), 0);
+    const tax = items.reduce((s, it) => s + (Number(it.qty)||0)*(Number(it.rate)||0)*((Number(it.tax)||0)/100), 0);
+    return { subtotal: Math.round(subtotal), tax: Math.round(tax), total: Math.round(subtotal + tax) };
+  })();
+
+  useEffect(() => {
+    setForm({ client: invoice.client, subtotal: invoice.subtotal, tax: invoice.tax, total: invoice.total });
+    setCompany({
+      name: invoice.user?.company?.name || '',
+      vat: invoice.user?.company?.vat || '',
+      reg: invoice.user?.company?.reg || '',
+      address1: invoice.user?.company?.address1 || '',
+      city: invoice.user?.company?.city || '',
+      country: invoice.user?.company?.country || '',
+      iban: invoice.user?.company?.iban || '',
+      bankName: invoice.user?.company?.bankName || '',
+      bic: invoice.user?.company?.bic || '',
+    });
+    setItems((invoice.items || []).map((it: any) => ({ desc: it.description, qty: it.quantity, rate: it.rate, tax: it.tax })));
+  }, [invoice]);
 
   return (
     <div className="flex flex-col max-h-[90vh]">
@@ -451,37 +508,86 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
           </>
         ) : (
           <>
-            <div className="flex items-center gap-2">
-              <input className="rounded border px-2 py-1 text-sm" value={form.client} onChange={(e)=>setForm({ ...form, client: e.target.value })} placeholder="Client" />
-              <input className="rounded border px-2 py-1 text-sm w-24" type="number" value={form.subtotal} onChange={(e)=>setForm({ ...form, subtotal: Number(e.target.value) })} placeholder="Subtotal" />
-              <input className="rounded border px-2 py-1 text-sm w-20" type="number" value={form.tax} onChange={(e)=>setForm({ ...form, tax: Number(e.target.value) })} placeholder="Tax" />
-              <input className="rounded border px-2 py-1 text-sm w-24" type="number" value={form.total} onChange={(e)=>setForm({ ...form, total: Number(e.target.value) })} placeholder="Total" />
-            </div>
-            <div className="ml-auto flex items-center gap-2">
-              <button className="text-sm underline" onClick={async()=>{ await onSave(form); setEditing(false); await onRefresh(invoice.id); }}>Save</button>
-              <button className="text-sm" onClick={()=>{ setEditing(false); setForm({ client: invoice.client, subtotal: invoice.subtotal, tax: invoice.tax, total: invoice.total }); }}>Cancel</button>
+            <div className="flex flex-wrap items-center gap-3 w-full">
+              <div className="text-sm text-slate-700">Totals: Subtotal <b>{fmtMoney(totals.subtotal, invoice.currency)}</b> · Tax <b>{fmtMoney(totals.tax, invoice.currency)}</b> · Total <b>{fmtMoney(totals.total, invoice.currency)}</b></div>
+              <div className="ml-auto flex items-center gap-2">
+                <button className="text-sm underline" onClick={async()=>{
+                  // Save company first
+                  await fetch('/api/company', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(company) });
+                  // Save invoice client + items
+                  await fetch(`/api/invoices/${invoice.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ client: form.client, items: items.map(it=>({ description: it.desc, quantity: it.qty, rate: it.rate, tax: it.tax })) }) });
+                  setEditing(false);
+                  await onRefresh(invoice.id);
+                }}>Save</button>
+                <button className="text-sm" onClick={()=>{ setEditing(false); }}>Cancel</button>
+              </div>
             </div>
           </>
         )}
       </div>
 
       <div className="p-4 overflow-auto" style={{ maxHeight: 'calc(90vh - 110px)' }}>
-        <div className="max-w-[800px] mx-auto">
-          {/* Full invoice preview */}
-          <InvoiceA4
-            currency={invoice.currency}
-            items={(invoice.items||[]).map((it:any)=>({ desc: it.description, qty: it.quantity, rate: it.rate, tax: it.tax }))}
-            subtotal={invoice.subtotal}
-            taxTotal={invoice.tax}
-            total={invoice.total}
-            sender={{ company: invoice.user?.company?.name || 'Company', vat: invoice.user?.company?.vat, address: invoice.user?.company?.address1, city: invoice.user?.company?.city, country: invoice.user?.company?.country, iban: invoice.user?.company?.iban, bankName: invoice.user?.company?.bankName, bic: invoice.user?.company?.bic }}
-            client={{ name: invoice.client }}
-            invoiceNo={invoice.number}
-            invoiceDate={new Date(invoice.date).toISOString().slice(0,10)}
-            invoiceDue={''}
-            notes={''}
-          />
-        </div>
+        {!editing ? (
+          <div className="max-w-[800px] mx-auto">
+            {/* Full invoice preview */}
+            <InvoiceA4
+              currency={invoice.currency}
+              items={(invoice.items||[]).map((it:any)=>({ desc: it.description, qty: it.quantity, rate: it.rate, tax: it.tax }))}
+              subtotal={invoice.subtotal}
+              taxTotal={invoice.tax}
+              total={invoice.total}
+              sender={{ company: invoice.user?.company?.name || 'Company', vat: invoice.user?.company?.vat, address: invoice.user?.company?.address1, city: invoice.user?.company?.city, country: invoice.user?.company?.country, iban: invoice.user?.company?.iban, bankName: invoice.user?.company?.bankName, bic: invoice.user?.company?.bic }}
+              client={{ name: invoice.client }}
+              invoiceNo={invoice.number}
+              invoiceDate={new Date(invoice.date).toISOString().slice(0,10)}
+              invoiceDue={''}
+              notes={''}
+            />
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+            <div className="grid gap-2">
+              <div className="text-sm font-semibold">Seller (Company)</div>
+              <input className="rounded border px-2 py-1 text-sm" placeholder="Company name" value={company.name} onChange={(e)=>setCompany({ ...company, name: e.target.value })} />
+              <div className="grid grid-cols-2 gap-2">
+                <input className="rounded border px-2 py-1 text-sm" placeholder="VAT" value={company.vat} onChange={(e)=>setCompany({ ...company, vat: e.target.value })} />
+                <input className="rounded border px-2 py-1 text-sm" placeholder="Reg" value={company.reg} onChange={(e)=>setCompany({ ...company, reg: e.target.value })} />
+              </div>
+              <input className="rounded border px-2 py-1 text-sm" placeholder="Address line" value={company.address1} onChange={(e)=>setCompany({ ...company, address1: e.target.value })} />
+              <div className="grid grid-cols-2 gap-2">
+                <input className="rounded border px-2 py-1 text-sm" placeholder="City" value={company.city} onChange={(e)=>setCompany({ ...company, city: e.target.value })} />
+                <input className="rounded border px-2 py-1 text-sm" placeholder="Country" value={company.country} onChange={(e)=>setCompany({ ...company, country: e.target.value })} />
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                <input className="rounded border px-2 py-1 text-sm" placeholder="IBAN" value={company.iban} onChange={(e)=>setCompany({ ...company, iban: e.target.value })} />
+                <input className="rounded border px-2 py-1 text-sm" placeholder="Bank name" value={company.bankName} onChange={(e)=>setCompany({ ...company, bankName: e.target.value })} />
+                <input className="rounded border px-2 py-1 text-sm" placeholder="SWIFT / BIC" value={company.bic} onChange={(e)=>setCompany({ ...company, bic: e.target.value })} />
+              </div>
+            </div>
+            <div className="grid gap-2">
+              <div className="text-sm font-semibold">Client & Items</div>
+              <input className="rounded border px-2 py-1 text-sm" placeholder="Client name" value={form.client} onChange={(e)=>setForm({ ...form, client: e.target.value })} />
+              <div className="text-xs text-slate-600">Items</div>
+              <div className="grid gap-1">
+                <div className="grid grid-cols-12 gap-1 text-[11px] text-slate-600">
+                  <div className="col-span-6">Description</div>
+                  <div className="col-span-2 text-right">Qty</div>
+                  <div className="col-span-2 text-right">Rate</div>
+                  <div className="col-span-2 text-right">Tax %</div>
+                </div>
+                {items.map((it, i) => (
+                  <div key={i} className="grid grid-cols-12 gap-1">
+                    <input className="col-span-6 rounded border px-2 py-1 text-sm" value={it.desc} onChange={(e)=>setItems(prev=>prev.map((p,idx)=> idx===i? { ...p, desc: e.target.value } : p))} />
+                    <input className="col-span-2 rounded border px-2 py-1 text-sm text-right" type="number" value={it.qty} onChange={(e)=>setItems(prev=>prev.map((p,idx)=> idx===i? { ...p, qty: Number(e.target.value) } : p))} />
+                    <input className="col-span-2 rounded border px-2 py-1 text-sm text-right" type="number" value={it.rate} onChange={(e)=>setItems(prev=>prev.map((p,idx)=> idx===i? { ...p, rate: Number(e.target.value) } : p))} />
+                    <input className="col-span-2 rounded border px-2 py-1 text-sm text-right" type="number" value={it.tax} onChange={(e)=>setItems(prev=>prev.map((p,idx)=> idx===i? { ...p, tax: Number(e.target.value) } : p))} />
+                  </div>
+                ))}
+                <button className="rounded border border-dashed border-black/20 text-sm py-1" onClick={(e)=>{ e.preventDefault(); setItems(prev=>[...prev, { desc: 'Service', qty: 1, rate: 100, tax: 0 }]); }}>+ Add row</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
