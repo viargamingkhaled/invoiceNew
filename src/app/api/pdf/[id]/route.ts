@@ -32,14 +32,15 @@ export async function GET(_req: Request, { params }: any) {
       margin: { top: "14mm", right: "14mm", bottom: "16mm", left: "14mm" },
       preferCSSPageSize: true,
     });
-    return new NextResponse(pdf, {
-      status: 200,
-      headers: {
-        "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename="invoice-${id}.pdf"`,
-        "Cache-Control": "no-store",
-      },
-    });
+    const blob = new Blob([pdf], { type: 'application/pdf' });
+return new Response(blob, {
+  status: 200,
+  headers: {
+    'Content-Type': 'application/pdf',
+    'Content-Disposition': ttachment; filename="invoice-.pdf",
+    'Cache-Control': 'no-store',
+  },
+});
   } catch (e: any) {
     return NextResponse.json({ error: e?.message || "Failed to render PDF" }, { status: 500 });
   } finally {
