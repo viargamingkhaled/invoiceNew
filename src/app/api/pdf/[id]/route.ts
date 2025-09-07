@@ -21,7 +21,7 @@ export async function GET(_req: Request, { params }: any) {
     args: isLocal ? [] : chromium.args,
     defaultViewport: { width: 1240, height: 1754, deviceScaleFactor: 2 },
     executablePath: execPath,
-    headless: "new",
+    headless: chromium.headless,
   });
   try {
     const page = await browser.newPage();
@@ -46,6 +46,7 @@ export async function GET(_req: Request, { params }: any) {
     try { await browser.close(); } catch {}
   }
 }
+
 
 
 
