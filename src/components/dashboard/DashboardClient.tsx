@@ -251,12 +251,12 @@ export default function DashboardClient() {
                   <tbody>
   {invView.map(inv => (
     <React.Fragment key={inv.id}>
-      <tr className="border-t border-black/10">
-        <td className="px-3 py-2 font-mono text-[12px]">{inv.number}</td>
-        <td className="px-3 py-2">{new Date(inv.date).toISOString().slice(0,10)}</td>
-        <td className="px-3 py-2">{inv.client}</td>
-        <td className="px-3 py-2 text-right">{fmtMoney(inv.total, inv.currency)}</td>
-        <td className="px-3 py-2">
+      <tr className={`border-t ${viewId===inv.id ? 'border-black' : 'border-black/10'}`}>
+        <td className={`px-3 py-2 font-mono text-[12px] ${viewId===inv.id ? 'border-t-2 border-l-2 border-black rounded-tl-xl' : ''}`}>{inv.number}</td>
+        <td className={`px-3 py-2 ${viewId===inv.id ? 'border-t-2 border-black' : ''}`}>{new Date(inv.date).toISOString().slice(0,10)}</td>
+        <td className={`px-3 py-2 ${viewId===inv.id ? 'border-t-2 border-black' : ''}`}>{inv.client}</td>
+        <td className={`px-3 py-2 text-right ${viewId===inv.id ? 'border-t-2 border-black' : ''}`}>{fmtMoney(inv.total, inv.currency)}</td>
+        <td className={`px-3 py-2 ${viewId===inv.id ? 'border-t-2 border-black' : ''}`}>
           <span className={`rounded-full px-2 py-0.5 text-[11px] border ${
             inv.status==='Ready' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' :
             inv.status==='Error' ? 'border-rose-200 bg-rose-50 text-rose-800' :
@@ -266,14 +266,14 @@ export default function DashboardClient() {
             'border-black/10'
           }`}>{inv.status}</span>
         </td>
-        <td className="px-3 py-2 text-right">
+        <td className={`px-3 py-2 text-right ${viewId===inv.id ? 'border-t-2 border-r-2 border-black rounded-tr-xl' : ''}`}>
           <button className="text-sm underline mr-2" onClick={()=>openView(inv.id)}>{viewId===inv.id? 'Hide' : 'View'}</button>
           <button className="text-sm underline" onClick={()=>ensureReadyAndDownload(inv.id)}>Download</button>
         </td>
       </tr>
       {viewId===inv.id && viewInv && (
-        <tr className="border-t border-black/10 bg-white">
-          <td className="px-3 py-3" colSpan={6}>
+        <tr className={`bg-white ${viewId===inv.id ? '' : 'border-t border-black/10'}`}>
+          <td className={`px-3 py-3 ${viewId===inv.id ? 'border-l-2 border-r-2 border-b-2 border-black rounded-b-xl' : ''}`} colSpan={6}>
             <div className="p-2">
               <ModalInvoiceView
                 invoice={viewInv}
@@ -448,6 +448,13 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
 }) {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState<{ client: string; subtotal: number; tax: number; total: number }>({ client: invoice.client, subtotal: invoice.subtotal, tax: invoice.tax, total: invoice.total });
+  const [client, setClient] = useState<{ name: string; vat: string; address: string; city: string; country: string }>({
+    name: invoice.client || '',
+    vat: (invoice.clientMeta?.vat as string) || '',
+    address: (invoice.clientMeta?.address as string) || '',
+    city: (invoice.clientMeta?.city as string) || '',
+    country: (invoice.clientMeta?.country as string) || '',
+  });
   const [company, setCompany] = useState<any>({
     name: invoice.user?.company?.name || '',
     vat: invoice.user?.company?.vat || '',
@@ -471,6 +478,13 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
 
   useEffect(() => {
     setForm({ client: invoice.client, subtotal: invoice.subtotal, tax: invoice.tax, total: invoice.total });
+    setClient({
+      name: invoice.client || '',
+      vat: (invoice.clientMeta?.vat as string) || '',
+      address: (invoice.clientMeta?.address as string) || '',
+      city: (invoice.clientMeta?.city as string) || '',
+      country: (invoice.clientMeta?.country as string) || '',
+    });
     setCompany({
       name: invoice.user?.company?.name || '',
       vat: invoice.user?.company?.vat || '',
@@ -507,10 +521,23 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
               <div className="text-sm text-slate-700">Totals: Subtotal <b>{fmtMoney(totals.subtotal, invoice.currency)}</b> В· Tax <b>{fmtMoney(totals.tax, invoice.currency)}</b> В· Total <b>{fmtMoney(totals.total, invoice.currency)}</b></div>
               <div className="ml-auto flex items-center gap-2">
                 <button className="text-sm underline" onClick={async()=>{
-                  // Save company first
+                  // Save seller (company) first
                   await fetch('/api/company', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(company) });
-                  // Save invoice client + items
-                  await fetch(`/api/invoices/${invoice.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ client: form.client, items: items.map(it=>({ description: it.desc, quantity: it.qty, rate: it.rate, tax: it.tax })) }) });
+                  // Save invoice client details + items
+                  await fetch(`/api/invoices/${invoice.id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      client: client.name,
+                      clientMeta: {
+                        vat: client.vat,
+                        address: client.address,
+                        city: client.city,
+                        country: client.country,
+                      },
+                      items: items.map(it=>({ description: it.desc, quantity: it.qty, rate: it.rate, tax: it.tax }))
+                    })
+                  });
                   setEditing(false);
                   await onRefresh(invoice.id);
                 }}>Save</button>
@@ -532,7 +559,7 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
               taxTotal={invoice.tax}
               total={invoice.total}
               sender={{ company: invoice.user?.company?.name || 'Company', vat: invoice.user?.company?.vat, address: invoice.user?.company?.address1, city: invoice.user?.company?.city, country: invoice.user?.company?.country, iban: invoice.user?.company?.iban, bankName: invoice.user?.company?.bankName, bic: invoice.user?.company?.bic }}
-              client={{ name: invoice.client }}
+              client={{ name: invoice.client, vat: (invoice.clientMeta?.vat as string) || undefined, address: (invoice.clientMeta?.address as string) || undefined, city: (invoice.clientMeta?.city as string) || undefined, country: (invoice.clientMeta?.country as string) || undefined }}
               invoiceNo={invoice.number}
               invoiceDate={new Date(invoice.date).toISOString().slice(0,10)}
               invoiceDue={''}
@@ -540,9 +567,10 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
             />
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 gap-6 max-w-4xl mx-auto">
+            {/* Seller */}
             <div className="grid gap-2">
-              <div className="text-sm font-semibold">Seller (Company)</div>
+              <div className="text-sm font-semibold">Seller</div>
               <input className="rounded border px-2 py-1 text-sm" placeholder="Company name" value={company.name} onChange={(e)=>setCompany({ ...company, name: e.target.value })} />
               <div className="grid grid-cols-2 gap-2">
                 <input className="rounded border px-2 py-1 text-sm" placeholder="VAT" value={company.vat} onChange={(e)=>setCompany({ ...company, vat: e.target.value })} />
@@ -559,10 +587,22 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
                 <input className="rounded border px-2 py-1 text-sm" placeholder="SWIFT / BIC" value={company.bic} onChange={(e)=>setCompany({ ...company, bic: e.target.value })} />
               </div>
             </div>
+
+            {/* Client */}
             <div className="grid gap-2">
-              <div className="text-sm font-semibold">Client & Items</div>
-              <input className="rounded border px-2 py-1 text-sm" placeholder="Client name" value={form.client} onChange={(e)=>setForm({ ...form, client: e.target.value })} />
-              <div className="text-xs text-slate-600">Items</div>
+              <div className="text-sm font-semibold">Client</div>
+              <input className="rounded border px-2 py-1 text-sm" placeholder="Client name" value={client.name} onChange={(e)=>setClient({ ...client, name: e.target.value })} />
+              <div className="grid grid-cols-2 gap-2">
+                <input className="rounded border px-2 py-1 text-sm" placeholder="VAT" value={client.vat} onChange={(e)=>setClient({ ...client, vat: e.target.value })} />
+                <input className="rounded border px-2 py-1 text-sm" placeholder="City" value={client.city} onChange={(e)=>setClient({ ...client, city: e.target.value })} />
+              </div>
+              <input className="rounded border px-2 py-1 text-sm" placeholder="Address line" value={client.address} onChange={(e)=>setClient({ ...client, address: e.target.value })} />
+              <input className="rounded border px-2 py-1 text-sm" placeholder="Country" value={client.country} onChange={(e)=>setClient({ ...client, country: e.target.value })} />
+            </div>
+
+            {/* Items */}
+            <div className="grid gap-2">
+              <div className="text-sm font-semibold">Items</div>
               <div className="grid gap-1">
                 <div className="grid grid-cols-12 gap-1 text-[11px] text-slate-600">
                   <div className="col-span-6">Description</div>

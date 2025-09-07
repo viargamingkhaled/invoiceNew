@@ -1,4 +1,4 @@
-// Prisma + Neon (Postgres)
+﻿// Prisma + Neon (Postgres)
 generator client {
   provider = "prisma-client-js"
 }
@@ -95,19 +95,22 @@ model Company {
   updatedAt DateTime @updatedAt
 }
 
+
+
 model Invoice {
-  id        String        @id @default(cuid())
+  id        String   @id @default(cuid())
   userId    String
-  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  number    String        @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  number    String   @unique
   date      DateTime
   client    String
+  clientMeta Json?
   currency  Currency
   subtotal  Int
   tax       Int
   total     Int
   status    InvoiceStatus @default(Draft)
-  createdAt DateTime      @default(now())
+  createdAt DateTime @default(now())
 
   items InvoiceItem[]
 }
@@ -134,3 +137,4 @@ model LedgerEntry {
   amount       Int?
   receiptUrl   String?
 }
+

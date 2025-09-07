@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
@@ -27,6 +27,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   if ('subtotal' in body) data.subtotal = Number(body.subtotal);
   if ('tax' in body) data.tax = Number(body.tax);
   if ('total' in body) data.total = Number(body.total);
+  if (body.clientMeta) data.clientMeta = body.clientMeta;
   const items = Array.isArray(body.items)
     ? (body.items as Array<{ description: string; quantity: number; rate: number; tax: number }>)
     : null;
@@ -116,3 +117,4 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
   await prisma.invoice.delete({ where: { id } });
   return NextResponse.json({ ok: true });
 }
+
