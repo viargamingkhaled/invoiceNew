@@ -11,7 +11,7 @@ interface InvoicePaperProps {
   subtotal: number;
   taxTotal: number;
   total: number;
-  sender: { company: string; vat: string; address: string; city: string; country: string; iban: string };
+  sender: { company: string; vat: string; address: string; city: string; country: string; iban: string; bankName?: string; bic?: string };
   client: { name: string; vat: string; address: string; city: string; country: string };
   invoiceNo: string;
   invoiceDate: string;
