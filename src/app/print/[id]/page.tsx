@@ -1,0 +1,46 @@
+import { prisma } from '@/lib/prisma';
+import InvoiceA4 from '@/components/pdf/InvoiceA4';
+
+export const dynamic = 'force-dynamic';
+
+export default async function PrintInvoicePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const invoice = await prisma.invoice.findUnique({ where: { id }, include: { items: true, user: { include: { company: true } } } });
+  if (!invoice) return <div className="p-6">Not found.</div>;
+
+  return (
+    <div className="bg-white min-h-screen">
+      <main className="max-w-none p-0 m-0">
+        <InvoiceA4
+          currency={invoice.currency}
+          items={invoice.items.map(it => ({ desc: it.description, qty: it.quantity, rate: it.rate, tax: it.tax })) as any}
+          subtotal={invoice.subtotal}
+          taxTotal={invoice.tax}
+          total={invoice.total}
+          sender={{
+            company: invoice.user.company?.name || '',
+            vat: invoice.user.company?.vat || '',
+            address: invoice.user.company?.address1 || '',
+            city: invoice.user.company?.city || '',
+            country: invoice.user.company?.country || '',
+            iban: invoice.user.company?.iban || '',
+            bankName: invoice.user.company?.bankName || undefined,
+            bic: invoice.user.company?.bic || undefined,
+          }}
+          client={{
+            name: invoice.client,
+            vat: (invoice as any).clientMeta?.vat || '',
+            address: (invoice as any).clientMeta?.address || '',
+            city: (invoice as any).clientMeta?.city || '',
+            country: (invoice as any).clientMeta?.country || '',
+          }}
+          invoiceNo={invoice.number}
+          invoiceDate={new Date(invoice.date).toISOString().slice(0, 10)}
+          invoiceDue={''}
+          notes={''}
+        />
+      </main>
+    </div>
+  );
+}
+

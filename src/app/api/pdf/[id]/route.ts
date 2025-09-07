@@ -15,7 +15,7 @@ export async function GET(_req: Request, ctx: any) {
 
     const baseUrl = process.env.NEXTAUTH_URL || process.env.VERCEL_URL || '';
     const origin = baseUrl.startsWith('http') ? baseUrl : `https://${baseUrl}`;
-    const url = `${origin}/s/${id}`;
+    const url = `${origin}/print/${id}`;
 
     const isLocal = !process.env.AWS_REGION && process.env.NODE_ENV !== 'production';
     const execPath = isLocal ? undefined : await chromium.executablePath();
