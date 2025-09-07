@@ -24,7 +24,6 @@ export default async function PrintInvoicePage({ params }: { params: Promise<{ i
             city: invoice.user.company?.city || '',
             country: invoice.user.company?.country || '',
             iban: invoice.user.company?.iban || '',
-            bankName: invoice.user.company?.bankName || undefined,
             bic: invoice.user.company?.bic || undefined,
           }}
           client={{
@@ -43,4 +42,3 @@ export default async function PrintInvoicePage({ params }: { params: Promise<{ i
     </div>
   );
 }
-
