@@ -91,6 +91,11 @@ export default function DashboardClient() {
   };
 
   const openView = async (id: string) => {
+    if (viewId === id) {
+      setViewId(null);
+      setViewInv(null);
+      return;
+    }
     const inv = await fetchInvoice(id);
     if (!inv) { alert('Invoice not found'); return; }
     setViewId(id);
@@ -124,49 +129,16 @@ export default function DashboardClient() {
     if (!invFull) { alert('Invoice not found'); return; }
     const mark = await markReadyIfDraft(id);
     if (!mark.ok) { alert(mark.err || 'Failed'); return; }
-    // Prepare print data
-    const senderCompany = invFull.user?.company || null;
-    setPrinting({
-      currency: invFull.currency,
-      items: (invFull.items||[]).map((it:any)=>({ desc: it.description, qty: it.quantity, rate: it.rate, tax: it.tax })),
-      subtotal: invFull.subtotal,
-      tax: invFull.tax,
-      total: invFull.total,
-      sender: {
-        company: senderCompany?.name || me?.company?.name || 'Company',
-        vat: senderCompany?.vat || me?.company?.vat,
-        address: senderCompany?.address1 || me?.company?.address1,
-        city: senderCompany?.city || me?.company?.city,
-        country: senderCompany?.country || me?.company?.country,
-        iban: senderCompany?.iban || me?.company?.iban,
-        bankName: senderCompany?.bankName || undefined,
-        bic: senderCompany?.bic || me?.company?.bic,
-      },
-      client: { name: invFull.client },
-      invoiceNo: invFull.number,
-      invoiceDate: new Date(invFull.date).toISOString().slice(0,10),
-      invoiceDue: '',
-      notes: '',
-    });
-
-    await new Promise(r => setTimeout(r, 60));
     try {
-      const el = document.getElementById('dash-print-area');
-      if (!el) throw new Error('Print area missing');
-      const { jsPDF } = await import('jspdf');
-      const html2canvas = (await import('html2canvas')).default;
-      const canvas = await html2canvas(el as HTMLElement, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, pageHeight, undefined, 'FAST');
-      const fname = `Invoice - ${invFull.number}.pdf`;
-      pdf.save(fname);
+      const res = await fetch(`/api/pdf/${id}`);
+      if (!res.ok) throw new Error('Server PDF failed');
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `Invoice - ${invFull.number}.pdf`;
+      document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
     } catch (e) {
       alert('Failed to download PDF');
-    } finally {
-      setPrinting(null);
     }
   };
 
@@ -277,29 +249,46 @@ export default function DashboardClient() {
                     </tr>
                   </thead>
                   <tbody>
-                    {invView.map(inv => (
-                      <tr key={inv.id} className="border-t border-black/10">
-                        <td className="px-3 py-2 font-mono text-[12px]">{inv.number}</td>
-                        <td className="px-3 py-2">{new Date(inv.date).toISOString().slice(0,10)}</td>
-                        <td className="px-3 py-2">{inv.client}</td>
-                        <td className="px-3 py-2 text-right">{fmtMoney(inv.total, inv.currency)}</td>
-                        <td className="px-3 py-2">
-                          <span className={`rounded-full px-2 py-0.5 text-[11px] border ${
-                            inv.status==='Ready' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' :
-                            inv.status==='Error' ? 'border-rose-200 bg-rose-50 text-rose-800' :
-                            inv.status==='Paid' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' :
-                            inv.status==='Sent' ? 'border-blue-200 bg-blue-50 text-blue-800' :
-                            inv.status==='Overdue' ? 'border-rose-200 bg-rose-50 text-rose-800' :
-                            'border-black/10'}
-                          `}>{inv.status}</span>
-                        </td>
-                        <td className="px-3 py-2 text-right">
-                          <button className="text-sm underline mr-2" onClick={()=>openView(inv.id)}>View</button>
-                          <button className="text-sm underline" onClick={()=>ensureReadyAndDownload(inv.id)}>Download</button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
+  {invView.map(inv => (
+    <React.Fragment key={inv.id}>
+      <tr className=\"border-t border-black/10\">
+        <td className=\"px-3 py-2 font-mono text-[12px]\">{inv.number}</td>
+        <td className=\"px-3 py-2\">{new Date(inv.date).toISOString().slice(0,10)}</td>
+        <td className=\"px-3 py-2\">{inv.client}</td>
+        <td className=\"px-3 py-2 text-right\">{fmtMoney(inv.total, inv.currency)}</td>
+        <td className=\"px-3 py-2\">
+          <span className={\ounded-full px-2 py-0.5 text-[11px] border \
+          \}>{inv.status}</span>
+        </td>
+        <td className=\"px-3 py-2 text-right\">
+          <button className=\"text-sm underline mr-2\" onClick={()=>openView(inv.id)}>{viewId===inv.id? 'Hide' : 'View'}</button>
+          <button className=\"text-sm underline\" onClick={()=>ensureReadyAndDownload(inv.id)}>Download</button>
+        </td>
+      </tr>
+      {viewId===inv.id && viewInv && (
+        <tr className=\"border-t border-black/10 bg-white\">
+          <td className=\"px-3 py-3\" colSpan={6}>
+            <div className=\"p-2\">
+              <ModalInvoiceView
+                invoice={viewInv}
+                onClose={()=>{ setViewId(null); setViewInv(null); }}
+                onRefresh={async(id)=>{ const iv = await fetchInvoice(id); if(iv) setViewInv(iv); }}
+                onDownload={()=>ensureReadyAndDownload(viewInv.id)}
+                onShare={async()=>{ const r = await markReadyIfDraft(viewInv.id); if(!r.ok){ alert(r.err||'Failed'); return;} const url = ${window.location.origin}/s/; await navigator.clipboard.writeText(url); alert('Share link copied'); }}
+                onSendEmail={async()=>{ const r = await markReadyIfDraft(viewInv.id); if(r.ok){ alert('Email queued'); } else { alert(r.err||'Failed'); }}}
+                onSave={async(next)=>{
+                  const res = await fetch(/api/invoices/, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(next) });
+                  if (res.ok) { const j = await res.json(); setViewInv(j.invoice); setInvoices(prev=>prev.map(x=>x.id===j.invoice.id? { ...x, client: j.invoice.client, subtotal: j.invoice.subtotal, tax: j.invoice.tax, total: j.invoice.total } : x)); }
+                  else { const j = await res.json().catch(()=>({error:'Failed'})); alert(j.error||'Failed to save'); }
+                }}
+              />
+            </div>
+          </td>
+        </tr>
+      )}
+    </React.Fragment>
+  ))}
+</tbody>
                  </table>
                  {/* Пагинация инвойсов */}
                  <InvoicePager total={invoices.length} pageSize={20} onSlice={(from, to)=>setInvSlice([from,to])} />
@@ -389,7 +378,7 @@ export default function DashboardClient() {
     )}
 
     {/* Simple modal view */}
-    {viewId && viewInv && (
+    {false && viewId && viewInv && (
       <div className="fixed inset-0 z-50">
         <div className="absolute inset-0 bg-black/30" onClick={()=>{ setViewId(null); setViewInv(null); }} />
         <div className="absolute inset-0 flex items-center justify-center p-4">
@@ -592,4 +581,6 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
     </div>
   );
 }
+
+
 

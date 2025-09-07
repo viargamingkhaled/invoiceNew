@@ -62,7 +62,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     due: '2025-09-16',
   });
   const [paymentTerm, setPaymentTerm] = useState<'pre' | 7 | 14 | 30 | 45 | 60>(14);
-  const [notes, setNotes] = useState('');
+  const [notes, setNotes] = useState('Add notes and comments');
   const [logo, setLogo] = useState<string | null>(null);
 
   const gated = !signedIn;
@@ -316,13 +316,31 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
       (el.style as any).left = prevLeft;
 
       const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, pageHeight, undefined, 'FAST');
-      const fname = `Invoice - ${invoiceMeta.number || 'XXXXXX'}.pdf`;
-      pdf.save(fname);
-      setBanner({ type: 'success', msg: 'PDF downloaded.' });
+      try {
+        const res = await fetch(`/api/pdf/${invoiceId}`);
+        if (res.ok) {
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `Invoice - ${invoiceMeta.number || 'XXXXXX'}.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+          setBanner({ type: 'success', msg: 'PDF downloaded.' });
+        } else {
+          throw new Error('Server PDF failed');
+        }
+      } catch {
+        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, pageHeight, undefined, 'FAST');
+        const fname = `Invoice - ${invoiceMeta.number || 'XXXXXX'}.pdf`;
+        pdf.save(fname);
+        setBanner({ type: 'success', msg: 'PDF downloaded.' });
+      }
     } catch (e: any) {
       if (invoiceId) {
         try { await fetch(`/api/invoices/${invoiceId}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'Error' }) }); } catch {}
@@ -753,3 +771,5 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     </div>
   );
 }
+
+
