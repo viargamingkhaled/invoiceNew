@@ -7,9 +7,9 @@ import puppeteer from "puppeteer-core";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
+export async function GET(_req: Request, ctx: any) {
   try {
-    const { id } = (params || ({} as any));
+    const id: string | undefined = (ctx?.params?.id as string) || undefined;
     const session = await getServerSession(authOptions);
     if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
@@ -54,3 +54,4 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
     return NextResponse.json({ error: e?.message || 'Failed to render PDF' }, { status: 500 });
   }
 }
+
