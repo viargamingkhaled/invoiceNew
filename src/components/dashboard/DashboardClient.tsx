@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Section from '@/components/layout/Section';
 import { Card, Button, Input } from '@/components';
+import InvoiceA4 from '@/components/pdf/InvoiceA4';
 
 type Currency = 'GBP' | 'EUR';
 type InvoiceStatus = 'Draft' | 'Ready' | 'Error' | 'Sent' | 'Paid' | 'Overdue';
@@ -11,7 +12,7 @@ type LedgerRow = { id: string; ts: string; type: 'Top-up' | 'Invoice' | 'Adjust'
 type Company = { name: string; vat?: string; reg?: string; address1?: string; city?: string; country?: string; iban?: string; bic?: string };
 type Me = { id: string; name: string | null; email: string | null; tokenBalance: number; currency: Currency; company: Company | null };
 
-const currencySym = (c: Currency) => (c === 'GBP' ? '£' : '€');
+const currencySym = (c: Currency) => (c === 'GBP' ? 'GBP ' : 'EUR ');
 const fmtMoney = (n: number, c: Currency) => {
   const sym = currencySym(c);
   const abs = Math.abs(n);
@@ -38,6 +39,16 @@ export default function DashboardClient() {
   const [savedBanner, setSavedBanner] = useState<string | null>(null);
   const [errorBanner, setErrorBanner] = useState<string | null>(null);
   const [form, setForm] = useState<Company>({ name: '' });
+  const [viewId, setViewId] = useState<string | null>(null);
+  const [viewInv, setViewInv] = useState<any | null>(null);
+  const [printing, setPrinting] = useState<null | {
+    currency: string;
+    items: Array<{ desc: string; qty: number; rate: number; tax: number }>;
+    subtotal: number; tax: number; total: number;
+    sender: { company: string; vat?: string; address?: string; city?: string; country?: string; iban?: string; bankName?: string; bic?: string };
+    client: { name: string; vat?: string; address?: string; city?: string; country?: string };
+    invoiceNo: string; invoiceDate: string; invoiceDue: string; notes?: string; logoUrl?: string;
+  }>(null);
 
   // load data
   useEffect(() => {
@@ -64,6 +75,93 @@ export default function DashboardClient() {
     })();
     return cleanup;
   }, []);
+
+  const fetchInvoice = async (id: string) => {
+    const res = await fetch(`/api/invoices/${id}`);
+    if (!res.ok) return null;
+    const { invoice } = await res.json();
+    return invoice as any;
+  };
+
+  const openView = async (id: string) => {
+    const inv = await fetchInvoice(id);
+    if (!inv) { alert('Invoice not found'); return; }
+    setViewId(id);
+    setViewInv(inv);
+  };
+
+  const markReadyIfDraft = async (id: string) => {
+    const inv = invoices.find(x => x.id === id);
+    if (!inv) return { ok: false, err: 'Not found' };
+    if (inv.status !== 'Draft') return { ok: true };
+    const res = await fetch(`/api/invoices/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'Ready', subtotal: inv.subtotal, tax: inv.tax, total: inv.total }) });
+    if (!res.ok) {
+      const j = await res.json().catch(()=>({ error:'Failed'}));
+      return { ok: false, err: j.error || 'Failed to mark Ready' };
+    }
+    const j = await res.json();
+    const updated = j.invoice as Invoice;
+    setInvoices(prev => prev.map(x => x.id===id? { ...x, status: updated.status } : x));
+    if (typeof j.tokenBalance === 'number' && me) {
+      setMe({ ...me, tokenBalance: j.tokenBalance });
+      try { bcRef.current?.postMessage({ type: 'tokens-updated', tokenBalance: j.tokenBalance }); } catch {}
+    }
+    // refresh ledger
+    const ledRes = await fetch('/api/ledger');
+    if (ledRes.ok) { const { ledger } = await ledRes.json(); setLedger(ledger); }
+    return { ok: true };
+  };
+
+  const ensureReadyAndDownload = async (id: string) => {
+    const invFull = await fetchInvoice(id);
+    if (!invFull) { alert('Invoice not found'); return; }
+    const mark = await markReadyIfDraft(id);
+    if (!mark.ok) { alert(mark.err || 'Failed'); return; }
+    // Prepare print data
+    const senderCompany = invFull.user?.company || null;
+    setPrinting({
+      currency: invFull.currency,
+      items: (invFull.items||[]).map((it:any)=>({ desc: it.description, qty: it.quantity, rate: it.rate, tax: it.tax })),
+      subtotal: invFull.subtotal,
+      tax: invFull.tax,
+      total: invFull.total,
+      sender: {
+        company: senderCompany?.name || me?.company?.name || 'Company',
+        vat: senderCompany?.vat || me?.company?.vat,
+        address: senderCompany?.address1 || me?.company?.address1,
+        city: senderCompany?.city || me?.company?.city,
+        country: senderCompany?.country || me?.company?.country,
+        iban: senderCompany?.iban || me?.company?.iban,
+        bankName: senderCompany?.bankName || undefined,
+        bic: senderCompany?.bic || me?.company?.bic,
+      },
+      client: { name: invFull.client },
+      invoiceNo: invFull.number,
+      invoiceDate: new Date(invFull.date).toISOString().slice(0,10),
+      invoiceDue: '',
+      notes: '',
+    });
+
+    await new Promise(r => setTimeout(r, 50));
+    try {
+      const el = document.getElementById('dash-print-area');
+      if (!el) throw new Error('Print area missing');
+      const { jsPDF } = await import('jspdf');
+      const html2canvas = (await import('html2canvas')).default;
+      const canvas = await html2canvas(el as HTMLElement, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, pageHeight, undefined, 'FAST');
+      const fname = `Invoice - ${invFull.number}.pdf`;
+      pdf.save(fname);
+    } catch (e) {
+      alert('Failed to download PDF');
+    } finally {
+      setPrinting(null);
+    }
+  };
 
   const createInvoice = async () => {
     if (!me) return;
@@ -178,11 +276,18 @@ export default function DashboardClient() {
                         <td className="px-3 py-2">{inv.client}</td>
                         <td className="px-3 py-2 text-right">{fmtMoney(inv.total, inv.currency)}</td>
                         <td className="px-3 py-2">
-                          <span className={`rounded-full px-2 py-0.5 text-[11px] border ${inv.status==='Paid'?'border-emerald-200 bg-emerald-50 text-emerald-800':inv.status==='Sent'?'border-blue-200 bg-blue-50 text-blue-800':inv.status==='Overdue'?'border-rose-200 bg-rose-50 text-rose-800':'border-black/10'}`}>{inv.status}</span>
+                          <span className={`rounded-full px-2 py-0.5 text-[11px] border ${
+                            inv.status==='Ready' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' :
+                            inv.status==='Error' ? 'border-rose-200 bg-rose-50 text-rose-800' :
+                            inv.status==='Paid' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' :
+                            inv.status==='Sent' ? 'border-blue-200 bg-blue-50 text-blue-800' :
+                            inv.status==='Overdue' ? 'border-rose-200 bg-rose-50 text-rose-800' :
+                            'border-black/10'}
+                          `}>{inv.status}</span>
                         </td>
                         <td className="px-3 py-2 text-right">
-                          <button className="text-sm underline mr-2">View</button>
-                          <button className="text-sm underline">Download</button>
+                          <button className="text-sm underline mr-2" onClick={()=>openView(inv.id)}>View</button>
+                          <button className="text-sm underline" onClick={()=>ensureReadyAndDownload(inv.id)}>Download</button>
                         </td>
                       </tr>
                     ))}
@@ -254,6 +359,55 @@ export default function DashboardClient() {
         </div>
       </Section>
     </main>
+    {/* Hidden print area for dashboard */}
+    {printing && (
+      <div id="dash-print-area" style={{ position:'absolute', left: '-10000px', top: 0, width: '100%' }}>
+        {/* @ts-ignore */}
+        <InvoiceA4
+          currency={printing.currency}
+          items={printing.items as any}
+          subtotal={printing.subtotal}
+          taxTotal={printing.tax}
+          total={printing.total}
+          sender={printing.sender}
+          client={printing.client}
+          invoiceNo={printing.invoiceNo}
+          invoiceDate={printing.invoiceDate}
+          invoiceDue={printing.invoiceDue}
+          notes={printing.notes}
+        />
+      </div>
+    )}
+
+    {/* Simple modal view */}
+    {viewId && viewInv && (
+      <div className="fixed inset-0 z-50">
+        <div className="absolute inset-0 bg-black/30" onClick={()=>{ setViewId(null); setViewInv(null); }} />
+        <div className="absolute inset-0 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-5xl w-full overflow-hidden">
+            <div className="flex items-center justify-between p-3 border-b border-black/10">
+              <div className="text-base font-semibold">Invoice {viewInv.number}</div>
+              <div className="flex items-center gap-2">
+                <button className="text-sm underline" onClick={()=>location.assign('/generator')}>Edit</button>
+                {viewInv.status==='Draft' && (<button className="text-sm underline" onClick={()=>alert('Already saved as draft')}>Save draft</button>)}
+                <button className="text-sm underline" onClick={()=>ensureReadyAndDownload(viewInv.id)}>Download PDF</button>
+                <button className="text-sm underline" onClick={async()=>{ const r = await markReadyIfDraft(viewInv.id); if(r.ok){ alert('Email queued'); } else { alert(r.err||'Failed'); }}}>Send email</button>
+                <button className="text-sm underline" onClick={async()=>{ const r = await markReadyIfDraft(viewInv.id); if(!r.ok){ alert(r.err||'Failed'); return;} const url = `${window.location.origin}/s/${viewInv.id}`; await navigator.clipboard.writeText(url); alert('Share link copied');}}>Save & share link</button>
+                <button className="text-sm" onClick={()=>{ setViewId(null); setViewInv(null); }}>Close</button>
+              </div>
+            </div>
+            <div className="p-4 bg-slate-50">
+              <div className="bg-white border border-black/10 rounded-lg p-4">
+                {/* Use a light-weight preview table */}
+                <div className="text-sm text-slate-700"><b>Client:</b> {viewInv.client}</div>
+                <div className="text-sm text-slate-700 mt-1"><b>Date:</b> {new Date(viewInv.date).toISOString().slice(0,10)}</div>
+                <div className="text-sm text-slate-700 mt-1"><b>Total:</b> {fmtMoney(viewInv.total, viewInv.currency)}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
   );
 }
 

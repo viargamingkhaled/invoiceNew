@@ -43,6 +43,8 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     city: 'London',
     country,
     iban: 'GB00BANK0000000000',
+    bankName: '',
+    bic: '',
   });
   const [client, setClient] = useState({
     name: 'Client GmbH',
@@ -50,6 +52,9 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     address: 'Potsdamer Platz 1',
     city: 'Berlin',
     country: 'Germany',
+    iban: '',
+    bankName: '',
+    bic: '',
   });
   const [invoiceMeta, setInvoiceMeta] = useState({
     number: 'INV-2025-000245',
@@ -256,6 +261,9 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
       });
       if (!draftRes.ok) throw new Error((await draftRes.json().catch(() => ({ error: 'Failed' }))).error || 'Failed to create draft');
       const { invoice } = await draftRes.json();
+      try {
+        setInvoiceMeta((prev) => ({ ...prev, number: String(invoice.number || prev.number), date: new Date(invoice.date).toISOString().slice(0, 10) }));
+      } catch {}
       invoiceId = invoice.id as string;
 
       // Mark Ready (charges 100 tokens)
@@ -356,6 +364,9 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
       });
       if (!res.ok) throw new Error((await res.json().catch(() => ({ error: 'Failed' }))).error || 'Failed to save draft');
       const { invoice } = await res.json();
+      try {
+        setInvoiceMeta((prev) => ({ ...prev, number: String(invoice.number || prev.number), date: new Date(invoice.date).toISOString().slice(0, 10) }));
+      } catch {}
       invoiceId = invoice.id as string;
 
       const readyRes = await fetch(`/api/invoices/${invoiceId}`, {
@@ -407,6 +418,9 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
       });
       if (!res.ok) throw new Error((await res.json().catch(() => ({ error: 'Failed' }))).error || 'Failed to save draft');
       const { invoice } = await res.json();
+      try {
+        setInvoiceMeta((prev) => ({ ...prev, number: String(invoice.number || prev.number), date: new Date(invoice.date).toISOString().slice(0, 10) }));
+      } catch {}
       invoiceId = invoice.id as string;
 
       const readyRes = await fetch(`/api/invoices/${invoiceId}`, {
@@ -557,6 +571,13 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
               <Input label="Country" value={country} onChange={(e) => onCountryChange(e.target.value)} />
               <Input label="IBAN" value={sender.iban} onChange={(e) => setSender((s) => ({ ...s, iban: e.target.value }))} />
             </div>
+            <div className="mt-3">
+              <div className="text-xs text-slate-600 font-medium">Bank details (Sender)</div>
+              <div className="grid sm:grid-cols-2 gap-3 mt-1.5">
+                <Input label="Bank name" value={sender.bankName} onChange={(e) => setSender((s) => ({ ...s, bankName: e.target.value }))} />
+                <Input label="SWIFT / BIC" value={sender.bic} onChange={(e) => setSender((s) => ({ ...s, bic: e.target.value }))} />
+              </div>
+            </div>
 
             <hr className="my-4 border-black/10" />
 
@@ -571,6 +592,14 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
               <Input label="City" value={client.city} onChange={(e) => setClient((c) => ({ ...c, city: e.target.value }))} />
               <Input label="Country" value={client.country} onChange={(e) => setClient((c) => ({ ...c, country: e.target.value }))} />
               <div className="hidden sm:block" />
+            </div>
+            <div className="mt-3">
+              <div className="text-xs text-slate-600 font-medium">Bank details (Client)</div>
+              <div className="grid sm:grid-cols-3 gap-3 mt-1.5">
+                <Input label="IBAN" value={client.iban} onChange={(e) => setClient((c) => ({ ...c, iban: e.target.value }))} />
+                <Input label="Bank name" value={client.bankName} onChange={(e) => setClient((c) => ({ ...c, bankName: e.target.value }))} />
+                <Input label="SWIFT / BIC" value={client.bic} onChange={(e) => setClient((c) => ({ ...c, bic: e.target.value }))} />
+              </div>
             </div>
 
             <hr className="my-4 border-black/10" />
@@ -673,8 +702,8 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
           city: sender.city,
           country: sender.country,
           iban: sender.iban,
-          bankName: undefined,
-          bic: undefined,
+          bankName: sender.bankName,
+          bic: sender.bic,
         }}
         client={{
           name: client.name,
