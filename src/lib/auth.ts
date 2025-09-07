@@ -1,6 +1,7 @@
 import type { NextAuthOptions } from 'next-auth';
 import EmailProvider from 'next-auth/providers/email';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
 
 const hasSmtp = !!(
@@ -19,6 +20,8 @@ export const authOptions: NextAuthOptions = {
   // См. https://next-auth.js.org/configuration/options#trusthost
   // @ts-expect-error v4 тип может не знать trustHost, но опция поддерживается
   trustHost: true,
+  // EmailProvider требует adapter для хранения verification tokens, users, sessions
+  adapter: PrismaAdapter(prisma as any),
   session: { strategy: 'jwt' },
   providers: [
     // Credentials provider for test users (no SMTP required)
