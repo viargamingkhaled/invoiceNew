@@ -11,8 +11,8 @@ const hasSmtp = !!(
 );
 
 export const authOptions: NextAuthOptions = {
-  // Включаем подробные логи next-auth и доверяем прокси/хосту на Vercel
-  debug: process.env.NODE_ENV !== 'production' ? true : false,
+  // Включаем подробные логи next-auth по флагу (включите NEXTAUTH_DEBUG=1 в Vercel при отладке)
+  debug: process.env.NEXTAUTH_DEBUG === '1',
   secret: process.env.NEXTAUTH_SECRET,
   // Для некоторых конфигураций за прокси (Vercel, custom domain)
   // помогает, если NEXTAUTH_URL задан, но хост отличается
@@ -64,15 +64,20 @@ export const authOptions: NextAuthOptions = {
     // Email magic-link (enabled only if SMTP configured)
     ...(hasSmtp
       ? [
-          EmailProvider({
-            server: {
-              host: process.env.SMTP_HOST,
-              port: Number(process.env.SMTP_PORT || 587),
-              auth: { user: process.env.SMTP_USER!, pass: process.env.SMTP_PASS! },
-            },
-            from: process.env.EMAIL_FROM,
-            maxAge: 24 * 60 * 60,
-          }),
+          (() => {
+            const port = Number(process.env.SMTP_PORT || 587);
+            const secure = port === 465; // SMTPS
+            return EmailProvider({
+              server: {
+                host: process.env.SMTP_HOST,
+                port,
+                auth: { user: process.env.SMTP_USER!, pass: process.env.SMTP_PASS! },
+                ...(secure ? { secure: true } : {}),
+              },
+              from: process.env.EMAIL_FROM,
+              maxAge: 24 * 60 * 60,
+            });
+          })(),
         ]
       : []),
   ],
