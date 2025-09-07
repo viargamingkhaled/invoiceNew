@@ -11,7 +11,14 @@ const hasSmtp = !!(
 );
 
 export const authOptions: NextAuthOptions = {
+  // Включаем подробные логи next-auth и доверяем прокси/хосту на Vercel
+  debug: process.env.NODE_ENV !== 'production' ? true : false,
   secret: process.env.NEXTAUTH_SECRET,
+  // Для некоторых конфигураций за прокси (Vercel, custom domain)
+  // помогает, если NEXTAUTH_URL задан, но хост отличается
+  // См. https://next-auth.js.org/configuration/options#trusthost
+  // @ts-expect-error v4 тип может не знать trustHost, но опция поддерживается
+  trustHost: true,
   session: { strategy: 'jwt' },
   providers: [
     // Credentials provider for test users (no SMTP required)
