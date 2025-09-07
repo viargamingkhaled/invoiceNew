@@ -1,1 +1,611 @@
-﻿甧敳挠楬湥❴഻ഊ椊灭牯⁴⁻潭楴湯素映潲⁭昧慲敭⵲潭楴湯㬧਍浩潰瑲笠甠敳晅敦瑣‬獵剥晥‬獵卥慴整素映潲⁭爧慥瑣㬧਍浩潰瑲笠䤠整Ɑ吠硡潍敤素映潲⁭䀧琯灹獥椯癮楯散㬧਍浩潰瑲笠䌠剕䕒䍎彙奂䍟問呎奒‬䍃‬䅖彔䅒䕔⁓⁽牦浯✠⽀楬⽢潣獮慴瑮❳഻椊灭牯⁴湉異⁴牦浯✠⽀潣灭湯湥獴甯⽩湉異❴഻椊灭牯⁴敔瑸牡慥映潲⁭䀧振浯潰敮瑮⽳極启硥慴敲❡഻椊灭牯⁴畂瑴湯映潲⁭䀧振浯潰敮瑮⽳極䈯瑵潴❮഻椊灭牯⁴湉潶捩健灡牥映潲⁭⸧䤯癮楯散慐数❲഻椊灭牯⁴湉潶捩䅥‴牦浯✠⽀潣灭湯湥獴瀯晤䤯癮楯散㑁㬧਍਍湩整晲捡⁥湉潶捩䙥牯偭潲獰笠਍†楳湧摥湉›潢汯慥㭮਍ൽഊ攊灸牯⁴敤慦汵⁴畦据楴湯䤠癮楯散潆浲笨猠杩敮䥤⁮㩽䤠癮楯散潆浲牐灯⥳笠਍†潣獮⁴换敒⁦‽獵剥晥䈼潲摡慣瑳桃湡敮⁬⁼畮汬⠾畮汬㬩਍†潣獮⁴牛来潩Ɱ猠瑥敒楧湯⁝‽獵卥慴整✨䭕⤧഻ 挠湯瑳嬠潣湵牴ⱹ猠瑥潃湵牴嵹㴠甠敳瑓瑡⡥唧楮整⁤楋杮潤❭㬩਍†潣獮⁴捛牵敲据ⱹ猠瑥畃牲湥祣⁝‽獵卥慴整䌨剕䕒䍎彙奂䍟問呎奒捛畯瑮祲⁝籼✠䉇❐㬩਍†潣獮⁴瑛硡潍敤‬敳呴硡潍敤⁝‽獵卥慴整吼硡潍敤⠾搧浯獥楴❣㬩਍਍†潣獮⁴潣湵牴䍹摯⁥‽䍃捛畯瑮祲⁝籼✠䭕㬧਍†潣獮⁴潣湵牴剹瑡獥㴠嘠呁剟呁卅捛畯瑮祲潃敤⁝籼嬠ⰰ㈠崰഻ 挠湯瑳猠慴摮牡剤瑡⁥‽潣湵牴剹瑡獥捛畯瑮祲慒整⹳敬杮桴ⴠㄠ⁝籼㈠㬰਍†潣獮⁴汛湩呥硡慒整‬敳䱴湩呥硡慒整⁝‽獵卥慴整渼浵敢㹲猨慴摮牡剤瑡⥥഻ഊ 挠湯瑳嬠瑩浥ⱳ猠瑥瑉浥嵳㴠甠敳瑓瑡㱥瑉浥嵛⠾൛ †笠搠獥㩣✠敓癲捩⁥ㄣⰧ焠祴›ⰱ爠瑡㩥ㄠ〰‬慴㩸猠慴摮牡剤瑡⁥ⱽ਍††⁻敤捳›匧牥楶散⌠✲‬瑱㩹ㄠ‬慲整›〲ⰰ琠硡›瑳湡慤摲慒整素ബ 崠㬩਍਍†⼯匠湥敤⁲ 汃敩瑮⼠䤠癮楯散洠瑥摡瑡⁡ 潎整⁳昨牯氠癩⁥牰癥敩⥷਍†潣獮⁴獛湥敤Ⱳ猠瑥敓摮牥⁝‽獵卥慴整笨਍††潣灭湡㩹✠捁敭䰠摴Ⱗ਍††慶㩴挠畯瑮祲㴠㴽✠湕瑩摥䬠湩摧浯‧‿䜧ㅂ㌲㔴㜶㤸‧›䔧⁕䅖❔ബ †愠摤敲獳›㈧ㄲ⁂慂敫⁲瑓敲瑥Ⱗ਍††楣祴›䰧湯潤❮ബ †挠畯瑮祲ബ †椠慢㩮✠䉇〰䅂䭎〰〰〰〰〰Ⱗ਍†⥽഻ 挠湯瑳嬠汣敩瑮‬敳䍴楬湥嵴㴠甠敳瑓瑡⡥ൻ †渠浡㩥✠汃敩瑮䜠扭❈ബ †瘠瑡›䐧ㅅ㌲㔴㜶㤸Ⱗ਍††摡牤獥㩳✠潐獴慤敭⁲汐瑡⁺✱ബ †挠瑩㩹✠敂汲湩Ⱗ਍††潣湵牴㩹✠敇浲湡❹ബ 素㬩਍†潣獮⁴楛癮楯散敍慴‬敳䥴癮楯散敍慴⁝‽獵卥慴整笨਍††畮扭牥›䤧噎㈭㈰ⴵ〰㈰㔴Ⱗ਍††慤整›㈧㈰ⴵ㤰〭✲ബ †搠敵›㈧㈰ⴵ㤰ㄭ✶ബ 素㬩਍†潣獮⁴湛瑯獥‬敳乴瑯獥⁝‽獵卥慴整✨慐浹湥⁴楷桴湩ㄠ‴慤獹‮慌整映敥⁳慭⁹灡汰⹹⤧഻ഊ ⼠ 湉瑩慩楬敺匠湥敤⁲牦浯猠癡摥䌠浯慰祮⠠晩愠慶汩扡敬ഩ 甠敳晅敦瑣⠨ 㸽笠਍††愨祳据⠠ 㸽笠਍†††牴⁹ൻ †††挠湯瑳爠獥㴠愠慷瑩映瑥档✨愯楰洯❥㬩਍††††晩⠠爡獥漮⥫爠瑥牵㭮਍††††潣獮⁴⁻獵牥素㴠愠慷瑩爠獥樮潳⡮㬩਍††††潣獮⁴潣灭湡⁹‽獵牥⸿潣灭湡⁹獡愠祮഻ †††椠⁦挨浯慰祮 ൻ ††††挠湯瑳瘠瑡牏敒⁧‽潣灭湡⹹慶⁴籼挠浯慰祮爮来簠⁼✧഻ ††††挠湯瑳渠硥䍴畯瑮祲㴠挠浯慰祮挮畯瑮祲㼠‿畮汬഻ ††††猠瑥敓摮牥瀨敲⁶㸽⠠ൻ †††††⸠⸮牰癥ബ †††††挠浯慰祮›潣灭湡⹹慮敭㼠‿牰癥挮浯慰祮ബ †††††瘠瑡›慶佴割来ബ †††††愠摤敲獳›潣灭湡⹹摡牤獥ㅳ㼠‿牰癥愮摤敲獳ബ †††††挠瑩㩹挠浯慰祮挮瑩⁹㼿瀠敲⹶楣祴ബ †††††挠畯瑮祲›敮瑸潃湵牴⁹㼿瀠敲⹶潣湵牴ⱹ਍††††††扩湡›潣灭湡⹹扩湡㼠‿牰癥椮慢Ɱ਍†††††⥽㬩਍†††††晩⠠潣灭湡⹹潣湵牴⁹☦䌠剕䕒䍎彙奂䍟問呎奒捛浯慰祮挮畯瑮祲⥝猠瑥潃湵牴⡹潣灭湡⹹潣湵牴⥹഻ †††素਍††††晩⠠獵牥⸿畣牲湥祣 敳䍴牵敲据⡹獵牥挮牵敲据⥹഻ †††椠⁦琨灹潥⁦獵牥⸿潴敫䉮污湡散㴠㴽✠畮扭牥⤧猠瑥潔敫䉮污湡散用敳⹲潴敫䉮污湡散㬩਍†††⁽慣捴⁨ൻ †††⼠ 杩潮敲਍†††ൽ †素⠩㬩਍†ⱽ嬠⥝഻ ⼠ 楌敶猠湹㩣䈠潲摡慣瑳桃湡敮⁬‫潦畣⁳敲牦獥൨ 甠敳晅敦瑣⠨ 㸽笠਍††牴⁹ൻ ††戠剣晥挮牵敲瑮㴠渠睥䈠潲摡慣瑳桃湡敮⡬愧灰攭敶瑮❳㬩਍†††换敒⹦畣牲湥⹴湯敭獳条⁥‽攨㩶䴠獥慳敧癅湥⥴㴠‾ൻ †††挠湯瑳搠瑡㩡愠祮㴠⠠癥愠⁳湡⥹⸿慤慴簠⁼絻഻ †††椠⁦搨瑡⹡祴数㴠㴽✠潣灭湡⵹灵慤整❤☠…慤慴挮浯慰祮 ൻ ††††挠湯瑳挠㴠搠瑡⹡潣灭湡㭹਍†††††潣獮⁴慶佴割来㴠挠瘮瑡簠⁼⹣敲⁧籼✠㬧਍†††††敳却湥敤⡲牰癥㴠‾笨਍††††††⸮瀮敲ⱶ਍††††††潣灭湡㩹挠渮浡⁥㼿瀠敲⹶潣灭湡ⱹ਍††††††慶㩴瘠瑡牏敒Ⱨ਍††††††摡牤獥㩳挠愮摤敲獳‱㼿瀠敲⹶摡牤獥ⱳ਍††††††楣祴›⹣楣祴㼠‿牰癥挮瑩ⱹ਍††††††潣湵牴㩹挠挮畯瑮祲㼠‿牰癥挮畯瑮祲ബ †††††椠慢㩮挠椮慢⁮㼿瀠敲⹶扩湡ബ ††††素⤩഻ ††††椠⁦挨挮畯瑮祲☠…啃剒久奃䉟彙佃乕剔孙⹣潣湵牴嵹 敳䍴畯瑮祲挨挮畯瑮祲㬩਍††††ൽ †††椠⁦搨瑡⹡祴数㴠㴽✠潴敫獮甭摰瑡摥‧☦琠灹潥⁦慤慴琮歯湥慂慬据⁥㴽‽渧浵敢❲ ൻ ††††猠瑥潔敫䉮污湡散搨瑡⹡潴敫䉮污湡散㬩਍††††ൽ ††素഻ †素挠瑡档笠ൽ †挠湯瑳漠䙮捯獵㴠愠祳据⠠ 㸽笠਍†††牴⁹ൻ †††挠湯瑳爠獥㴠愠慷瑩映瑥档✨愯楰洯❥㬩਍††††晩⠠爡獥漮⥫爠瑥牵㭮਍††††潣獮⁴⁻獵牥素㴠愠慷瑩爠獥樮潳⡮㬩਍††††晩⠠祴数景甠敳㽲琮歯湥慂慬据⁥㴽‽渧浵敢❲ 敳呴歯湥慂慬据⡥獵牥琮歯湥慂慬据⥥഻ †††挠湯瑳挠浯慰祮㴠甠敳㽲挮浯慰祮愠⁳湡㭹਍††††晩⠠潣灭湡⥹笠਍†††††潣獮⁴慶佴割来㴠挠浯慰祮瘮瑡簠⁼潣灭湡⹹敲⁧籼✠㬧਍†††††敳却湥敤⡲牰癥㴠‾笨਍††††††⸮瀮敲ⱶ਍††††††潣灭湡㩹挠浯慰祮渮浡⁥㼿瀠敲⹶潣灭湡ⱹ਍††††††慶㩴瘠瑡牏敒Ⱨ਍††††††摡牤獥㩳挠浯慰祮愮摤敲獳‱㼿瀠敲⹶摡牤獥ⱳ਍††††††楣祴›潣灭湡⹹楣祴㼠‿牰癥挮瑩ⱹ਍††††††潣湵牴㩹挠浯慰祮挮畯瑮祲㼠‿牰癥挮畯瑮祲ബ †††††椠慢㩮挠浯慰祮椮慢⁮㼿瀠敲⹶扩湡ബ ††††素⤩഻ †††素਍†††⁽慣捴⁨絻਍††㭽਍††楷摮睯愮摤癅湥䱴獩整敮⡲昧捯獵Ⱗ漠䙮捯獵㬩਍††敲畴湲⠠ 㸽笠਍†††牴⁹⁻换敒⹦畣牲湥㽴挮潬敳⤨※⁽慣捴⁨絻਍†††楷摮睯爮浥癯䕥敶瑮楌瑳湥牥✨潦畣❳‬湯潆畣⥳഻ †素഻ 素‬嵛㬩਍਍†潣獮⁴慧整⁤‽猡杩敮䥤㭮਍†潣獮⁴扛湡敮Ⱳ猠瑥慂湮牥⁝‽獵卥慴整笼琠灹㩥✠畳捣獥❳簠✠牥潲❲※獭㩧猠牴湩⁧⁽⁼畮汬⠾畮汬㬩਍†潣獮⁴扛獵ⱹ猠瑥畂祳⁝‽獵卥慴整✼慳敶‧⁼猧慨敲‧⁼搧睯汮慯❤簠✠浥楡❬簠渠汵㹬渨汵⥬഻ 挠湯瑳嬠潴敫䉮污湡散‬敳呴歯湥慂慬据嵥㴠甠敳瑓瑡㱥畮扭牥簠渠汵㹬渨汵⥬഻ഊ 挠湯瑳甠摰瑡䅥汬楌敮慔數⁳‽琨硡›畮扭牥 㸽猠瑥瑉浥⡳牰癥㴠‾牰癥洮灡椨⁴㸽⠠⁻⸮椮ⱴ琠硡素⤩㬩਍਍†潣獮⁴湯敒楧湯桃湡敧㴠⠠㩲猠牴湩⥧㴠‾ൻ †猠瑥敒楧湯爨㬩਍††潣獮⁴敮瑸潃湵牴⁹‽⁲㴽‽唧❋㼠✠湕瑩摥䬠湩摧浯‧›䜧牥慭祮㬧਍††潣獮⁴敮瑸畃牲湥祣㴠䌠剕䕒䍎彙奂䍟問呎奒湛硥䍴畯瑮祲⁝籼⠠⁲㴽‽唧❋㼠✠䉇❐㨠✠啅❒㬩਍††潣獮⁴敮瑸潃敤㴠䌠孃敮瑸潃湵牴嵹簠⁼爨㴠㴽✠䭕‧‿唧❋㨠✠䕄⤧഻ †挠湯瑳渠硥剴瑡獥㴠嘠呁剟呁卅湛硥䍴摯嵥簠⁼せ‬〲㭝਍††潣獮⁴敮瑸瑓湡慤摲㴠渠硥剴瑡獥湛硥剴瑡獥氮湥瑧⁨‭崱簠⁼〲഻ †猠瑥潃湵牴⡹敮瑸潃湵牴⥹഻ †猠瑥畃牲湥祣渨硥䍴牵敲据⥹഻ †猠瑥慔䵸摯⡥⁲㴽‽唧❋㼠✠潤敭瑳捩‧›慴䵸摯⥥഻ †挠湯瑳愠灰祬㴠⠠⁲㴽‽唧❋簠⁼慴䵸摯⁥㴽‽搧浯獥楴❣ ‿敮瑸瑓湡慤摲㨠〠഻ †猠瑥楌敮慔剸瑡⡥灡汰⥹഻ †甠摰瑡䅥汬楌敮慔數⡳灡汰⥹഻ †猠瑥敓摮牥瀨敲⁶㸽⠠⁻⸮瀮敲ⱶ挠畯瑮祲›敮瑸潃湵牴⁹⥽㬩਍†㭽਍਍†潣獮⁴湯潃湵牴䍹慨杮⁥‽挨›瑳楲杮 㸽笠਍††敳䍴畯瑮祲挨㬩਍††潣獮⁴敮瑸畃牲㴠䌠剕䕒䍎彙奂䍟問呎奒捛⁝籼挠牵敲据㭹਍††潣獮⁴潣敤㴠䌠孃嵣഻ †挠湯瑳爠瑡獥㴠⠠潣敤☠…䅖彔䅒䕔孓潣敤⥝㼠嘠呁剟呁卅捛摯嵥㨠嬠ⰰ㈠崰഻ †挠湯瑳渠硥却慴摮牡⁤‽慲整孳慲整⹳敬杮桴ⴠㄠ⁝籼㈠㬰਍††敳䍴牵敲据⡹敮瑸畃牲㬩਍††潣獮⁴灡汰⁹‽慴䵸摯⁥㴽‽搧浯獥楴❣㼠渠硥却慴摮牡⁤›㬰਍††敳䱴湩呥硡慒整愨灰祬㬩਍††灵慤整汁䱬湩呥硡獥愨灰祬㬩਍††敳却湥敤⡲牰癥㴠‾笨⸠⸮牰癥‬潣湵牴㩹挠素⤩഻ 素഻ഊ 挠湯瑳愠摤瑉浥㴠⠠ 㸽猠瑥瑉浥⡳牰癥㴠‾൛ †⸠⸮牰癥ബ †笠搠獥㩣怠敓癲捩⁥␣灻敲⹶敬杮桴⬠ㄠ恽‬瑱㩹ㄠ‬慲整›〱ⰰ琠硡›楬敮慔剸瑡⁥ⱽ਍†⥝഻ഊ 挠湯瑳甠摰瑡䥥整⁭‽椨硤›畮扭牥‬敫㩹欠祥景䤠整Ɑ瘠污›湡⥹㴠ാ †猠瑥瑉浥⡳牰癥㴠‾牰癥洮灡⠨瑩‬⥩㴠‾椨㴠㴽椠硤㼠笠⸠⸮瑩‬歛祥㩝瘠污素㨠椠⥴⤩഻ഊ 挠湯瑳猠扵潴慴⁬‽瑩浥⹳敲畤散⠨ⱳ椠⥴㴠‾⁳‫丨浵敢⡲瑩焮祴 籼〠 ‪丨浵敢⡲瑩爮瑡⥥簠⁼⤰‬⤰഻ 挠湯瑳琠硡潔慴⁬‽瑩浥⹳敲畤散⠨ⱳ椠⥴㴠‾⁳‫⠨畎扭牥椨⹴瑱⥹簠⁼⤰⨠⠠畎扭牥椨⹴慲整 籼〠⤩⨠⠠丨浵敢⡲瑩琮硡 籼〠  〱⤰‬⤰഻ 挠湯瑳琠瑯污㴠猠扵潴慴⁬‫慴呸瑯污഻ഊ 挠湯瑳稠牥乯瑯⁥‽慴䵸摯⁥㴽‽椧瑮慲啅牟❣਍††‿嘧呁〠‥‭湉牴ⵡ啅猠灵汰⁹爨癥牥敳挠慨杲⁥灡汰敩⥳✮਍††›慴䵸摯⁥㴽‽甧彫略损潲獳ധ †㼠✠䅖⁔┰ⴠ唠⁋潴䔠⁕牣獯⵳潢摲牥猠灵汰⁹挨敨正稠牥ⵯ慲楴杮爠汵獥⸩ധ †㨠琠硡潍敤㴠㴽✠硥潰瑲ധ †㼠✠䅖⁔┰ⴠ䔠灸牯⁴畯獴摩⁥䭕䔯⹕ധ †㨠甠摮晥湩摥഻ഊ 挠湯瑳搠睯汮慯偤晤㴠愠祳据⠠ 㸽笠਍†晩⠠猡杩敮䥤⥮爠瑥牵㭮਍†晩⠠潴敫䉮污湡散℠㴽渠汵⁬☦琠歯湥慂慬据⁥‼〱⤰笠਍††敳䉴湡敮⡲⁻祴数›攧牲牯Ⱗ洠杳›丧瑯攠潮杵⁨潴敫獮⠠〱‰敲畱物摥⸩‧⥽഻ †爠瑥牵㭮਍†ൽ 猠瑥畂祳✨潤湷潬摡⤧഻ 猠瑥慂湮牥渨汵⥬഻ 琠祲笠਍††潣獮⁴歯㴠愠慷瑩挠慨杲呥歯湥⡳〱⤰഻ †椠⁦ℨ歯 ⁻敳䉴獵⡹畮汬㬩爠瑥牵㭮素਍††潣獮⁴汥㴠搠捯浵湥⹴敧䕴敬敭瑮祂摉✨牰湩⵴牡慥⤧഻ †椠⁦ℨ汥 桴潲⁷敮⁷牅潲⡲倧楲瑮愠敲⁡潮⁴潦湵❤㬩਍††潣獮⁴牰癥楄灳慬⁹‽汥献祴敬搮獩汰祡഻ †挠湯瑳瀠敲偶獯㴠⠠汥献祴敬愠⁳湡⥹瀮獯瑩潩㭮਍††潣獮⁴牰癥敌瑦㴠⠠汥献祴敬愠⁳湡⥹氮晥㭴਍††攨⹬瑳汹⁥獡愠祮⸩楤灳慬⁹‽戧潬正㬧਍††攨⹬瑳汹⁥獡愠祮⸩潰楳楴湯㴠✠扡潳畬整㬧਍††攨⹬瑳汹⁥獡愠祮⸩敬瑦㴠✠ㄭ〰〰硰㬧਍਍††潣獮⁴⁻獪䑐⁆⁽‽睡楡⁴浩潰瑲✨獪摰❦㬩਍††潣獮⁴瑨汭挲湡慶⁳‽愨慷瑩椠灭牯⡴栧浴㉬慣癮獡⤧⸩敤慦汵㭴਍††潣獮⁴慣癮獡㴠愠慷瑩栠浴㉬慣癮獡攨⁬獡䠠䵔䕌敬敭瑮‬⁻捳污㩥㈠‬獵䍥剏㩓琠畲ⱥ戠捡杫潲湵䍤汯牯›⌧晦晦晦‧⥽഻ഊ †⠠汥献祴敬愠⁳湡⥹搮獩汰祡㴠瀠敲䑶獩汰祡഻ †⠠汥献祴敬愠⁳湡⥹瀮獯瑩潩⁮‽牰癥潐㭳਍††攨⹬瑳汹⁥獡愠祮⸩敬瑦㴠瀠敲䱶晥㭴਍਍††潣獮⁴浩䑧瑡⁡‽慣癮獡琮䑯瑡啡䱒✨浩条⽥湰❧㬩਍††潣獮⁴摰⁦‽敮⁷獪䑐⡆⁻牯敩瑮瑡潩㩮✠潰瑲慲瑩Ⱗ甠楮㩴✠浭Ⱗ映牯慭㩴✠㑡‧⥽഻ †挠湯瑳瀠条坥摩桴㴠瀠晤椮瑮牥慮⹬慰敧楓敺朮瑥楗瑤⡨㬩਍††潣獮⁴慰敧效杩瑨㴠瀠晤椮瑮牥慮⹬慰敧楓敺朮瑥效杩瑨⤨഻ †瀠晤愮摤浉条⡥浩䑧瑡ⱡ✠乐❇‬ⰰ〠‬慰敧楗瑤ⱨ瀠条䡥楥桧ⱴ甠摮晥湩摥‬䘧十❔㬩਍††潣獮⁴湦浡⁥‽湉潶捩⁥‭瀮晤഻ †瀠晤献癡⡥湦浡⥥഻ †猠瑥慂湮牥笨琠灹㩥✠畳捣獥❳‬獭㩧✠䑐⁆潤湷潬摡摥✮素㬩਍†⁽慣捴⁨攨›湡⥹笠਍††敳䉴湡敮⡲⁻祴数›攧牲牯Ⱗ洠杳›⹥敭獳条⁥籼✠䑐⁆潤湷潬摡映楡敬⹤‧⥽഻ 素映湩污祬笠਍††敳䉴獵⡹畮汬㬩਍†ൽ紊഻ഊ ഠ ⼠ 桃牡敧琠歯湥⁳敨灬牥愠摮戠潲摡慣瑳甠摰瑡൥ 挠湯瑳挠慨杲呥歯湥⁳‽獡湹⁣挨獯㩴渠浵敢⥲㴠‾ൻ †琠祲笠਍†††潣獮⁴敲⁳‽睡楡⁴敦捴⡨⼧灡⽩敬杤牥Ⱗ笠਍††††敭桴摯›倧协❔ബ †††栠慥敤獲›⁻䌧湯整瑮吭灹❥›愧灰楬慣楴湯樯潳❮素ബ †††戠摯㩹䨠体⹎瑳楲杮晩⡹⁻祴数›䤧癮楯散Ⱗ搠汥慴›䴭瑡⹨扡⡳潣瑳 ⥽ബ ††素㬩਍†††晩⠠爡獥漮⥫笠਍††††潣獮⁴⁪‽睡楡⁴敲⹳獪湯⤨挮瑡档⠨㴩⠾敻牲牯✺慆汩摥琠⁯档牡敧琠歯湥❳⥽㬩਍††††桴潲⁷敮⁷牅潲⡲⹪牥潲⁲籼✠慆汩摥琠⁯档牡敧琠歯湥❳㬩਍†††ൽ ††挠湯瑳笠琠歯湥慂慬据㩥渠睥慂慬据⁥⁽‽睡楡⁴敲⹳獪湯⤨഻ ††椠⁦琨灹潥⁦敮䉷污湡散㴠㴽✠畮扭牥⤧笠਍††††敳呴歯湥慂慬据⡥敮䉷污湡散㬩਍††††牴⁹ൻ ††††戠剣晥挮牵敲瑮⸿潰瑳敍獳条⡥⁻祴数›琧歯湥⵳灵慤整❤‬潴敫䉮污湡散›敮䉷污湡散素㬩਍††††⁽慣捴⁨絻਍†††ൽ ††爠瑥牵⁮牴敵഻ †素挠瑡档⠠㩥愠祮 ൻ ††猠瑥慂湮牥笨琠灹㩥✠牥潲❲‬獭㩧攠洮獥慳敧簠⁼吧歯湥挠慨杲⁥慦汩摥‧⥽഻ ††爠瑥牵⁮慦獬㭥਍††ൽ 素挻湯瑳猠癡䑥慲瑦㴠愠祳据⠠ 㸽笠਍††敳䉴獵⡹猧癡❥㬩਍††敳䉴湡敮⡲畮汬㬩਍††牴⁹ൻ ††挠湯瑳爠獥㴠愠慷瑩映瑥档✨愯楰搯慲瑦❳‬ൻ †††洠瑥潨㩤✠佐呓Ⱗ਍††††敨摡牥㩳笠✠潃瑮湥⵴祔数㨧✠灡汰捩瑡潩⽮獪湯‧ⱽ਍††††潢祤›半乏献牴湩楧祦笨਍†††††畣牲湥祣ബ ††††挠楬湥㩴挠楬湥⹴慮敭ബ ††††猠扵潴慴㩬䴠瑡⹨潲湵⡤畳瑢瑯污Ⱙ਍†††††慴㩸䴠瑡⹨潲湵⡤慴呸瑯污Ⱙ਍†††††潴慴㩬䴠瑡⹨潲湵⡤潴慴⥬ബ †††素Ⱙ਍†††⥽഻ ††椠⁦ℨ敲⹳歯 桴潲⁷敮⁷牅潲⡲愨慷瑩爠獥樮潳⡮⸩慣捴⡨⤨㸽笨牥潲㩲䘧楡敬❤⥽⤩攮牲牯簠⁼䘧楡敬⁤潴猠癡⁥牤晡❴㬩਍†††敳䉴湡敮⡲⁻祴数›猧捵散獳Ⱗ洠杳›䐧慲瑦猠癡摥琠⁯慄桳潢牡⹤‧⥽഻ †素挠瑡档⠠㩥愠祮 ൻ ††猠瑥慂湮牥笨琠灹㩥✠牥潲❲‬獭㩧攠洮獥慳敧簠⁼䘧楡敬⁤潴猠癡⁥牤晡⹴‧⥽഻ †素映湩污祬笠਍†††敳䉴獵⡹畮汬㬩਍††ൽ 素഻ഊ 挠湯瑳猠癡䅥摮桓牡⁥‽獡湹⁣⤨㴠‾ൻ 椠⁦ℨ楳湧摥湉 敲畴湲഻ 椠⁦琨歯湥慂慬据⁥渭⁥ⴠ湡⁤ⴠ瑬ㄠ〰 ൻ †猠瑥慂湮牥笨琠灹㩥✠牥潲❲‬獭㩧✠潎⁴湥畯桧琠歯湥⁳ㄨ〰爠煥極敲⥤✮素㬩਍††敲畴湲഻ 素਍†敳䉴獵⡹猧慨敲⤧഻ 猠瑥慂湮牥渨汵⥬഻ 琠祲笠਍††潣獮⁴歯㴠愠慷瑩挠慨杲呥歯湥⡳〱⤰഻ †椠⁦ℨ歯 ⁻敳䉴獵⡹畮汬㬩爠瑥牵㭮素਍††潣獮⁴敲⁳‽睡楡⁴敦捴⡨⼧灡⽩牤晡獴Ⱗ笠਍†††敭桴摯›倧协❔ബ ††栠慥敤獲›⁻䌧湯整瑮吭灹❥›愧灰楬慣楴湯樯潳❮素ബ ††戠摯㩹䨠体⹎瑳楲杮晩⡹ൻ †††挠牵敲据ⱹ਍††††汣敩瑮›汣敩瑮渮浡ⱥ਍††††畳瑢瑯污›慍桴爮畯摮猨扵潴慴⥬ബ †††琠硡›慍桴爮畯摮琨硡潔慴⥬ബ †††琠瑯污›慍桴爮畯摮琨瑯污Ⱙ਍†††⥽ബ †素㬩਍††晩⠠爡獥漮⥫琠牨睯渠睥䔠牲牯⠨睡楡⁴敲⹳獪湯⤨挮瑡档⠨㴩⠾敻牲牯✺慆汩摥紧⤩⸩牥潲⁲籼✠慆汩摥琠⁯慳敶搠慲瑦⤧഻ †挠湯瑳笠椠癮楯散素㴠愠慷瑩爠獥樮潳⡮㬩਍††潣獮⁴牵⁬‽笤楷摮睯氮捯瑡潩⹮牯杩湩⽽⽳഻ †愠慷瑩渠癡杩瑡牯挮楬扰慯摲眮楲整敔瑸用汲㬩਍††敳䉴湡敮⡲⁻祴数›猧捵散獳Ⱗ洠杳›匧慨敲氠湩⁫潣楰摥琠⁯汣灩潢牡⹤‧⥽഻ 素挠瑡档⠠㩥愠祮 ൻ †猠瑥慂湮牥笨琠灹㩥✠牥潲❲‬獭㩧攠洮獥慳敧簠⁼䘧楡敬⁤潴猠癡⁥牯挠灯⹹‧⥽഻ 素映湩污祬笠਍††敳䉴獵⡹畮汬㬩਍†ൽ紊഻ഊ 挠湯瑳猠湥䕤慭汩㴠愠祳据⠠ 㸽笠਍††晩⠠猡杩敮䥤⥮爠瑥牵㭮਍††晩⠠潴敫䉮污湡散℠㴽渠汵⁬☦琠歯湥慂慬据⁥‼〱⤰笠਍†††敳䉴湡敮⡲⁻祴数›攧牲牯Ⱗ洠杳›丧瑯攠潮杵⁨潴敫獮⠠〱‰敲畱物摥⸩‧⥽഻ ††爠瑥牵㭮਍††ൽ †猠瑥畂祳✨浥楡❬㬩਍††敳䉴湡敮⡲畮汬㬩਍††牴⁹ൻ ††挠湯瑳漠⁫‽睡楡⁴档牡敧潔敫獮ㄨ〰㬩਍†††晩⠠漡⥫笠猠瑥畂祳渨汵⥬※敲畴湲※ൽ ††猠瑥慂湮牥笨琠灹㩥✠畳捣獥❳‬獭㩧✠浅楡⁬畱略摥⠠潭正⸩‧⥽഻ †素挠瑡档⠠⥥笠਍†††敳䉴湡敮⡲⁻祴数›攧牲牯Ⱗ洠杳›䘧楡敬⁤潴焠敵敵攠慭汩✮素㬩਍††⁽楦慮汬⁹ൻ ††猠瑥畂祳渨汵⥬഻ †素਍†㭽਍†敲畴湲⠠਍††搼癩挠慬獳慎敭∽灳捡ⵥ⵹∶ാ ††笠⨯䌠湯牴汯⁳⼪ൽ ††㰠楤⁶汣獡乳浡㵥昢敬⁸汦硥眭慲⁰瑩浥⵳散瑮牥朠灡㌭樠獵楴祦戭瑥敷湥洠ⵢ∴ാ †††㰠楤⁶汣獡乳浡㵥昢敬⁸汦硥眭慲⁰瑩浥⵳散瑮牥朠灡㈭琠硥⵴浳㸢਍†††††猼慰⁮汣獡乳浡㵥昢湯⵴敭楤浵㸢敒楧湯㰺猯慰㹮਍†††††猼汥捥൴ †††††瘠污敵笽敲楧湯ൽ †††††漠䍮慨杮㵥⡻⥥㴠‾湯敒楧湯桃湡敧攨琮牡敧⹴慶畬⥥ൽ †††††挠慬獳慎敭∽潲湵敤ⵤ杬戠牯敤⁲潢摲牥戭慬正ㄯ‰杢眭楨整瀠⵸⸲‵祰㈭ഢ ††††㸠਍††††††漼瑰潩㹮䭕⼼灯楴湯ാ †††††㰠灯楴湯䔾㱕漯瑰潩㹮਍†††††⼼敳敬瑣ാ ††††㰠灳湡挠慬獳慎敭∽潦瑮洭摥畩⁭汭㌭㸢潃湵牴㩹⼼灳湡ാ ††††㰠敳敬瑣਍††††††慶畬㵥捻畯瑮祲ൽ †††††漠䍮慨杮㵥⡻⥥㴠‾湯潃湵牴䍹慨杮⡥⹥慴杲瑥瘮污敵紩਍††††††汣獡乳浡㵥爢畯摮摥氭⁧潢摲牥戠牯敤⵲汢捡⽫〱戠ⵧ桷瑩⁥硰㈭㔮瀠⵹′慭⵸⵷㉛〲硰≝਍†††††ാ †††††笠扏敪瑣欮祥⡳啃剒久奃䉟彙佃乕剔⥙献牯⡴⸩慭⡰挨 㸽⠠਍†††††††漼瑰潩⁮敫㵹捻⁽慶畬㵥捻㹽捻㱽漯瑰潩㹮਍††††††⤩ൽ ††††㰠猯汥捥㹴਍†††††猼慰⁮汣獡乳浡㵥昢湯⵴敭楤浵洠⵬∳䌾牵敲据㩹⼼灳湡ാ ††††㰠敳敬瑣਍††††††慶畬㵥捻牵敲据絹਍††††††湯桃湡敧笽攨 㸽猠瑥畃牲湥祣攨琮牡敧⹴慶畬⥥ൽ †††††挠慬獳慎敭∽潲湵敤ⵤ杬戠牯敤⁲潢摲牥戭慬正ㄯ‰杢眭楨整瀠⵸⸲‵祰㈭ഢ ††††㸠਍††††††䅻牲祡昮潲⡭敮⁷敓⡴扏敪瑣瘮污敵⡳啃剒久奃䉟彙佃乕剔⥙⤩献牯⡴⸩慭⡰挨摯⥥㴠‾ന ††††††㰠灯楴湯欠祥笽潣敤㹽捻摯絥⼼灯楴湯ാ †††††⤠紩਍†††††⼼敳敬瑣ാ ††††㰠灳湡挠慬獳慎敭∽潦瑮洭摥畩⁭汭㌭㸢湉潶捩⁥慬杮慵敧㰺猯慰㹮਍†††††猼慰⁮汣獡乳浡㵥瀢⵸′祰ㄭ爠畯摮摥氭⁧潢摲牥戠牯敤⵲汢捡⽫〱戠ⵧ桷瑩≥䔾㱎猯慰㹮਍††††⼼楤㹶਍††††搼癩挠慬獳慎敭∽汦硥椠整獭挭湥整⁲慧⵰∲ാ ††††㰠畂瑴湯漠䍮楬正笽慳敶牄晡絴搠獩扡敬㵤杻瑡摥簠⁼畢祳㴡渽汵絬瘠牡慩瑮∽敳潣摮牡≹猠穩㵥猢≭笾畢祳㴽✽慳敶㼧✠慓楶杮➅㨠✠慓敶搠慲瑦紧⼼畂瑴湯ാ ††††㰠畂瑴湯਍††††††湯汃捩㵫摻睯汮慯偤晤ൽ †††††搠獩扡敬㵤杻瑡摥簠⁼畢祳㴡渽汵絬਍††††††楴汴㵥杻瑡摥㼠✠癁楡慬汢⁥晡整⁲楳湧甭❰㨠✠潄湷潬摡倠䙄紧਍††††††楳敺∽浳ഢ †††††挠慬獳慎敭笽慧整⁤‿戧ⵧ汳瑡ⵥ〳✰㨠✠紧਍†††††ാ †††††䐠睯汮慯⁤䑐െ ††††㰠䈯瑵潴㹮਍†††††䈼瑵潴൮ †††††漠䍮楬正笽敳摮浅楡絬਍††††††楤慳汢摥笽慧整⁤籼戠獵ⅹ㴽畮汬ൽ †††††琠瑩敬笽慧整⁤‿䄧慶汩扡敬愠瑦牥猠杩⵮灵‧›匧湥⁤楶⁡浥楡❬ൽ †††††猠穩㵥猢≭਍††††††汣獡乳浡㵥杻瑡摥㼠✠杢猭慬整㌭〰‧›✧ൽ ††††㸠਍††††††扻獵㵹㴽攧慭汩‧‿倧潲散獳湩㩧‧›匧湥⁤浥楡❬ൽ ††††㰠䈯瑵潴㹮਍†††††䈼瑵潴൮ †††††漠䍮楬正笽慳敶湁卤慨敲ൽ †††††搠獩扡敬㵤杻瑡摥簠⁼畢祳㴡渽汵絬਍††††††楴汴㵥杻瑡摥㼠✠癁楡慬汢⁥晡整⁲楳湧甭❰㨠✠慓敶☠猠慨敲氠湩❫ൽ †††††猠穩㵥猢≭਍††††††汣獡乳浡㵥杻瑡摥㼠✠杢猭慬整㌭〰‧›✧ൽ ††††㸠਍††††††扻獵㵹㴽猧慨敲㼧✠慓楶杮➅㨠✠慓敶☠猠慨敲氠湩❫ൽ ††††㰠䈯瑵潴㹮਍††††⼼楤㹶਍†††⼼楤㹶਍਍†††⽻‪慔⁸牔慥浴湥⁴⼪ൽ ††笠慢湮牥☠…ന †††㰠楤⁶汣獡乳浡㵥恻潲湵敤ⵤ杬戠牯敤⁲硰㌭瀠⵹′整瑸猭⁭笤慢湮牥琮灹㵥㴽猧捵散獳㼧✠潢摲牥攭敭慲摬㈭〰戠ⵧ浥牥污ⵤ〵琠硥⵴浥牥污ⵤ〹✰㨠✠潢摲牥爭摥㈭〰戠ⵧ敲ⵤ〵琠硥⵴敲ⵤ〷✰恽㹽਍†††††扻湡敮⹲獭絧਍††††⼼楤㹶਍†††紩਍਍†††洼瑯潩⹮楤൶ †††挠慬獳慎敭∽潲湵敤ⵤ砲⁬杢眭楨整瀠㔭戠牯敤⁲潢摲牥戭慬正ㄯ‰桳摡睯猭≭਍††††湩瑩慩㵬筻漠慰楣祴›ⰰ礠›〲素ൽ †††愠楮慭整笽⁻灯捡瑩㩹ㄠ‬㩹〠素ൽ †††琠慲獮瑩潩㵮筻搠汥祡›⸰‱絽਍†††ാ †††㰠楤⁶汣獡乳浡㵥洢ⵢ∴ാ ††††㰠㍨挠慬獳慎敭∽整瑸猭⁭潦瑮猭浥扩汯⁤牴捡楫杮眭摩⁥整瑸猭慬整㠭〰甠灰牥慣敳㸢慔⁸牴慥浴湥㱴栯㸳਍†††††瀼挠慬獳慎敭∽整瑸砭⁳整瑸猭慬整㔭〰洠⵴∱䌾潨獯⁥潨⁷䅖⁔獩愠灰楬摥⼼㹰਍††††⼼楤㹶਍††††搼癩挠慬獳慎敭∽牧摩洠㩤牧摩挭汯⵳′慧⵰∴ാ ††††㰠楤⁶汣獡乳浡㵥朢楲⁤慧⵰∳ാ †††††㰠慬敢⁬汣獡乳浡㵥椢汮湩ⵥ汦硥椠整獭挭湥整⁲慧⵰′整瑸猭≭ാ ††††††㰠湩異൴ †††††††琠灹㵥爢摡潩ഢ †††††††渠浡㵥琢硡潭敤ഢ †††††††挠敨正摥笽慴䵸摯⁥㴽‽搧浯獥楴❣ൽ †††††††漠䍮慨杮㵥⡻ 㸽笠਍†††††††††敳呴硡潍敤✨潤敭瑳捩⤧഻ ††††††††猠瑥楌敮慔剸瑡⡥瑳湡慤摲慒整㬩਍†††††††††灵慤整汁䱬湩呥硡獥猨慴摮牡剤瑡⥥഻ †††††††素ൽ ††††††⼠ാ ††††††㰠灳湡䐾浯獥楴⁣畳灰祬⠠灡汰⁹潬慣⁬慲整⥳⼼灳湡ാ †††††㰠氯扡汥ാ †††††㰠慬敢⁬汣獡乳浡㵥椢汮湩ⵥ汦硥椠整獭挭湥整⁲慧⵰′整瑸猭≭ാ ††††††㰠湩異൴ †††††††琠灹㵥爢摡潩ഢ †††††††渠浡㵥琢硡潭敤ഢ †††††††挠敨正摥笽慴䵸摯⁥㴽‽椧瑮慲啅牟❣ൽ †††††††漠䍮慨杮㵥⡻ 㸽笠਍†††††††††敳呴硡潍敤✨湩牴䕡录捲⤧഻ ††††††††猠瑥楌敮慔剸瑡⡥⤰഻ ††††††††甠摰瑡䅥汬楌敮慔數⡳⤰഻ †††††††素ൽ ††††††⼠ാ ††††††㰠灳湡䤾瑮慲䔭⁕㉂⁂爨癥牥敳挠慨杲ⱥ〠⤥⼼灳湡ാ †††††㰠氯扡汥ാ †††††㰠慬敢⁬汣獡乳浡㵥椢汮湩ⵥ汦硥椠整獭挭湥整⁲慧⵰′整瑸猭≭ാ ††††††㰠湩異൴ †††††††琠灹㵥爢摡潩ഢ †††††††渠浡㵥琢硡潭敤ഢ †††††††挠敨正摥笽慴䵸摯⁥㴽‽甧彫略损潲獳紧਍††††††††湯桃湡敧笽⤨㴠‾ൻ ††††††††猠瑥慔䵸摯⡥甧彫略损潲獳⤧഻ ††††††††猠瑥楌敮慔剸瑡⡥⤰഻ ††††††††甠摰瑡䅥汬楌敮慔數⡳⤰഻ †††††††素ൽ ††††††⼠ാ ††††††㰠灳湡唾⁋潴䔠⁕牣獯⵳潢摲牥⠠敺潲爭瑡摥㰩猯慰㹮਍††††††⼼慬敢㹬਍††††††氼扡汥挠慬獳慎敭∽湩楬敮昭敬⁸瑩浥⵳散瑮牥朠灡㈭琠硥⵴浳㸢਍†††††††椼灮瑵਍††††††††祴数∽慲楤≯਍††††††††慮敭∽慴浸摯≥਍††††††††档捥敫㵤瑻硡潍敤㴠㴽✠硥潰瑲紧਍††††††††湯桃湡敧笽⤨㴠‾ൻ ††††††††猠瑥慔䵸摯⡥攧灸牯❴㬩਍†††††††††敳䱴湩呥硡慒整〨㬩਍†††††††††灵慤整汁䱬湩呥硡獥〨㬩਍††††††††絽਍†††††††㸯਍†††††††猼慰㹮硅潰瑲漠瑵楳敤唠⽋啅⠠┰㰩猯慰㹮਍††††††⼼慬敢㹬਍††††††搼癩挠慬獳慎敭∽整瑸砭⁳整瑸猭慬整㔭〰㸢਍†††††††潎整›硅捡⁴慲整⁳慶祲戠⁹潧摯⽳敳癲捩獥‮敖楲祦戠晥牯⁥獩畳湩⁧⁡楬敶椠癮楯散മ †††††㰠搯癩ാ ††††㰠搯癩ാ ††††㰠楤⁶汣獡乳浡㵥朢楲⁤牧摩挭汯⵳′慧⵰″潣瑮湥⵴瑳牡≴ാ †††††㰠楤⁶汣獡乳浡㵥朢楲⁤慧⵰⸱‵整瑸砭≳ാ ††††††㰠慬敢⁬汣獡乳浡㵥琢硥⵴汳瑡ⵥ〶∰倾敲敳⁴慲整⁳潦⁲捻畯瑮祲㱽氯扡汥ാ ††††††㰠敳敬瑣਍††††††††汣獡乳浡㵥爢畯摮摥氭⁧潢摲牥戠牯敤⵲汢捡⽫〱戠ⵧ桷瑩⁥硰㈭㔮瀠⵹′整瑸猭≭਍††††††††慶畬㵥汻湩呥硡慒整ൽ †††††††漠䍮慨杮㵥⡻⥥㴠‾ൻ ††††††††挠湯瑳瘠㴠丠浵敢⡲⹥慴杲瑥瘮污敵㬩਍†††††††††敳䱴湩呥硡慒整瘨㬩਍†††††††††灵慤整汁䱬湩呥硡獥瘨㬩਍††††††††絽਍††††††††楤慳汢摥笽慴䵸摯⁥㴡‽搧浯獥楴❣ൽ ††††††㸠਍††††††††⡻潣湵牴剹瑡獥氮湥瑧⁨‿潣湵牴剹瑡獥㨠嬠ⰰ猠慴摮牡剤瑡嵥⸩慭⡰爨 㸽⠠਍†††††††††漼瑰潩⁮敫㵹牻⁽慶畬㵥牻㹽牻╽⼼灯楴湯ാ †††††††⤠紩਍†††††††⼼敳敬瑣ാ †††††㰠搯癩ാ †††††㰠楤⁶汣獡乳浡㵥朢楲⁤慧⵰⸱‵整瑸砭≳ാ ††††††㰠慬敢⁬汣獡乳浡㵥琢硥⵴汳瑡ⵥ〶∰䄾灰祬琠⁯污⁬瑩浥㱳氯扡汥ാ ††††††㰠畢瑴湯਍††††††††湯汃捩㵫⡻ 㸽甠摰瑡䅥汬楌敮慔數⡳楬敮慔剸瑡⥥ൽ †††††††挠慬獳慎敭∽潲湵敤ⵤ杬戠牯敤⁲潢摲牥戭慬正ㄯ‰硰㌭瀠⵹′整瑸猭⁭⵷畦汬ഢ ††††††㸠਍††††††††灁汰൹ ††††††㰠戯瑵潴㹮਍††††††⼼楤㹶਍†††††⼼楤㹶਍††††⼼楤㹶਍†††⼼潭楴湯搮癩ാഊ ††㰠楤⁶汣獡乳浡㵥朢楲⁤杬机楲ⵤ潣獬㈭朠灡㘭㸢਍††††⽻‪潆浲⨠累਍††††搼癩ാ ††††㰠潭楴湯搮癩਍††††††汣獡乳浡㵥爢畯摮摥㈭汸戠ⵧ桷瑩⁥⵰‵潢摲牥戠牯敤⵲汢捡⽫〱猠慨潤⵷浳ഢ †††††椠楮楴污笽⁻灯捡瑩㩹〠‬㩸ⴠ〲素ൽ †††††愠楮慭整笽⁻灯捡瑩㩹ㄠ‬㩸〠素ൽ †††††琠慲獮瑩潩㵮筻搠汥祡›⸰′絽਍†††††ാ †††††㰠楤⁶汣獡乳浡㵥洢ⵢ∴ാ ††††††㰠㍨挠慬獳慎敭∽整瑸猭⁭潦瑮猭浥扩汯⁤牴捡楫杮眭摩⁥整瑸猭慬整㠭〰甠灰牥慣敳㸢敓摮牥⼼㍨ാ ††††††㰠⁰汣獡乳浡㵥琢硥⵴獸琠硥⵴汳瑡ⵥ〵‰瑭ㄭ㸢潙牵挠浯慰祮搠瑥楡獬⼼㹰਍††††††⼼楤㹶਍††††††搼癩挠慬獳慎敭∽牧摩猠㩭牧摩挭汯⵳′慧⵰∳ാ ††††††㰠湉異⁴慬敢㵬䌢浯慰祮渠浡≥瘠污敵笽敳摮牥挮浯慰祮⁽湯桃湡敧笽攨 㸽猠瑥敓摮牥猨㴠‾笨⸠⸮ⱳ挠浯慰祮›⹥慴杲瑥瘮污敵素⤩⁽㸯਍†††††††䤼灮瑵氠扡汥∽䅖⁔ 敒≧瘠污敵笽敳摮牥瘮瑡⁽湯桃湡敧笽攨 㸽猠瑥敓摮牥猨㴠‾笨⸠⸮ⱳ瘠瑡›⹥慴杲瑥瘮污敵素⤩⁽㸯਍†††††††䤼灮瑵氠扡汥∽摁牤獥⁳楬敮•慶畬㵥獻湥敤⹲摡牤獥絳漠䍮慨杮㵥⡻⥥㴠‾敳却湥敤⡲⁳㸽⠠⁻⸮献‬摡牤獥㩳攠琮牡敧⹴慶畬⁥⥽紩⼠ാ ††††††㰠湉異⁴慬敢㵬䌢瑩≹瘠污敵笽敳摮牥挮瑩絹漠䍮慨杮㵥⡻⥥㴠‾敳却湥敤⡲⁳㸽⠠⁻⸮献‬楣祴›⹥慴杲瑥瘮污敵素⤩⁽㸯਍†††††††䤼灮瑵氠扡汥∽潃湵牴≹瘠污敵笽潣湵牴絹漠䍮慨杮㵥⡻⥥㴠‾湯潃湵牴䍹慨杮⡥⹥慴杲瑥瘮污敵紩⼠ാ ††††††㰠湉異⁴慬敢㵬䤢䅂≎瘠污敵笽敳摮牥椮慢絮漠䍮慨杮㵥⡻⥥㴠‾敳却湥敤⡲⁳㸽⠠⁻⸮献‬扩湡›⹥慴杲瑥瘮污敵素⤩⁽㸯਍††††††⼼楤㹶਍਍††††††格⁲汣獡乳浡㵥洢⵹‴潢摲牥戭慬正ㄯ∰⼠ാഊ †††††㰠楤⁶汣獡乳浡㵥洢ⵢ∴ാ ††††††㰠㍨挠慬獳慎敭∽整瑸猭⁭潦瑮猭浥扩汯⁤牴捡楫杮眭摩⁥整瑸猭慬整㠭〰甠灰牥慣敳㸢汃敩瑮⼼㍨ാ ††††††㰠⁰汣獡乳浡㵥琢硥⵴獸琠硥⵴汳瑡ⵥ〵‰瑭ㄭ㸢楂汬琭⁯敤慴汩㱳瀯ാ †††††㰠搯癩ാ †††††㰠楤⁶汣獡乳浡㵥朢楲⁤浳机楲ⵤ潣獬㈭朠灡㌭㸢਍†††††††䤼灮瑵氠扡汥∽汃敩瑮渠浡≥瘠污敵笽汣敩瑮渮浡絥漠䍮慨杮㵥⡻⥥㴠‾敳䍴楬湥⡴⁣㸽⠠⁻⸮挮‬慮敭›⹥慴杲瑥瘮污敵素⤩⁽㸯਍†††††††䤼灮瑵氠扡汥∽䅖⁔ 敒≧瘠污敵笽汣敩瑮瘮瑡⁽湯桃湡敧笽攨 㸽猠瑥汃敩瑮挨㴠‾笨⸠⸮Ᵽ瘠瑡›⹥慴杲瑥瘮污敵素⤩⁽㸯਍†††††††䤼灮瑵氠扡汥∽摁牤獥⁳楬敮•慶畬㵥捻楬湥⹴摡牤獥絳漠䍮慨杮㵥⡻⥥㴠‾敳䍴楬湥⡴⁣㸽⠠⁻⸮挮‬摡牤獥㩳攠琮牡敧⹴慶畬⁥⥽紩⼠ാ ††††††㰠湉異⁴慬敢㵬䌢瑩≹瘠污敵笽汣敩瑮挮瑩絹漠䍮慨杮㵥⡻⥥㴠‾敳䍴楬湥⡴⁣㸽⠠⁻⸮挮‬楣祴›⹥慴杲瑥瘮污敵素⤩⁽㸯਍†††††††䤼灮瑵氠扡汥∽潃湵牴≹瘠污敵笽汣敩瑮挮畯瑮祲⁽湯桃湡敧笽攨 㸽猠瑥汃敩瑮挨㴠‾笨⸠⸮Ᵽ挠畯瑮祲›⹥慴杲瑥瘮污敵素⤩⁽㸯਍†††††††搼癩挠慬獳慎敭∽楨摤湥猠㩭汢捯≫⼠ാ †††††㰠搯癩ാഊ †††††㰠牨挠慬獳慎敭∽祭㐭戠牯敤⵲汢捡⽫〱•㸯਍਍††††††搼癩挠慬獳慎敭∽扭㐭㸢਍†††††††格″汣獡乳浡㵥琢硥⵴浳映湯⵴敳業潢摬琠慲正湩ⵧ楷敤琠硥⵴汳瑡ⵥ〸‰灵数捲獡≥䤾癮楯散⼼㍨ാ ††††††㰠⁰汣獡乳浡㵥琢硥⵴獸琠硥⵴汳瑡ⵥ〵‰瑭ㄭ㸢敍慴慤慴☠渠浵敢楲杮⼼㹰਍††††††⼼楤㹶਍††††††搼癩挠慬獳慎敭∽牧摩猠㩭牧摩挭汯⵳″慧⵰∳ാ ††††††㰠湉異⁴慬敢㵬丢浵敢≲瘠污敵笽湩潶捩䵥瑥⹡畮扭牥⁽湯桃湡敧笽攨 㸽猠瑥湉潶捩䵥瑥⡡⁭㸽⠠⁻⸮洮‬畮扭牥›⹥慴杲瑥瘮污敵素⤩⁽㸯਍†††††††䤼灮瑵氠扡汥∽慄整•祴数∽慤整•慶畬㵥楻癮楯散敍慴搮瑡絥漠䍮慨杮㵥⡻⥥㴠‾敳䥴癮楯散敍慴洨㴠‾笨⸠⸮Ɑ搠瑡㩥攠琮牡敧⹴慶畬⁥⥽紩⼠ാ ††††††㰠湉異⁴慬敢㵬䐢敵•祴数∽慤整•慶畬㵥楻癮楯散敍慴搮敵⁽湯桃湡敧笽攨 㸽猠瑥湉潶捩䵥瑥⡡⁭㸽⠠⁻⸮洮‬畤㩥攠琮牡敧⹴慶畬⁥⥽紩⼠ാ †††††㰠搯癩ാഊ †††††㰠牨挠慬獳慎敭∽祭㐭戠牯敤⵲汢捡⽫〱•㸯਍਍††††††搼癩挠慬獳慎敭∽扭㐭㸢਍†††††††格″汣獡乳浡㵥琢硥⵴浳映湯⵴敳業潢摬琠慲正湩ⵧ楷敤琠硥⵴汳瑡ⵥ〸‰灵数捲獡≥䰾湩⁥瑩浥㱳栯㸳਍†††††††瀼挠慬獳慎敭∽整瑸砭⁳整瑸猭慬整㔭〰洠⵴∱唾敳䔠瑮牥琠⁯摡⁤⁡敮⁷潲㱷瀯ാ †††††㰠搯癩ാ †††††㰠楤⁶汣獡乳浡㵥朢楲⁤慧⵰∲ാ ††††††㰠楤⁶汣獡乳浡㵥朢楲⁤牧摩挭汯⵳㈱朠灡㈭琠硥⵴ㅛ瀱嵸琠硥⵴汳瑡ⵥ〶∰ാ †††††††㰠楤⁶汣獡乳浡㵥挢汯猭慰⵮∶䐾獥牣灩楴湯⼼楤㹶਍††††††††搼癩挠慬獳慎敭∽潣⵬灳湡㈭琠硥⵴楲桧≴儾祴⼼楤㹶਍††††††††搼癩挠慬獳慎敭∽潣⵬灳湡㈭琠硥⵴楲桧≴刾瑡⁥笨畣牲湥祣⥽⼼楤㹶਍††††††††搼癩挠慬獳慎敭∽潣⵬灳湡㈭琠硥⵴楲桧≴吾硡┠⼼楤㹶਍†††††††⼼楤㹶਍†††††††楻整獭洮灡⠨瑩‬⥩㴠‾ന †††††††㰠潭楴湯搮癩਍†††††††††敫㵹楻ൽ ††††††††挠慬獳慎敭∽牧摩朠楲ⵤ潣獬ㄭ′慧⵰∲਍†††††††††湩瑩慩㵬筻漠慰楣祴›ⰰ礠›〱素ൽ ††††††††愠楮慭整笽⁻灯捡瑩㩹ㄠ‬㩹〠素ൽ ††††††††琠慲獮瑩潩㵮筻搠汥祡›⁩‪⸰‱絽਍††††††††ാ ††††††††㰠湉異൴ †††††††††瘠污敵笽瑩搮獥絣਍††††††††††湯桃湡敧笽攨 㸽甠摰瑡䥥整⡭Ⱪ✠敤捳Ⱗ攠琮牡敧⹴慶畬⥥ൽ †††††††††眠慲灰牥汃獡乳浡㵥挢汯猭慰⵮‶業⵮⵷∰਍†††††††††㸯਍†††††††††䤼灮瑵਍††††††††††慶畬㵥楻⹴瑱絹਍††††††††††湯桃湡敧笽攨 㸽甠摰瑡䥥整⡭Ⱪ✠瑱❹‬畎扭牥攨琮牡敧⹴慶畬⥥紩਍††††††††††牷灡数䍲慬獳慎敭∽潣⵬灳湡㈭洠湩眭〭•汣獡乳浡㵥琢硥⵴楲桧≴਍†††††††††㸯਍†††††††††䤼灮瑵਍††††††††††慶畬㵥楻⹴慲整ൽ †††††††††漠䍮慨杮㵥⡻⥥㴠‾灵慤整瑉浥椨‬爧瑡❥‬畎扭牥攨琮牡敧⹴慶畬⥥紩਍††††††††††牷灡数䍲慬獳慎敭∽潣⵬灳湡㈭洠湩眭〭•汣獡乳浡㵥琢硥⵴楲桧≴਍†††††††††㸯਍†††††††††䤼灮瑵਍††††††††††慶畬㵥楻⹴慴絸਍††††††††††湯桃湡敧笽攨 㸽甠摰瑡䥥整⡭Ⱪ✠慴❸‬畎扭牥攨琮牡敧⹴慶畬⥥紩਍††††††††††牷灡数䍲慬獳慎敭∽潣⵬灳湡㈭洠湩眭〭•汣獡乳浡㵥琢硥⵴楲桧≴਍†††††††††㸯਍††††††††⼼潭楴湯搮癩ാ ††††††⤠紩਍†††††††戼瑵潴൮ †††††††漠䍮楬正笽摡䥤整絭਍††††††††汣獡乳浡㵥爢畯摮摥氭⁧潢摲牥戠牯敤⵲慤桳摥戠牯敤⵲汢捡⽫㔱瀠⵹′整瑸猭⁭潨敶㩲杢猭慬整㔭‰牴湡楳楴湯挭汯牯≳਍†††††††ാ †††††††⬠䄠摤椠整൭ ††††††㰠戯瑵潴㹮਍††††††⼼楤㹶਍਍††††††格⁲汣獡乳浡㵥洢⵹‴潢摲牥戭慬正ㄯ∰⼠ാഊ †††††㰠楤⁶汣獡乳浡㵥洢ⵢ∴ാ ††††††㰠㍨挠慬獳慎敭∽整瑸猭⁭潦瑮猭浥扩汯⁤牴捡楫杮眭摩⁥整瑸猭慬整㠭〰甠灰牥慣敳㸢潎整⁳…整浲㱳栯㸳਍††††††⼼楤㹶਍††††††吼硥慴敲ൡ ††††††爠睯㵳㑻ൽ ††††††瘠污敵笽潮整絳਍†††††††湯桃湡敧笽攨 㸽猠瑥潎整⡳⹥慴杲瑥瘮污敵紩਍†††††††汰捡桥汯敤㵲倢祡敭瑮眠瑩楨⁮㐱搠祡⹳䰠瑡⁥敦獥洠祡愠灰祬∮਍††††††㸯਍†††††⼼潭楴湯搮癩ാ †††㰠搯癩ാഊ †††笠⨯倠敲楶睥⨠累਍††††搼癩ാ ††††㰠潭楴湯搮癩਍††††††汣獡乳浡㵥爢畯摮摥㈭汸戠ⵧ桷瑩⁥⵰‵潢摲牥戠牯敤⵲汢捡⽫〱猠慨潤⵷浳ഢ †††††椠楮楴污笽⁻灯捡瑩㩹〠‬㩸㈠‰絽਍††††††湡浩瑡㵥筻漠慰楣祴›ⰱ砠›‰絽਍††††††牴湡楳楴湯笽⁻敤慬㩹〠㌮素ൽ ††††㸠਍††††††搼癩挠慬獳慎敭∽扭㐭㸢਍†††††††格″汣獡乳浡㵥琢硥⵴浳映湯⵴敳業潢摬琠慲正湩ⵧ楷敤琠硥⵴汳瑡ⵥ〸‰灵数捲獡≥倾敲楶睥⼼㍨ാ ††††††㰠⁰汣獡乳浡㵥琢硥⵴獸琠硥⵴汳瑡ⵥ〵‰瑭ㄭ㸢㑁氠祡畯㱴瀯ാ †††††㰠搯癩ാ †††††㰠湉潶捩健灡牥਍†††††††畣牲湥祣笽畣牲湥祣ൽ ††††††稠牥乯瑯㵥穻牥乯瑯絥਍†††††††瑩浥㵳楻整獭ൽ ††††††猠扵潴慴㵬獻扵潴慴絬਍†††††††慴呸瑯污笽慴呸瑯污ൽ ††††††琠瑯污笽潴慴絬਍†††††††敳摮牥笽敳摮牥ൽ ††††††挠楬湥㵴捻楬湥絴਍†††††††湩潶捩乥㵯楻癮楯散敍慴渮浵敢絲਍†††††††湩潶捩䑥瑡㵥楻癮楯散敍慴搮瑡絥਍†††††††湩潶捩䑥敵笽湩潶捩䵥瑥⹡畤絥਍†††††††潮整㵳湻瑯獥ൽ †††††⼠ാ †††††㰠楤⁶汣獡乳浡㵥洢⵴″整瑸嬭ㄱ硰⁝整瑸猭慬整㔭〰㸢਍†††††††潔慴獬⠠畡潴㨩匠扵潴慴⁬戼笾畣牲湥祣⁽獻扵潴慴⹬潴楆數⡤⤲㱽戯‾ₗ慔⁸戼笾畣牲湥祣⁽瑻硡潔慴⹬潴楆數⡤⤲㱽戯‾ₗ潔慴⁬戼笾畣牲湥祣⁽瑻瑯污琮䙯硩摥㈨紩⼼㹢਍††††††⼼楤㹶਍†††††⼼潭楴湯搮癩ാ †††㰠搯癩ാ ††㰠搯癩ാഊ ††笠⨯倠楲瑮漭汮⁹㑁琠浥汰瑡⁥椨潳慬整⁤湯瀠楲瑮 ⼪ൽ ††㰠湉潶捩䅥ഴ †††挠牵敲据㵹捻牵敲据絹਍††††敺潲潎整笽敺潲潎整ൽ †††椠整獭笽瑩浥絳਍††††畳瑢瑯污笽畳瑢瑯污ൽ †††琠硡潔慴㵬瑻硡潔慴絬਍††††潴慴㵬瑻瑯污ൽ †††猠湥敤㵲筻਍†††††潣灭湡㩹猠湥敤⹲潣灭湡ⱹ਍†††††慶㩴猠湥敤⹲慶ⱴ਍†††††摡牤獥㩳猠湥敤⹲摡牤獥ⱳ਍†††††楣祴›敳摮牥挮瑩ⱹ਍†††††潣湵牴㩹猠湥敤⹲潣湵牴ⱹ਍†††††扩湡›敳摮牥椮慢Ɱ਍††††絽਍††††汣敩瑮笽ൻ ††††渠浡㩥挠楬湥⹴慮敭ബ ††††瘠瑡›汣敩瑮瘮瑡ബ ††††愠摤敲獳›汣敩瑮愮摤敲獳ബ ††††挠瑩㩹挠楬湥⹴楣祴ബ ††††挠畯瑮祲›汣敩瑮挮畯瑮祲ബ †††素ൽ †††椠癮楯散潎笽湩潶捩䵥瑥⹡畮扭牥ൽ †††椠癮楯散慄整笽湩潶捩䵥瑥⹡慤整ൽ †††椠癮楯散畄㵥楻癮楯散敍慴搮敵ൽ †††渠瑯獥笽潮整絳਍†††㸯਍਍††⼼楤㹶਍†㬩਍ൽ
+'use client';
+
+import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { Item, TaxMode } from '@/types/invoice';
+import { CURRENCY_BY_COUNTRY, CC, VAT_RATES } from '@/lib/constants';
+import Input from '@/components/ui/Input';
+import Textarea from '@/components/ui/Textarea';
+import Button from '@/components/ui/Button';
+import InvoicePaper from './InvoicePaper';
+import InvoiceA4 from '@/components/pdf/InvoiceA4';
+
+interface InvoiceFormProps {
+  signedIn: boolean;
+}
+
+export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
+  const bcRef = useRef<BroadcastChannel | null>(null);
+
+  // Region/country/currency/tax
+  const [region, setRegion] = useState('UK');
+  const [country, setCountry] = useState('United Kingdom');
+  const [currency, setCurrency] = useState(CURRENCY_BY_COUNTRY['United Kingdom'] || 'GBP');
+  const [taxMode, setTaxMode] = useState<TaxMode>('domestic');
+
+  const countryCode = CC[country] || 'UK';
+  const countryRates = VAT_RATES[countryCode] || [0, 20];
+  const standardRate = countryRates[countryRates.length - 1] || 20;
+  const [lineTaxRate, setLineTaxRate] = useState<number>(standardRate);
+
+  // Items
+  const [items, setItems] = useState<Item[]>([
+    { desc: 'Service #1', qty: 1, rate: 100, tax: standardRate },
+    { desc: 'Service #2', qty: 1, rate: 200, tax: standardRate },
+  ]);
+
+  // Sender / Client / Invoice metadata / Notes (for live preview)
+  const [sender, setSender] = useState({
+    company: 'Acme Ltd',
+    vat: country === 'United Kingdom' ? 'GB123456789' : 'EU VAT',
+    address: '221B Baker Street',
+    city: 'London',
+    country,
+    iban: 'GB00BANK0000000000',
+  });
+  const [client, setClient] = useState({
+    name: 'Client GmbH',
+    vat: 'DE123456789',
+    address: 'Potsdamer Platz 1',
+    city: 'Berlin',
+    country: 'Germany',
+  });
+  const [invoiceMeta, setInvoiceMeta] = useState({
+    number: 'INV-2025-000245',
+    date: '2025-09-02',
+    due: '2025-09-16',
+  });
+  const [notes, setNotes] = useState('Payment within 14 days. Late fees may apply.');
+
+  const gated = !signedIn;
+  const [banner, setBanner] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
+  const [busy, setBusy] = useState<'save' | 'share' | 'download' | 'email' | null>(null);
+  const [tokenBalance, setTokenBalance] = useState<number | null>(null);
+
+  const updateAllLineTaxes = (tax: number) => setItems((prev) => prev.map((it) => ({ ...it, tax })));
+
+  const onRegionChange = (r: string) => {
+    setRegion(r);
+    const nextCountry = r === 'UK' ? 'United Kingdom' : 'Germany';
+    const nextCurrency = CURRENCY_BY_COUNTRY[nextCountry] || (r === 'UK' ? 'GBP' : 'EUR');
+    const nextCode = CC[nextCountry] || (r === 'UK' ? 'UK' : 'DE');
+    const nextRates = VAT_RATES[nextCode] || [0, 20];
+    const nextStandard = nextRates[nextRates.length - 1] || 20;
+    setCountry(nextCountry);
+    setCurrency(nextCurrency);
+    setTaxMode(r === 'UK' ? 'domestic' : taxMode);
+    const apply = r === 'UK' || taxMode === 'domestic' ? nextStandard : 0;
+    setLineTaxRate(apply);
+    updateAllLineTaxes(apply);
+    setSender((prev) => ({ ...prev, country: nextCountry }));
+  };
+
+  const onCountryChange = (c: string) => {
+    setCountry(c);
+    const nextCurr = CURRENCY_BY_COUNTRY[c] || currency;
+    const code = CC[c];
+    const rates = code && VAT_RATES[code] ? VAT_RATES[code] : [0, 20];
+    const nextStandard = rates[rates.length - 1] || 20;
+    setCurrency(nextCurr);
+    const apply = taxMode === 'domestic' ? nextStandard : 0;
+    setLineTaxRate(apply);
+    updateAllLineTaxes(apply);
+    setSender((prev) => ({ ...prev, country: c }));
+  };
+
+  const addItem = () =>
+    setItems((prev) => [
+      ...prev,
+      { desc: `Service #${prev.length + 1}`, qty: 1, rate: 100, tax: lineTaxRate },
+    ]);
+
+  const updateItem = (idx: number, key: keyof Item, val: any) =>
+    setItems((prev) => prev.map((it, i) => (i === idx ? { ...it, [key]: val } : it)));
+
+  const subtotal = items.reduce((s, it) => s + (Number(it.qty) || 0) * (Number(it.rate) || 0), 0);
+  const taxTotal = items.reduce(
+    (s, it) => s + (Number(it.qty) || 0) * (Number(it.rate) || 0) * ((Number(it.tax) || 0) / 100),
+    0
+  );
+  const total = subtotal + taxTotal;
+
+  const zeroNote =
+    taxMode === 'intraEU_rc'
+      ? 'VAT 0% - Intra-EU supply (reverse charge applies).'
+      : taxMode === 'uk_eu_cross'
+      ? 'VAT 0% - UK to EU cross-border supply (check zero-rating rules).'
+      : taxMode === 'export'
+      ? 'VAT 0% - Export outside UK/EU.'
+      : undefined;
+
+  // Initialize from /api/me
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch('/api/me');
+        if (!res.ok) return;
+        const { user } = await res.json();
+        const company = (user as any)?.company as any;
+        if (company) {
+          const vatOrReg = company.vat || company.reg || '';
+          const nextCountry = company.country ?? null;
+          setSender((prev) => ({
+            ...prev,
+            company: company.name ?? prev.company,
+            vat: vatOrReg,
+            address: company.address1 ?? prev.address,
+            city: company.city ?? prev.city,
+            country: nextCountry ?? prev.country,
+            iban: company.iban ?? prev.iban,
+          }));
+          if (company.country && CURRENCY_BY_COUNTRY[company.country]) setCountry(company.country);
+        }
+        if ((user as any)?.currency) setCurrency((user as any).currency);
+        if (typeof (user as any)?.tokenBalance === 'number') setTokenBalance((user as any).tokenBalance);
+      } catch {
+        // ignore
+      }
+    })();
+  }, []);
+
+  // Live sync: BroadcastChannel + focus refresh
+  useEffect(() => {
+    try {
+      bcRef.current = new BroadcastChannel('app-events');
+      bcRef.current.onmessage = (ev: MessageEvent) => {
+        const data: any = (ev as any)?.data || {};
+        if (data.type === 'company-updated' && data.company) {
+          const c = data.company;
+          const vatOrReg = c.vat || c.reg || '';
+          setSender((prev) => ({
+            ...prev,
+            company: c.name ?? prev.company,
+            vat: vatOrReg,
+            address: c.address1 ?? prev.address,
+            city: c.city ?? prev.city,
+            country: c.country ?? prev.country,
+            iban: c.iban ?? prev.iban,
+          }));
+          if (c.country && CURRENCY_BY_COUNTRY[c.country]) setCountry(c.country);
+        }
+        if (data.type === 'tokens-updated' && typeof data.tokenBalance === 'number') {
+          setTokenBalance(data.tokenBalance);
+        }
+      };
+    } catch {}
+    const onFocus = async () => {
+      try {
+        const res = await fetch('/api/me');
+        if (!res.ok) return;
+        const { user } = await res.json();
+        if (typeof (user as any)?.tokenBalance === 'number') setTokenBalance((user as any).tokenBalance);
+        const company = (user as any)?.company as any;
+        if (company) {
+          const vatOrReg = company.vat || company.reg || '';
+          setSender((prev) => ({
+            ...prev,
+            company: company.name ?? prev.company,
+            vat: vatOrReg,
+            address: company.address1 ?? prev.address,
+            city: company.city ?? prev.city,
+            country: company.country ?? prev.country,
+            iban: company.iban ?? prev.iban,
+          }));
+        }
+      } catch {}
+    };
+    window.addEventListener('focus', onFocus);
+    return () => {
+      try {
+        bcRef.current?.close();
+      } catch {}
+      window.removeEventListener('focus', onFocus);
+    };
+  }, []);
+
+  // Charge tokens helper and broadcast update
+  const chargeTokens = async (cost: number) => {
+    try {
+      const res = await fetch('/api/ledger', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'Invoice', delta: -Math.abs(cost) }),
+      });
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({ error: 'Failed to charge tokens' }));
+        throw new Error(j.error || 'Failed to charge tokens');
+      }
+      const { tokenBalance: newBalance } = await res.json();
+      if (typeof newBalance === 'number') {
+        setTokenBalance(newBalance);
+        try {
+          bcRef.current?.postMessage({ type: 'tokens-updated', tokenBalance: newBalance });
+        } catch {}
+      }
+      return true;
+    } catch (e: any) {
+      setBanner({ type: 'error', msg: e.message || 'Token charge failed' });
+      return false;
+    }
+  };
+
+  const downloadPdf = async () => {
+    if (!signedIn) return;
+    if (tokenBalance !== null && tokenBalance < 100) {
+      setBanner({ type: 'error', msg: 'Not enough tokens (100 required).' });
+      return;
+    }
+    setBusy('download');
+    setBanner(null);
+    try {
+      const ok = await chargeTokens(100);
+      if (!ok) {
+        setBusy(null);
+        return;
+      }
+      const el = document.getElementById('print-area');
+      if (!el) throw new Error('Print area not found');
+      const prevDisplay = el.style.display;
+      const prevPos = (el.style as any).position;
+      const prevLeft = (el.style as any).left;
+      (el.style as any).display = 'block';
+      (el.style as any).position = 'absolute';
+      (el.style as any).left = '-10000px';
+
+      const { jsPDF } = await import('jspdf');
+      const html2canvas = (await import('html2canvas')).default;
+      const canvas = await html2canvas(el as HTMLElement, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+
+      (el.style as any).display = prevDisplay;
+      (el.style as any).position = prevPos;
+      (el.style as any).left = prevLeft;
+
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, pageHeight, undefined, 'FAST');
+      const fname = `Invoice - ${invoiceMeta.number || 'XXXXXX'}.pdf`;
+      pdf.save(fname);
+      setBanner({ type: 'success', msg: 'PDF downloaded.' });
+    } catch (e: any) {
+      setBanner({ type: 'error', msg: e.message || 'PDF download failed.' });
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const saveDraft = async () => {
+    setBusy('save');
+    setBanner(null);
+    try {
+      const res = await fetch('/api/drafts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          currency,
+          client: client.name,
+          subtotal: Math.round(subtotal),
+          tax: Math.round(taxTotal),
+          total: Math.round(total),
+        }),
+      });
+      if (!res.ok) throw new Error((await res.json().catch(() => ({ error: 'Failed' }))).error || 'Failed to save draft');
+      setBanner({ type: 'success', msg: 'Draft saved to Dashboard.' });
+    } catch (e: any) {
+      setBanner({ type: 'error', msg: e.message || 'Failed to save draft.' });
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const saveAndShare = async () => {
+    if (!signedIn) return;
+    if (tokenBalance !== null && tokenBalance < 100) {
+      setBanner({ type: 'error', msg: 'Not enough tokens (100 required).' });
+      return;
+    }
+    setBusy('share');
+    setBanner(null);
+    try {
+      const ok = await chargeTokens(100);
+      if (!ok) {
+        setBusy(null);
+        return;
+      }
+      const res = await fetch('/api/drafts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          currency,
+          client: client.name,
+          subtotal: Math.round(subtotal),
+          tax: Math.round(taxTotal),
+          total: Math.round(total),
+        }),
+      });
+      if (!res.ok) throw new Error((await res.json().catch(() => ({ error: 'Failed' }))).error || 'Failed to save draft');
+      const { invoice } = await res.json();
+      const url = `${window.location.origin}/s/${invoice.id}`;
+      await navigator.clipboard.writeText(url);
+      setBanner({ type: 'success', msg: 'Share link copied to clipboard.' });
+    } catch (e: any) {
+      setBanner({ type: 'error', msg: e.message || 'Failed to save or copy.' });
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const sendEmail = async () => {
+    if (!signedIn) return;
+    if (tokenBalance !== null && tokenBalance < 100) {
+      setBanner({ type: 'error', msg: 'Not enough tokens (100 required).' });
+      return;
+    }
+    setBusy('email');
+    setBanner(null);
+    try {
+      const ok = await chargeTokens(100);
+      if (!ok) {
+        setBusy(null);
+        return;
+      }
+      // Placeholder for future email flow
+      setBanner({ type: 'success', msg: 'Email queued (mock).' });
+    } catch (e: any) {
+      setBanner({ type: 'error', msg: e.message || 'Failed to queue email.' });
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Controls */}
+      <div className="flex flex-wrap items-center gap-3 justify-between mb-4">
+        <div className="flex flex-wrap items-center gap-2 text-sm">
+          <span className="font-medium">Region:</span>
+          <select value={region} onChange={(e) => onRegionChange(e.target.value)} className="rounded-lg border border-black/10 bg-white px-2.5 py-2">
+            <option>UK</option>
+            <option>EU</option>
+          </select>
+          <span className="font-medium ml-3">Country:</span>
+          <select value={country} onChange={(e) => onCountryChange(e.target.value)} className="rounded-lg border border-black/10 bg-white px-2.5 py-2 max-w-[220px]">
+            {Object.keys(CURRENCY_BY_COUNTRY)
+              .sort()
+              .map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+          </select>
+          <span className="font-medium ml-3">Currency:</span>
+          <select value={currency} onChange={(e) => setCurrency(e.target.value)} className="rounded-lg border border-black/10 bg-white px-2.5 py-2">
+            {Array.from(new Set(Object.values(CURRENCY_BY_COUNTRY)))
+              .sort()
+              .map((code) => (
+                <option key={code}>{code}</option>
+              ))}
+          </select>
+          <span className="font-medium ml-3">Invoice language:</span>
+          <span className="px-2 py-1 rounded-lg border border-black/10 bg-white">EN</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button onClick={saveDraft} disabled={gated || busy !== null} variant="secondary" size="sm">
+            {busy === 'save' ? 'Saving:' : 'Save draft'}
+          </Button>
+          <Button onClick={downloadPdf} disabled={gated || busy !== null} title={gated ? 'Available after sign-up' : 'Download PDF'} size="sm" className={gated ? 'bg-slate-300' : ''}>
+            {busy === 'download' ? 'Processing:' : 'Download PDF'}
+          </Button>
+          <Button onClick={sendEmail} disabled={gated || busy !== null} title={gated ? 'Available after sign-up' : 'Send via email'} size="sm" className={gated ? 'bg-slate-300' : ''}>
+            {busy === 'email' ? 'Processing:' : 'Send email'}
+          </Button>
+          <Button onClick={saveAndShare} disabled={gated || busy !== null} title={gated ? 'Available after sign-up' : 'Save & share link'} size="sm" className={gated ? 'bg-slate-300' : ''}>
+            {busy === 'share' ? 'Saving:' : 'Save & share link'}
+          </Button>
+        </div>
+      </div>
+
+      {/* Banner */}
+      {banner && (
+        <div className={`rounded-lg border px-3 py-2 text-sm ${banner.type === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-900' : 'border-red-200 bg-red-50 text-red-700'}`}>
+          {banner.msg}
+        </div>
+      )}
+
+      {/* Tax treatment */}
+      <motion.div className="rounded-2xl bg-white p-5 border border-black/10 shadow-sm" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+        <div className="mb-4">
+          <h3 className="text-sm font-semibold tracking-wide text-slate-800 uppercase">Tax treatment</h3>
+          <p className="text-xs text-slate-500 mt-1">Choose how VAT is applied</p>
+        </div>
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid gap-3">
+            <label className="inline-flex items-center gap-2 text-sm">
+              <input type="radio" name="taxmode" checked={taxMode === 'domestic'} onChange={() => { setTaxMode('domestic'); setLineTaxRate(standardRate); updateAllLineTaxes(standardRate); }} />
+              <span>Domestic supply (apply local rates)</span>
+            </label>
+            <label className="inline-flex items-center gap-2 text-sm">
+              <input type="radio" name="taxmode" checked={taxMode === 'intraEU_rc'} onChange={() => { setTaxMode('intraEU_rc'); setLineTaxRate(0); updateAllLineTaxes(0); }} />
+              <span>Intra-EU B2B (reverse charge, 0%)</span>
+            </label>
+            <label className="inline-flex items-center gap-2 text-sm">
+              <input type="radio" name="taxmode" checked={taxMode === 'uk_eu_cross'} onChange={() => { setTaxMode('uk_eu_cross'); setLineTaxRate(0); updateAllLineTaxes(0); }} />
+              <span>UK to EU cross-border (zero-rated)</span>
+            </label>
+            <label className="inline-flex items-center gap-2 text-sm">
+              <input type="radio" name="taxmode" checked={taxMode === 'export'} onChange={() => { setTaxMode('export'); setLineTaxRate(0); updateAllLineTaxes(0); }} />
+              <span>Export outside UK/EU (0%)</span>
+            </label>
+            <div className="text-xs text-slate-500">Note: Exact rates vary by goods/services. Verify before issuing a live invoice.</div>
+          </div>
+          <div className="grid grid-cols-2 gap-3 content-start">
+            <div className="grid gap-1.5 text-xs">
+              <label className="text-slate-600">Preset rates for {country}</label>
+              <select className="rounded-lg border border-black/10 bg-white px-2.5 py-2 text-sm" value={lineTaxRate} onChange={(e) => { const v = Number(e.target.value); setLineTaxRate(v); updateAllLineTaxes(v); }} disabled={taxMode !== 'domestic'}>
+                {(countryRates.length ? countryRates : [0, standardRate]).map((r) => (
+                  <option key={r} value={r}>
+                    {r}%
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="grid gap-1.5 text-xs">
+              <label className="text-slate-600">Apply to all items</label>
+              <button onClick={() => updateAllLineTaxes(lineTaxRate)} className="rounded-lg border border-black/10 px-3 py-2 text-sm w-full">
+                Apply
+              </button>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Form */}
+        <div>
+          <motion.div className="rounded-2xl bg-white p-5 border border-black/10 shadow-sm" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
+            <div className="mb-4">
+              <h3 className="text-sm font-semibold tracking-wide text-slate-800 uppercase">Sender</h3>
+              <p className="text-xs text-slate-500 mt-1">Your company details</p>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-3">
+              <Input label="Company name" value={sender.company} onChange={(e) => setSender((s) => ({ ...s, company: e.target.value }))} />
+              <Input label="VAT / Reg" value={sender.vat} onChange={(e) => setSender((s) => ({ ...s, vat: e.target.value }))} />
+              <Input label="Address line" value={sender.address} onChange={(e) => setSender((s) => ({ ...s, address: e.target.value }))} />
+              <Input label="City" value={sender.city} onChange={(e) => setSender((s) => ({ ...s, city: e.target.value }))} />
+              <Input label="Country" value={country} onChange={(e) => onCountryChange(e.target.value)} />
+              <Input label="IBAN" value={sender.iban} onChange={(e) => setSender((s) => ({ ...s, iban: e.target.value }))} />
+            </div>
+
+            <hr className="my-4 border-black/10" />
+
+            <div className="mb-4">
+              <h3 className="text-sm font-semibold tracking-wide text-slate-800 uppercase">Client</h3>
+              <p className="text-xs text-slate-500 mt-1">Bill-to details</p>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-3">
+              <Input label="Client name" value={client.name} onChange={(e) => setClient((c) => ({ ...c, name: e.target.value }))} />
+              <Input label="VAT / Reg" value={client.vat} onChange={(e) => setClient((c) => ({ ...c, vat: e.target.value }))} />
+              <Input label="Address line" value={client.address} onChange={(e) => setClient((c) => ({ ...c, address: e.target.value }))} />
+              <Input label="City" value={client.city} onChange={(e) => setClient((c) => ({ ...c, city: e.target.value }))} />
+              <Input label="Country" value={client.country} onChange={(e) => setClient((c) => ({ ...c, country: e.target.value }))} />
+              <div className="hidden sm:block" />
+            </div>
+
+            <hr className="my-4 border-black/10" />
+
+            <div className="mb-4">
+              <h3 className="text-sm font-semibold tracking-wide text-slate-800 uppercase">Invoice</h3>
+              <p className="text-xs text-slate-500 mt-1">Metadata & numbering</p>
+            </div>
+            <div className="grid sm:grid-cols-3 gap-3">
+              <Input label="Number" value={invoiceMeta.number} onChange={(e) => setInvoiceMeta((m) => ({ ...m, number: e.target.value }))} />
+              <Input label="Date" type="date" value={invoiceMeta.date} onChange={(e) => setInvoiceMeta((m) => ({ ...m, date: e.target.value }))} />
+              <Input label="Due" type="date" value={invoiceMeta.due} onChange={(e) => setInvoiceMeta((m) => ({ ...m, due: e.target.value }))} />
+            </div>
+
+            <hr className="my-4 border-black/10" />
+
+            <div className="mb-4">
+              <h3 className="text-sm font-semibold tracking-wide text-slate-800 uppercase">Line items</h3>
+              <p className="text-xs text-slate-500 mt-1">Use Enter to add a new row</p>
+            </div>
+            <div className="grid gap-2">
+              <div className="grid grid-cols-12 gap-2 text-[11px] text-slate-600">
+                <div className="col-span-6">Description</div>
+                <div className="col-span-2 text-right">Qty</div>
+                <div className="col-span-2 text-right">Rate ({currency})</div>
+                <div className="col-span-2 text-right">Tax %</div>
+              </div>
+              {items.map((it, i) => (
+                <motion.div key={i} className="grid grid-cols-12 gap-2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
+                  <Input value={it.desc} onChange={(e) => updateItem(i, 'desc', e.target.value)} wrapperClassName="col-span-6 min-w-0" />
+                  <Input value={it.qty} onChange={(e) => updateItem(i, 'qty', Number(e.target.value))} wrapperClassName="col-span-2 min-w-0" className="text-right" />
+                  <Input value={it.rate} onChange={(e) => updateItem(i, 'rate', Number(e.target.value))} wrapperClassName="col-span-2 min-w-0" className="text-right" />
+                  <Input value={it.tax} onChange={(e) => updateItem(i, 'tax', Number(e.target.value))} wrapperClassName="col-span-2 min-w-0" className="text-right" />
+                </motion.div>
+              ))}
+              <button onClick={addItem} className="rounded-lg border border-dashed border-black/15 py-2 text-sm hover:bg-slate-50 transition-colors">
+                + Add item
+              </button>
+            </div>
+
+            <hr className="my-4 border-black/10" />
+
+            <div className="mb-4">
+              <h3 className="text-sm font-semibold tracking-wide text-slate-800 uppercase">Notes & terms</h3>
+            </div>
+            <Textarea rows={4} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Payment within 14 days. Late fees may apply." />
+          </motion.div>
+        </div>
+
+        {/* Preview */}
+        <div>
+          <motion.div className="rounded-2xl bg-white p-5 border border-black/10 shadow-sm" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
+            <div className="mb-4">
+              <h3 className="text-sm font-semibold tracking-wide text-slate-800 uppercase">Preview</h3>
+              <p className="text-xs text-slate-500 mt-1">A4 layout</p>
+            </div>
+            <InvoicePaper
+              currency={currency}
+              zeroNote={zeroNote}
+              items={items}
+              subtotal={subtotal}
+              taxTotal={taxTotal}
+              total={total}
+              sender={sender}
+              client={client}
+              invoiceNo={invoiceMeta.number}
+              invoiceDate={invoiceMeta.date}
+              invoiceDue={invoiceMeta.due}
+              notes={notes}
+            />
+            <div className="mt-3 text-[11px] text-slate-500">
+              Totals (auto): Subtotal <b>
+                {currency} {subtotal.toFixed(2)}
+              </b>{' '}
+              - Tax <b>
+                {currency} {taxTotal.toFixed(2)}
+              </b>{' '}
+              - Total <b>
+                {currency} {total.toFixed(2)}
+              </b>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Print-only A4 template (isolated on print) */}
+      <InvoiceA4
+        currency={currency}
+        zeroNote={zeroNote}
+        items={items}
+        subtotal={subtotal}
+        taxTotal={taxTotal}
+        total={total}
+        sender={{
+          company: sender.company,
+          vat: sender.vat,
+          address: sender.address,
+          city: sender.city,
+          country: sender.country,
+          iban: sender.iban,
+          bankName: undefined,
+          bic: undefined,
+        }}
+        client={{
+          name: client.name,
+          vat: client.vat,
+          address: client.address,
+          city: client.city,
+          country: client.country,
+        }}
+        invoiceNo={invoiceMeta.number}
+        invoiceDate={invoiceMeta.date}
+        invoiceDue={invoiceMeta.due}
+        notes={notes}
+      />
+    </div>
+  );
+}
+
