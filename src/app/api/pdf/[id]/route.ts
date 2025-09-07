@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import chromium from "@sparticuz/chromium";
@@ -7,10 +7,8 @@ import puppeteer from "puppeteer-core";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
-  const session = await getServerSession(authOptions);
-  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+export async function GET(_req: Request, { params }: any) {
+  const { id } = (params || {}) as { id: string };
 
   const baseUrl = process.env.NEXTAUTH_URL || process.env.VERCEL_URL || "";
   const origin = baseUrl.startsWith("http") ? baseUrl : `https://${baseUrl}`;
@@ -48,5 +46,9 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
     try { await browser.close(); } catch {}
   }
 }
+
+
+
+
 
 
