@@ -32,6 +32,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   const body = await req.json().catch(() => ({}));
   const data: any = {};
   for (const key of ['client', 'status'] as const) if (key in body) data[key] = body[key];
+  if (body.due) { try { data.due = new Date(body.due as string); } catch {} }
   const toDec = (v: any) => typeof v === 'number' ? v.toFixed(2) : (Number(v||0)).toFixed(2);
   if ('subtotal' in body) data.subtotal = toDec(body.subtotal);
   if ('tax' in body) data.tax = toDec(body.tax);

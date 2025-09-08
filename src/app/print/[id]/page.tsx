@@ -3,10 +3,12 @@ import InvoiceA4 from '@/components/pdf/InvoiceA4';
 
 export const dynamic = 'force-dynamic';
 
-export default async function PrintInvoicePage({ params }: { params: Promise<{ id: string }> }) {
+export default async function PrintInvoicePage({ params, searchParams }: { params: Promise<{ id: string }>, searchParams?: Promise<{ due?: string }> }) {
   const { id } = await params;
+  const sp = (await (searchParams || Promise.resolve({}))) as any;
   const invoice = await prisma.invoice.findUnique({ where: { id }, include: { items: true, user: { include: { company: true } } } });
   if (!invoice) return <div className="p-6">Not found.</div>;
+  const dueStr = (sp?.due as string) || (invoice.due ? new Date(invoice.due as any).toISOString().slice(0,10) : '');
 
   return (
     <div className="bg-white min-h-screen">
@@ -37,10 +39,11 @@ export default async function PrintInvoicePage({ params }: { params: Promise<{ i
           }}
           invoiceNo={invoice.number}
           invoiceDate={new Date(invoice.date).toISOString().slice(0, 10)}
-          invoiceDue={''}
+          invoiceDue={dueStr}
           notes={''}
         />
       </main>
     </div>
   );
 }
+

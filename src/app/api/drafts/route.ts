@@ -20,6 +20,7 @@ export async function POST(req: Request) {
   const total = toDec(body.total ?? (Number(body.subtotal ?? 0) + Number(body.tax ?? 0)));
   const items = Array.isArray(body.items) ? body.items as Array<{ description: string; quantity: number; rate: number; tax: number }> : [];
   const clientMeta = body.clientMeta && typeof body.clientMeta === 'object' ? body.clientMeta : undefined;
+  const dueIso = typeof body.due === 'string' && body.due ? new Date(body.due) : null;
 
   // Create draft invoice without charging tokens
   const last = await prisma.invoice.findFirst({ where: { userId }, orderBy: { createdAt: 'desc' } });
@@ -31,6 +32,7 @@ export async function POST(req: Request) {
       userId,
       number,
       date: new Date(),
+      due: dueIso || undefined,
       client,
       currency,
       subtotal,

@@ -27,6 +27,7 @@ export async function POST(req: Request) {
   const subtotal = toDec(body.subtotal ?? 100);
   const tax = toDec(body.tax ?? 20);
   const total = toDec(body.total ?? (Number(body.subtotal ?? 100) + Number(body.tax ?? 20)));
+  const dueIso = typeof body.due === 'string' && body.due ? new Date(body.due) : null;
 
   // Charge 10 tokens per created invoice
   return await prisma.$transaction(async (tx) => {
@@ -43,6 +44,7 @@ export async function POST(req: Request) {
         userId,
         number,
         date: new Date(),
+        due: dueIso || undefined,
         client,
         currency,
         subtotal,

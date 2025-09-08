@@ -7,7 +7,7 @@ import puppeteer from "puppeteer-core";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function GET(_req: Request, ctx: any) {
+export async function GET(req: Request, ctx: any) {
   try {
     const id: string | undefined = (ctx?.params?.id as string) || undefined;
     const session = await getServerSession(authOptions);
@@ -15,7 +15,10 @@ export async function GET(_req: Request, ctx: any) {
 
     const baseUrl = process.env.NEXTAUTH_URL || process.env.VERCEL_URL || '';
     const origin = baseUrl.startsWith('http') ? baseUrl : `https://${baseUrl}`;
-    const url = `${origin}/print/${id}`;
+    const urlObj = new URL(req.url);
+    const due = urlObj.searchParams.get('due');
+    const q = due ? `?due=${encodeURIComponent(due)}` : '';
+    const url = `${origin}/print/${id}${q}`;
 
     const isLocal = !process.env.AWS_REGION && process.env.NODE_ENV !== 'production';
     const execPath = isLocal ? undefined : await chromium.executablePath();

@@ -103,6 +103,7 @@ model Invoice {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   number    String   @unique
   date      DateTime
+  due       DateTime?
   client    String
   clientMeta Json?
   currency  Currency
