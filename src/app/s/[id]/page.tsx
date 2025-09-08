@@ -12,10 +12,10 @@ export default async function SharedInvoicePage({ params }: { params: Promise<{ 
         <div className="mb-4 text-sm text-slate-600">Freelance template — public share link (read‑only)</div>
         <InvoicePaper
           currency={invoice.currency}
-          items={invoice.items.map(it => ({ desc: it.description, qty: it.quantity, rate: it.rate, tax: it.tax })) as any}
-          subtotal={invoice.subtotal}
-          taxTotal={invoice.tax}
-          total={invoice.total}
+          items={invoice.items.map(it => ({ desc: it.description, qty: it.quantity, rate: Number(it.rate), tax: it.tax })) as any}
+          subtotal={Number(invoice.subtotal)}
+          taxTotal={Number(invoice.tax)}
+          total={Number(invoice.total)}
           sender={{ company: invoice.user.company?.name || '—', vat: invoice.user.company?.vat || '', address: invoice.user.company?.address1 || '', city: invoice.user.company?.city || '', country: invoice.user.company?.country || '', iban: invoice.user.company?.iban || '' }}
           client={{ name: invoice.client, vat: (invoice.clientMeta as any)?.vat || '', address: (invoice.clientMeta as any)?.address || '', city: (invoice.clientMeta as any)?.city || '', country: (invoice.clientMeta as any)?.country || '' }}
           invoiceNo={invoice.number}

@@ -11,7 +11,8 @@ export async function GET() {
   if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const userId = (session.user as any).id as string;
   const invoices = await prisma.invoice.findMany({ where: { userId }, orderBy: { date: 'desc' } });
-  return NextResponse.json({ invoices });
+  const normalized = invoices.map((inv: any) => ({ ...inv, subtotal: Number(inv.subtotal), tax: Number(inv.tax), total: Number(inv.total) }));
+  return NextResponse.json({ invoices: normalized });
 }
 
 export async function POST(req: Request) {
@@ -22,9 +23,10 @@ export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}));
   const currency = (body.currency as 'GBP' | 'EUR') || ((session.user as any).currency ?? 'GBP');
   const client = (body.client as string) || 'New Client';
-  const subtotal = Number(body.subtotal ?? 100);
-  const tax = Number(body.tax ?? 20);
-  const total = Number(body.total ?? subtotal + tax);
+  const toDec = (v: any) => typeof v === 'number' ? v.toFixed(2) : (Number(v||0)).toFixed(2);
+  const subtotal = toDec(body.subtotal ?? 100);
+  const tax = toDec(body.tax ?? 20);
+  const total = toDec(body.total ?? (Number(body.subtotal ?? 100) + Number(body.tax ?? 20)));
 
   // Charge 10 tokens per created invoice
   return await prisma.$transaction(async (tx) => {
@@ -61,6 +63,6 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json({ invoice, tokenBalance: newBalance });
+    return NextResponse.json({ invoice: { ...invoice, subtotal: Number(invoice.subtotal), tax: Number(invoice.tax), total: Number(invoice.total) }, tokenBalance: newBalance });
   });
 }

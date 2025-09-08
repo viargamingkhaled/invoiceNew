@@ -14,9 +14,10 @@ export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}));
   const currency = (body.currency as 'GBP' | 'EUR') || ((session.user as any).currency ?? 'GBP');
   const client = (body.client as string) || 'New Client';
-  const subtotal = Number(body.subtotal ?? 0);
-  const tax = Number(body.tax ?? 0);
-  const total = Number(body.total ?? subtotal + tax);
+  const toDec = (v: any) => typeof v === 'number' ? v.toFixed(2) : (Number(v||0)).toFixed(2);
+  const subtotal = toDec(body.subtotal ?? 0);
+  const tax = toDec(body.tax ?? 0);
+  const total = toDec(body.total ?? (Number(body.subtotal ?? 0) + Number(body.tax ?? 0)));
   const items = Array.isArray(body.items) ? body.items as Array<{ description: string; quantity: number; rate: number; tax: number }> : [];
 
   // Create draft invoice without charging tokens
@@ -35,7 +36,7 @@ export async function POST(req: Request) {
       tax,
       total,
       status: 'Draft',
-      items: items.length ? { create: items.map(it => ({ description: it.description, quantity: Math.round(it.quantity||0), rate: Math.round(it.rate||0), tax: Math.round(it.tax||0) })) } : undefined,
+      items: items.length ? { create: items.map(it => ({ description: it.description, quantity: Math.round(it.quantity||0), rate: toDec(it.rate||0), tax: Math.round(it.tax||0) })) } : undefined,
     },
     include: { items: true },
   });

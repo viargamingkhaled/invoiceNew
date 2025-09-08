@@ -13,7 +13,7 @@ export default async function PrintInvoicePage({ params }: { params: Promise<{ i
       <main className="max-w-none p-0 m-0">
         <InvoiceA4
           currency={invoice.currency}
-          items={invoice.items.map(it => ({ desc: it.description, qty: it.quantity, rate: it.rate, tax: it.tax })) as any}
+          items={invoice.items.map(it => ({ desc: it.description, qty: it.quantity, rate: Number(it.rate), tax: it.tax })) as any}
           subtotal={invoice.subtotal}
           taxTotal={invoice.tax}
           total={invoice.total}

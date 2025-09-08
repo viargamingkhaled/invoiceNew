@@ -1,4 +1,5 @@
 export const dynamic = 'force-dynamic';
+import '../globals.css';
 
 export default function PrintLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -9,4 +10,3 @@ export default function PrintLayout({ children }: { children: React.ReactNode })
     </html>
   );
 }
-

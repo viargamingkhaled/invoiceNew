@@ -613,16 +613,20 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
                 {items.map((it, i) => (
                   <div key={i} className="grid grid-cols-12 gap-1">
                     <input className="col-span-6 rounded border px-2 py-1 text-sm" value={it.desc} onChange={(e)=>setItems(prev=>prev.map((p,idx)=> idx===i? { ...p, desc: e.target.value } : p))} />
-                    <input className="col-span-2 rounded border px-2 py-1 text-sm text-right" type="number" value={it.qty} onChange={(e)=>setItems(prev=>prev.map((p,idx)=> idx===i? { ...p, qty: Number(e.target.value) } : p))} />
+                    <input className="col-span-2 rounded border px-2 py-1 text-sm text-right" type="text" inputMode="numeric" value={it.qty} onChange={(e)=>{ const v=(e.target.value||'').replace(/[^0-9]/g,''); setItems(prev=>prev.map((p,idx)=> idx===i? { ...p, qty: Number(v||0) } : p)); }} />
                     <input
                       className="col-span-2 rounded border px-2 py-1 text-sm text-right"
-                      type="number"
-                      step="0.01"
+                      type="text"
                       inputMode="decimal"
-                      value={it.rate}
+                      value={String(it.rate)}
                       onChange={(e)=>{
-                        const val = (e.target.value || '').replace(',', '.');
-                        const num = parseFloat(val);
+                        const raw = e.target.value || '';
+                        const norm = raw.replace(',', '.');
+                        const parts = norm.split('.');
+                        const intPart = parts[0].replace(/[^0-9]/g, '') || '0';
+                        const decPart = parts.slice(1).join('').replace(/[^0-9]/g, '');
+                        const limited = decPart.length ? `${intPart}.${decPart.slice(0,2)}` : intPart;
+                        const num = parseFloat(limited);
                         const next = Number.isNaN(num) ? 0 : Math.round(num * 100) / 100;
                         setItems(prev=>prev.map((p,idx)=> idx===i? { ...p, rate: next } : p));
                       }}

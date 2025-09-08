@@ -13,7 +13,15 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   const userId = (session.user as any).id as string;
   const invoice = await prisma.invoice.findFirst({ where: { id, userId }, include: { items: true, user: { include: { company: true } } } });
   if (!invoice) return NextResponse.json({ error: 'Not found' }, { status: 404 });
-  return NextResponse.json({ invoice });
+  // Coerce Decimal fields to numbers for client
+  const serialize = (inv: any) => ({
+    ...inv,
+    subtotal: Number(inv.subtotal),
+    tax: Number(inv.tax),
+    total: Number(inv.total),
+    items: inv.items.map((it: any) => ({ ...it, rate: Number(it.rate) })),
+  });
+  return NextResponse.json({ invoice: serialize(invoice) });
 }
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -24,9 +32,10 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   const body = await req.json().catch(() => ({}));
   const data: any = {};
   for (const key of ['client', 'status'] as const) if (key in body) data[key] = body[key];
-  if ('subtotal' in body) data.subtotal = Number(body.subtotal);
-  if ('tax' in body) data.tax = Number(body.tax);
-  if ('total' in body) data.total = Number(body.total);
+  const toDec = (v: any) => typeof v === 'number' ? v.toFixed(2) : (Number(v||0)).toFixed(2);
+  if ('subtotal' in body) data.subtotal = toDec(body.subtotal);
+  if ('tax' in body) data.tax = toDec(body.tax);
+  if ('total' in body) data.total = toDec(body.total);
   if (body.clientMeta) data.clientMeta = body.clientMeta;
   const items = Array.isArray(body.items)
     ? (body.items as Array<{ description: string; quantity: number; rate: number; tax: number }>)
@@ -42,23 +51,18 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
           invoiceId: invId,
           description: String(it.description || ''),
           quantity: Math.round(Number(it.quantity || 0)),
-          rate: Math.round(Number(it.rate || 0)),
+          rate: toDec(it.rate),
           tax: Math.round(Number(it.tax || 0)),
         })),
       });
     }
     // Recalculate totals from items
-    const row = await tx.invoiceItem.groupBy({
-      by: ['invoiceId'],
-      where: { invoiceId: invId },
-      _sum: { quantity: true, rate: true, tax: true },
-    }).catch(() => null);
-    // Compute sums by fetching all items if groupBy unsupported in this context
     const all = await tx.invoiceItem.findMany({ where: { invoiceId: invId } });
-    const subtotalCalc = all.reduce((s, it) => s + it.quantity * it.rate, 0);
-    const taxCalc = all.reduce((s, it) => s + it.quantity * it.rate * (it.tax / 100), 0);
-    const totalCalc = subtotalCalc + taxCalc;
-    return { subtotal: Math.round(subtotalCalc), tax: Math.round(taxCalc), total: Math.round(totalCalc) };
+    const toCents = (v: any) => Math.round(Number(v) * 100);
+    const subtotalC = all.reduce((s, it: any) => s + it.quantity * toCents(it.rate), 0);
+    const taxC = all.reduce((s, it: any) => s + Math.round(it.quantity * toCents(it.rate) * (it.tax / 100)), 0);
+    const totalC = subtotalC + taxC;
+    return { subtotal: (subtotalC/100).toFixed(2), tax: (taxC/100).toFixed(2), total: (totalC/100).toFixed(2) } as any;
   };
 
   // If marking Ready, deduct tokens and record ledger in a transaction
@@ -87,7 +91,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
           balanceAfter: newBalance,
         },
       });
-      return NextResponse.json({ invoice, tokenBalance: newBalance });
+      // Coerce Decimals for client
+      return NextResponse.json({ invoice: { ...invoice, subtotal: Number(invoice.subtotal), tax: Number(invoice.tax), total: Number(invoice.total) }, tokenBalance: newBalance });
     });
   }
 
@@ -98,13 +103,13 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       if (!inv0 || inv0.userId !== userId) return NextResponse.json({ error: 'Not found' }, { status: 404 });
       const totals = await rewriteItemsAndTotals(tx as any, id);
       const invoice = await tx.invoice.update({ where: { id }, data: { ...data, ...totals } });
-      return NextResponse.json({ invoice });
+      return NextResponse.json({ invoice: { ...invoice, subtotal: Number(invoice.subtotal), tax: Number(invoice.tax), total: Number(invoice.total) } });
     });
   }
 
   const invoice = await prisma.invoice.update({ where: { id }, data });
   if (invoice.userId !== userId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-  return NextResponse.json({ invoice });
+  return NextResponse.json({ invoice: { ...invoice, subtotal: Number(invoice.subtotal), tax: Number(invoice.tax), total: Number(invoice.total) } });
 }
 
 export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
