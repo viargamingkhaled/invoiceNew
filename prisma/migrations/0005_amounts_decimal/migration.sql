@@ -1,4 +1,4 @@
-﻿-- Alter rate to decimal(12,2) on invoice items
+-- Alter rate to decimal(12,2) on invoice items
 ALTER TABLE "InvoiceItem" ALTER COLUMN "rate" TYPE NUMERIC(12,2) USING "rate"::numeric(12,2);
 
 -- Alter invoice totals to decimal(12,2)

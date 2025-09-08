@@ -15,7 +15,9 @@ if (run('npx prisma migrate deploy')) {
   process.exit(0);
 }
 
-console.warn('[prisma-deploy] Deploy failed. Trying to resolve failed migration 0004_add_client_meta and retry...');
+console.warn('[prisma-deploy] Deploy failed. Trying to resolve failed migrations and retry...');
+// Resolve latest known failures in order (most recent first)
+run('npx prisma migrate resolve --rolled-back 0005_amounts_decimal');
 run('npx prisma migrate resolve --rolled-back 0004_add_client_meta');
 
 if (!run('npx prisma migrate deploy')) {
@@ -24,4 +26,3 @@ if (!run('npx prisma migrate deploy')) {
 }
 
 console.log('[prisma-deploy] Deploy succeeded after resolve.');
-
