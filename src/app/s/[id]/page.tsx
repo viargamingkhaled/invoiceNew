@@ -16,6 +16,7 @@ export default async function SharedInvoicePage({ params }: { params: Promise<{ 
           subtotal={Number(invoice.subtotal)}
           taxTotal={Number(invoice.tax)}
           total={Number(invoice.total)}
+          logoUrl={(invoice.user.company as any)?.logoUrl || undefined}
           sender={{ company: invoice.user.company?.name || '—', vat: invoice.user.company?.vat || '', address: invoice.user.company?.address1 || '', city: invoice.user.company?.city || '', country: invoice.user.company?.country || '', iban: invoice.user.company?.iban || '' }}
           client={{ name: invoice.client, vat: (invoice.clientMeta as any)?.vat || '', address: (invoice.clientMeta as any)?.address || '', city: (invoice.clientMeta as any)?.city || '', country: (invoice.clientMeta as any)?.country || '' }}
           invoiceNo={invoice.number}

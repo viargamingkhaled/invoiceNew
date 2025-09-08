@@ -27,6 +27,7 @@ export default async function PrintInvoicePage({ params }: { params: Promise<{ i
             bankName: (invoice.user.company as any)?.bankName || undefined,
             bic: invoice.user.company?.bic || undefined,
           }}
+          logoUrl={(invoice.user.company as any)?.logoUrl || undefined}
           client={{
             name: invoice.client,
             vat: (invoice as any).clientMeta?.vat || '',

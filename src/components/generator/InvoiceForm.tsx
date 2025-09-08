@@ -60,9 +60,14 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
   });
   const [invoiceMeta, setInvoiceMeta] = useState({
     number: 'INV-2025-000245',
-    date: '2025-09-02',
+    date: new Date().toISOString().slice(0, 10),
     due: '2025-09-16',
   });
+  useEffect(() => {
+    // Always keep date as today on generator page
+    const today = new Date().toISOString().slice(0, 10);
+    setInvoiceMeta((m) => (m.date !== today ? { ...m, date: today } : m));
+  }, []);
   const [paymentTerm, setPaymentTerm] = useState<'pre' | 7 | 14 | 30 | 45 | 60>(14);
   const [notes, setNotes] = useState('Add notes and comments');
   const [logo, setLogo] = useState<string | null>(null);
@@ -270,7 +275,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
 
   const downloadPdf = async () => {
     if (!signedIn) return;
-    if (tokenBalance !== null && tokenBalance < 100) {
+    if (tokenBalance !== null && tokenBalance < 10) {
       setBanner({ type: 'error', msg: 'Not enough tokens (100 required).' });
       return;
     }
@@ -400,7 +405,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
 
   const saveAndShare = async () => {
     if (!signedIn) return;
-    if (tokenBalance !== null && tokenBalance < 100) {
+    if (tokenBalance !== null && tokenBalance < 10) {
       setBanner({ type: 'error', msg: 'Not enough tokens (100 required).' });
       return;
     }
@@ -627,7 +632,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
             </div>
             <div className="grid sm:grid-cols-4 gap-3 items-end">
               <Input label="Number" value={invoiceMeta.number} onChange={(e) => setInvoiceMeta((m) => ({ ...m, number: e.target.value }))} />
-              <Input label="Date" type="date" value={invoiceMeta.date} onChange={(e) => setInvoiceMeta((m) => ({ ...m, date: e.target.value }))} />
+              <Input label="Date" type="date" value={invoiceMeta.date} readOnly />
               <Input label="Due" type="date" value={invoiceMeta.due} onChange={(e) => setInvoiceMeta((m) => ({ ...m, due: e.target.value }))} />
               <div className="grid gap-1.5">
                 <label className="text-xs text-slate-600">Payment terms</label>

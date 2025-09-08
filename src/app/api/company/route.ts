@@ -20,7 +20,7 @@ export async function PATCH(req: Request) {
   const userId = (session.user as any).id as string;
   const body = await req.json();
   const data: any = {};
-  for (const key of ['name', 'vat', 'reg', 'address1', 'city', 'country', 'iban', 'bankName', 'bic'] as const) {
+  for (const key of ['name', 'vat', 'reg', 'address1', 'city', 'country', 'iban', 'logoUrl', 'bankName', 'bic'] as const) {
     if (key in body) data[key] = body[key as keyof typeof body];
   }
   let company = await prisma.company.findUnique({ where: { userId } });

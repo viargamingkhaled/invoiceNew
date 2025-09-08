@@ -73,7 +73,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
       const user = await tx.user.findUnique({ where: { id: userId }, select: { tokenBalance: true } });
       if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
-      const cost = 100;
+      const cost = 10;
       if (user.tokenBalance < cost) return NextResponse.json({ error: 'Not enough tokens' }, { status: 400 });
       // Optional items update + totals recalculation
       let totals: any = {};
