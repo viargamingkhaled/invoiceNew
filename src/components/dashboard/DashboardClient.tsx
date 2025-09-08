@@ -544,6 +544,9 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
                         address: client.address,
                         city: client.city,
                         country: client.country,
+                        iban: (client as any).iban || '',
+                        bankName: (client as any).bankName || '',
+                        bic: (client as any).bic || '',
                       },
                       items: items.map(it=>({ description: it.desc, quantity: it.qty, rate: it.rate, tax: it.tax }))
                     })
@@ -608,6 +611,12 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
               </div>
               <input className="rounded border px-2 py-1 text-sm" placeholder="Address line" value={client.address} onChange={(e)=>setClient({ ...client, address: e.target.value })} />
               <input className="rounded border px-2 py-1 text-sm" placeholder="Country" value={client.country} onChange={(e)=>setClient({ ...client, country: e.target.value })} />
+              <div className="text-xs text-slate-600 mt-2">Bank details (optional)</div>
+              <div className="grid grid-cols-3 gap-2">
+                <input className="rounded border px-2 py-1 text-sm" placeholder="IBAN" value={(client as any).iban || ''} onChange={(e)=>setClient({ ...(client as any), iban: e.target.value } as any)} />
+                <input className="rounded border px-2 py-1 text-sm" placeholder="Bank name" value={(client as any).bankName || ''} onChange={(e)=>setClient({ ...(client as any), bankName: e.target.value } as any)} />
+                <input className="rounded border px-2 py-1 text-sm" placeholder="SWIFT / BIC" value={(client as any).bic || ''} onChange={(e)=>setClient({ ...(client as any), bic: e.target.value } as any)} />
+              </div>
             </div>
 
             {/* Items */}

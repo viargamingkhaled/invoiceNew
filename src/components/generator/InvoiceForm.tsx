@@ -279,6 +279,10 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     let invoiceId: string | null = null;
     try {
       // Create a draft (no charge)
+      // Sync seller company details first
+      try {
+        await fetch('/api/company', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: sender.company, vat: sender.vat, address1: sender.address, city: sender.city, country: sender.country, iban: sender.iban, bankName: sender.bankName, bic: sender.bic }) });
+      } catch {}
       const draftRes = await fetch('/api/drafts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -288,6 +292,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
           subtotal: Math.round(subtotal),
           tax: Math.round(taxTotal),
           total: Math.round(total),
+          clientMeta: { vat: client.vat, address: client.address, city: client.city, country: client.country, iban: client.iban, bankName: client.bankName, bic: client.bic },
           items: items.map((it) => ({ description: it.desc, quantity: it.qty, rate: it.rate, tax: it.tax })),
         }),
       });
@@ -369,6 +374,8 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     setBusy('save');
     setBanner(null);
     try {
+      // Sync seller company details
+      try { await fetch('/api/company', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: sender.company, vat: sender.vat, address1: sender.address, city: sender.city, country: sender.country, iban: sender.iban, bankName: sender.bankName, bic: sender.bic }) }); } catch {}
       const res = await fetch('/api/drafts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -378,6 +385,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
           subtotal: Math.round(subtotal),
           tax: Math.round(taxTotal),
           total: Math.round(total),
+          clientMeta: { vat: client.vat, address: client.address, city: client.city, country: client.country, iban: client.iban, bankName: client.bankName, bic: client.bic },
           items: items.map((it) => ({ description: it.desc, quantity: it.qty, rate: it.rate, tax: it.tax })),
         }),
       });
@@ -400,6 +408,8 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     setBanner(null);
     let invoiceId: string | null = null;
     try {
+      // Sync seller company details
+      try { await fetch('/api/company', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: sender.company, vat: sender.vat, address1: sender.address, city: sender.city, country: sender.country, iban: sender.iban, bankName: sender.bankName, bic: sender.bic }) }); } catch {}
       const res = await fetch('/api/drafts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -409,6 +419,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
           subtotal: Math.round(subtotal),
           tax: Math.round(taxTotal),
           total: Math.round(total),
+          clientMeta: { vat: client.vat, address: client.address, city: client.city, country: client.country, iban: client.iban, bankName: client.bankName, bic: client.bic },
           items: items.map((it) => ({ description: it.desc, quantity: it.qty, rate: it.rate, tax: it.tax })),
         }),
       });
