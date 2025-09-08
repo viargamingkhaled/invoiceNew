@@ -467,7 +467,13 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
     bic: invoice.user?.company?.bic || '',
   });
   const [items, setItems] = useState<Array<{ desc: string; qty: number; rate: number; tax: number }>>(
-    (invoice.items || []).map((it: any) => ({ desc: it.description, qty: it.quantity, rate: it.rate, tax: it.tax }))
+    (invoice.items || []).map((it: any) => ({ desc: it.description, qty: it.quantity, rate: Number(it.rate), tax: it.tax }))
+  );
+  const [rateInputs, setRateInputs] = useState<string[]>(
+    (invoice.items || []).map((it: any) => {
+      const v = Number(it.rate ?? 0);
+      return Number.isFinite(v) ? v.toFixed(2) : '0.00';
+    })
   );
 
   const totals = (() => {
@@ -496,7 +502,11 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
       bankName: invoice.user?.company?.bankName || '',
       bic: invoice.user?.company?.bic || '',
     });
-    setItems((invoice.items || []).map((it: any) => ({ desc: it.description, qty: it.quantity, rate: it.rate, tax: it.tax })));
+    setItems((invoice.items || []).map((it: any) => ({ desc: it.description, qty: it.quantity, rate: Number(it.rate), tax: it.tax })));
+    setRateInputs((invoice.items || []).map((it: any) => {
+      const v = Number(it.rate ?? 0);
+      return Number.isFinite(v) ? v.toFixed(2) : '0.00';
+    }));
   }, [invoice]);
 
   return (
@@ -618,15 +628,20 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
                       className="col-span-2 rounded border px-2 py-1 text-sm text-right"
                       type="text"
                       inputMode="decimal"
-                      value={String(it.rate)}
+                      value={rateInputs[i] ?? ''}
                       onChange={(e)=>{
                         const raw = e.target.value || '';
-                        const norm = raw.replace(',', '.');
-                        const parts = norm.split('.');
-                        const intPart = parts[0].replace(/[^0-9]/g, '') || '0';
-                        const decPart = parts.slice(1).join('').replace(/[^0-9]/g, '');
-                        const limited = decPart.length ? `${intPart}.${decPart.slice(0,2)}` : intPart;
-                        const num = parseFloat(limited);
+                        let s = raw.replace(',', '.').replace(/[^0-9.]/g, '');
+                        const first = s.indexOf('.');
+                        if (first !== -1) {
+                          s = s.slice(0, first + 1) + s.slice(first + 1).replace(/\./g, '');
+                          const parts = s.split('.');
+                          const dec = parts[1] ?? '';
+                          s = parts[0] + '.' + dec.slice(0, 2);
+                          if (raw.endsWith('.') && dec.length === 0) s = parts[0] + '.';
+                        }
+                        setRateInputs(prev => prev.map((v, idx) => idx === i ? s : v));
+                        const num = parseFloat(s);
                         const next = Number.isNaN(num) ? 0 : Math.round(num * 100) / 100;
                         setItems(prev=>prev.map((p,idx)=> idx===i? { ...p, rate: next } : p));
                       }}

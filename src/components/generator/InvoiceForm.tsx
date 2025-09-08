@@ -701,15 +701,18 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
                     inputMode="decimal"
                     pattern="^[0-9]*[.,]?[0-9]{0,2}$"
                     onChange={(e) => {
-                      const raw = e.target.value;
-                      const norm = raw.replace(',', '.');
-                      // keep only digits and the first dot
-                      const parts = norm.split('.');
-                      const intPart = parts[0].replace(/[^0-9]/g, '') || '0';
-                      const decPart = parts.slice(1).join('').replace(/[^0-9]/g, '');
-                      const limited = decPart.length ? `${intPart}.${decPart.slice(0, 2)}` : intPart;
-                      setRateInputs((prev) => prev.map((v, idx) => (idx === i ? limited : v)));
-                      const num = parseFloat(limited);
+                      const raw = e.target.value || '';
+                      let s = raw.replace(',', '.').replace(/[^0-9.]/g, '');
+                      const first = s.indexOf('.');
+                      if (first !== -1) {
+                        s = s.slice(0, first + 1) + s.slice(first + 1).replace(/\./g, '');
+                        const parts = s.split('.');
+                        const dec = parts[1] ?? '';
+                        s = parts[0] + '.' + dec.slice(0, 2);
+                        if (raw.endsWith('.') && dec.length === 0) s = parts[0] + '.';
+                      }
+                      setRateInputs((prev) => prev.map((v, idx) => (idx === i ? s : v)));
+                      const num = parseFloat(s);
                       updateItem(i, 'rate', Number.isNaN(num) ? 0 : num);
                     }}
                     wrapperClassName="col-span-2 min-w-0"
