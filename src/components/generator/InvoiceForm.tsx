@@ -34,6 +34,8 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     { desc: 'Service #1', qty: 1, rate: 100, tax: standardRate },
     { desc: 'Service #2', qty: 1, rate: 200, tax: standardRate },
   ]);
+  // Local input buffers for decimal-friendly rate editing
+  const [rateInputs, setRateInputs] = useState<string[]>(["100.00", "200.00"]);
 
   // Sender / Client / Invoice metadata / Notes (for live preview)
   const [sender, setSender] = useState({
@@ -102,10 +104,14 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
   };
 
   const addItem = () =>
-    setItems((prev) => [
-      ...prev,
-      { desc: `Service #${prev.length + 1}`, qty: 1, rate: 100, tax: lineTaxRate },
-    ]);
+    setItems((prev) => {
+      const next = [
+        ...prev,
+        { desc: `Service #${prev.length + 1}`, qty: 1, rate: 100, tax: lineTaxRate },
+      ];
+      setRateInputs((r) => [...r, '100.00']);
+      return next;
+    });
 
   const updateItem = (idx: number, key: keyof Item, val: any) =>
     setItems((prev) => prev.map((it, i) => (i === idx ? { ...it, [key]: val } : it)));
@@ -116,6 +122,14 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     0
   );
   const total = subtotal + taxTotal;
+
+  // Keep buffers aligned with items length (e.g., when prefilled or reset)
+  useEffect(() => {
+    setRateInputs((prev) => {
+      if (prev.length === items.length) return prev;
+      return items.map((it) => (Number.isFinite(it.rate) ? (Math.round((it.rate as number) * 100) / 100).toFixed(2) : '0.00'));
+    });
+  }, [items.length]);
 
   const zeroNote =
     taxMode === 'intraEU_rc'
@@ -681,9 +695,27 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
               {items.map((it, i) => (
                 <motion.div key={i} className="grid grid-cols-12 gap-2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
                   <Input value={it.desc} onChange={(e) => updateItem(i, 'desc', e.target.value)} wrapperClassName="col-span-6 min-w-0" />
-                  <Input value={it.qty} onChange={(e) => updateItem(i, 'qty', Number(e.target.value))} wrapperClassName="col-span-2 min-w-0" className="text-right" />
-                  <Input value={it.rate} onChange={(e) => updateItem(i, 'rate', Number(e.target.value))} wrapperClassName="col-span-2 min-w-0" className="text-right" />
-                  <Input value={it.tax} onChange={(e) => updateItem(i, 'tax', Number(e.target.value))} wrapperClassName="col-span-2 min-w-0" className="text-right" />
+                  <Input value={it.qty} onChange={(e) => updateItem(i, 'qty', Number(e.target.value))} wrapperClassName="col-span-2 min-w-0" className="text-right" inputMode="numeric" />
+                  <Input
+                    value={rateInputs[i] ?? ''}
+                    inputMode="decimal"
+                    pattern="^[0-9]*[.,]?[0-9]{0,2}$"
+                    onChange={(e) => {
+                      const raw = e.target.value;
+                      const norm = raw.replace(',', '.');
+                      // keep only digits and the first dot
+                      const parts = norm.split('.');
+                      const intPart = parts[0].replace(/[^0-9]/g, '') || '0';
+                      const decPart = parts.slice(1).join('').replace(/[^0-9]/g, '');
+                      const limited = decPart.length ? `${intPart}.${decPart.slice(0, 2)}` : intPart;
+                      setRateInputs((prev) => prev.map((v, idx) => (idx === i ? limited : v)));
+                      const num = parseFloat(limited);
+                      updateItem(i, 'rate', Number.isNaN(num) ? 0 : num);
+                    }}
+                    wrapperClassName="col-span-2 min-w-0"
+                    className="text-right"
+                  />
+                  <Input value={it.tax} onChange={(e) => updateItem(i, 'tax', Number(e.target.value))} wrapperClassName="col-span-2 min-w-0" className="text-right" inputMode="numeric" />
                 </motion.div>
               ))}
               <button onClick={addItem} className="rounded-lg border border-dashed border-black/15 py-2 text-sm hover:bg-slate-50 transition-colors">

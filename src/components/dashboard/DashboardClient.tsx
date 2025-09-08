@@ -614,7 +614,19 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
                   <div key={i} className="grid grid-cols-12 gap-1">
                     <input className="col-span-6 rounded border px-2 py-1 text-sm" value={it.desc} onChange={(e)=>setItems(prev=>prev.map((p,idx)=> idx===i? { ...p, desc: e.target.value } : p))} />
                     <input className="col-span-2 rounded border px-2 py-1 text-sm text-right" type="number" value={it.qty} onChange={(e)=>setItems(prev=>prev.map((p,idx)=> idx===i? { ...p, qty: Number(e.target.value) } : p))} />
-                    <input className="col-span-2 rounded border px-2 py-1 text-sm text-right" type="number" value={it.rate} onChange={(e)=>setItems(prev=>prev.map((p,idx)=> idx===i? { ...p, rate: Number(e.target.value) } : p))} />
+                    <input
+                      className="col-span-2 rounded border px-2 py-1 text-sm text-right"
+                      type="number"
+                      step="0.01"
+                      inputMode="decimal"
+                      value={it.rate}
+                      onChange={(e)=>{
+                        const val = (e.target.value || '').replace(',', '.');
+                        const num = parseFloat(val);
+                        const next = Number.isNaN(num) ? 0 : Math.round(num * 100) / 100;
+                        setItems(prev=>prev.map((p,idx)=> idx===i? { ...p, rate: next } : p));
+                      }}
+                    />
                     <input className="col-span-2 rounded border px-2 py-1 text-sm text-right" type="number" value={it.tax} onChange={(e)=>setItems(prev=>prev.map((p,idx)=> idx===i? { ...p, tax: Number(e.target.value) } : p))} />
                   </div>
                 ))}
