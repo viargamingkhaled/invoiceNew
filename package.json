@@ -15,7 +15,7 @@
                     "vercel:prod":  "vercel deploy --prod --yes",
                     "deploy:vercel":  "npm run vercel:link \u0026\u0026 npm run vercel:prod"
                 },
-    "dependencies": {"@sparticuz/chromium": "^131.0.0", "puppeteer-core": "^22.13.1",
+    "dependencies": {"@sparticuz/chromium": "^131.0.0", "puppeteer-core": "^22.13.1", "nodemailer": "^6.9.13",
                          "html2canvas":  "^1.4.1",
                          "jspdf":  "^2.5.2",
                          "framer-motion":  "^10.18.0",

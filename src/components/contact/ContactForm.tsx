@@ -19,16 +19,35 @@ export default function ContactForm() {
   const [message, setMessage] = useState('');
   const [consent, setConsent] = useState(false);
   const [submitted, setSubmitted] = useState<null | { id: string }>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
   const countries = useMemo(() => Object.keys(CURRENCY_BY_COUNTRY), []);
 
   const canSubmit = Boolean(name.trim() && email.includes('@') && message.trim() && consent);
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!canSubmit) return;
-    const id = `REQ-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
-    setSubmitted({ id });
+    setBusy(true); setError(null); setSubmitted(null);
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, company, country, topic, message })
+      });
+      if (!res.ok) {
+        const j = await res.json().catch(()=>({error:'Failed'}));
+        throw new Error(j.error || 'Failed to send');
+      }
+      const { id } = await res.json();
+      setSubmitted({ id });
+      setName(''); setEmail(''); setCompany(''); setMessage(''); setConsent(false);
+    } catch (e:any) {
+      setError(e?.message || 'Failed to send');
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -80,9 +99,12 @@ export default function ContactForm() {
           <span>I agree to be contacted about my request.</span>
         </label>
         <div className="flex items-center gap-3">
-          <Button type="submit" disabled={!canSubmit}>Send</Button>
+          <Button type="submit" disabled={!canSubmit || busy}>{busy? 'Sending…' : 'Send'}</Button>
           <span className="text-xs text-slate-500">Avg. reply within 1 business day</span>
         </div>
+        {error && (
+          <Alert variant="error">{error}</Alert>
+        )}
         {submitted && (
           <Alert variant="success">
             Thanks! Your request <b>{submitted.id}</b> has been received. We will reply to <b>{email}</b>.
@@ -92,4 +114,3 @@ export default function ContactForm() {
     </Card>
   );
 }
-
