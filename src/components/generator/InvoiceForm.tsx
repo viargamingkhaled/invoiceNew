@@ -276,7 +276,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
   const downloadPdf = async () => {
     if (!signedIn) return;
     if (tokenBalance !== null && tokenBalance < 10) {
-      setBanner({ type: 'error', msg: 'Not enough tokens (100 required).' });
+      setBanner({ type: 'error', msg: 'Not enough tokens (10 required).' });
       return;
     }
     setBusy('download');
@@ -406,7 +406,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
   const saveAndShare = async () => {
     if (!signedIn) return;
     if (tokenBalance !== null && tokenBalance < 10) {
-      setBanner({ type: 'error', msg: 'Not enough tokens (100 required).' });
+      setBanner({ type: 'error', msg: 'Not enough tokens (10 required).' });
       return;
     }
     setBusy('share');
@@ -463,7 +463,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
   const sendEmail = async () => {
     if (!signedIn) return;
     if (tokenBalance !== null && tokenBalance < 100) {
-      setBanner({ type: 'error', msg: 'Not enough tokens (100 required).' });
+      setBanner({ type: 'error', msg: 'Not enough tokens (10 required).' });
       return;
     }
     setBusy('email');
