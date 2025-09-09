@@ -29,6 +29,7 @@ model User {
   email         String?  @unique
   emailVerified DateTime?
   image         String?
+  password      String?
 
   // App-specific fields
   tokenBalance Int       @default(0)

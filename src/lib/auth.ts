@@ -1,52 +1,49 @@
 import { prisma } from "@/lib/prisma";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import bcrypt from "bcrypt";
 import type { NextAuthOptions } from "next-auth";
-import EmailProvider from "next-auth/providers/email";
-
-// Проверяем, настроена ли отправка почты
-const hasSmtp = !!(
-  process.env.SMTP_HOST &&
-  process.env.SMTP_USER &&
-  process.env.SMTP_PASS &&
-  process.env.EMAIL_FROM
-);
+import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authOptions: NextAuthOptions = {
-  debug: process.env.NEXTAUTH_DEBUG === "1",
-  secret: process.env.NEXTAUTH_SECRET,
-  // @ts-expect-error
-  trustHost: true,
   adapter: PrismaAdapter(prisma as any),
-  session: { strategy: "jwt" },
-
-  // ИЗМЕНЕНО: Мы полностью удалили CredentialsProvider
-  // Теперь доступен только вход по email (magic link)
   providers: [
-    ...(hasSmtp
-      ? [
-          (() => {
-            const port = Number(process.env.SMTP_PORT || 587);
-            const secure = port === 465;
-            return EmailProvider({
-              server: {
-                host: process.env.SMTP_HOST,
-                port,
-                auth: {
-                  user: process.env.SMTP_USER!,
-                  pass: process.env.SMTP_PASS!,
-                },
-                ...(secure ? { secure: true } : {}),
-              },
-              from: process.env.EMAIL_FROM,
-              // После перехода по ссылке из письма пользователь будет перенаправлен на дашборд
-              maxAge: 24 * 60 * 60,
-            });
-          })(),
-        ]
-      : []),
-  ],
+    CredentialsProvider({
+      name: "credentials",
+      credentials: {
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Invalid credentials");
+        }
 
-  // Этот блок мы уже исправляли, он остается как есть
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email.toLowerCase() },
+        });
+
+        if (!user || !user.password) {
+          throw new Error("Invalid credentials");
+        }
+
+        const isCorrectPassword = await bcrypt.compare(
+          credentials.password,
+          user.password,
+        );
+
+        if (!isCorrectPassword) {
+          throw new Error("Invalid credentials");
+        }
+
+        return user;
+      },
+    }),
+  ],
+  debug: process.env.NODE_ENV === "development",
+  session: {
+    strategy: "jwt",
+  },
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token, user }) {
       if (user && user.email) {
