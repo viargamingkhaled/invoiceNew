@@ -226,7 +226,6 @@ export default function DashboardClient() {
           </div>
           <div className="flex items-center gap-2">
             <div className="inline-flex items-center gap-2 text-sm rounded-full border border-black/10 bg-white px-3 py-1">Balance: <b>{int(tokenBalance)}</b> tokens <span className="text-slate-500">(~{int(tokenBalance/10)} invoices)</span></div>
-            <Button onClick={() => topUp(10)} size="md" variant="primary">Top up {currencySym(currency)}10</Button>
             <a href="#company-settings" className="rounded-xl border border-black/10 bg-white px-4 py-2 text-sm">Company settings</a>
           </div>
         </div>
