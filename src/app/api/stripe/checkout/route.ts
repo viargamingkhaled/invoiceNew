@@ -1,75 +1,67 @@
 import { authOptions } from "@/lib/auth";
-import { Currency, pricingPlans } from "@/lib/plans";
+import { pricingPlans } from "@/lib/plans";
 import { stripe } from "@/lib/stripe";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
-const absoluteUrl = (path: string) => {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-  return `${baseUrl}${path}`;
-};
-
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
-
-    if (!session || !session.user || !session.user.id) {
+    if (!session?.user?.id)
       return new NextResponse("Unauthorized", { status: 401 });
-    }
 
-    // ИЗМЕНЕНО: Получаем и planId, и currency из тела запроса
-    const { planId, currency } = (await req.json()) as {
-      planId: string;
-      currency: Currency;
-    };
-    const plan = pricingPlans.find((p) => p.id === planId);
+    const { planId, currency, customAmount } = await req.json();
 
-    if (!plan) {
-      return new NextResponse("Plan not found", { status: 404 });
-    }
+    let line_items;
 
-    // ИЗМЕНЕНО: Выбираем правильную цену в зависимости от валюты
-    const priceInCents =
-      currency === "GBP" ? plan.baseGBP * 100 : plan.baseEUR * 100;
-    if (!priceInCents) {
-      return new NextResponse("Price not found for this currency", {
-        status: 400,
-      });
+    if (planId) {
+      // Логика для стандартных планов
+      const plan = pricingPlans.find((p) => p.id === planId);
+      if (!plan) return new NextResponse("Plan not found", { status: 404 });
+
+      const priceInCents =
+        currency === "GBP" ? plan.baseGBP * 100 : plan.baseEUR * 100;
+      line_items = [
+        {
+          price_data: {
+            currency,
+            product_data: { name: plan.name },
+            unit_amount: priceInCents,
+          },
+          quantity: 1,
+        },
+      ];
+    } else if (customAmount && customAmount >= 5) {
+      // Логика для кастомной суммы
+      line_items = [
+        {
+          price_data: {
+            currency,
+            product_data: { name: "Custom Token Top-up" },
+            unit_amount: customAmount * 100,
+          },
+          quantity: 1,
+        },
+      ];
+    } else {
+      return new NextResponse("Invalid request", { status: 400 });
     }
 
     const checkoutSession = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
       customer_email: session.user.email || undefined,
-      line_items: [
-        {
-          price_data: {
-            // ИЗМЕНЕНО: Используем полученную валюту
-            currency: currency.toLowerCase(),
-            product_data: {
-              name: plan.name,
-              description: `Get ${plan.tokens} tokens for your account.`,
-            },
-            // ИЗМЕНЕНО: Используем правильную цену в центах/евроцентах
-            unit_amount: priceInCents,
-          },
-          quantity: 1,
-        },
-      ],
+      line_items,
       metadata: {
         userId: session.user.id,
-        tokens: plan.tokens,
-        planId: plan.id,
+        // Считаем токены для кастомной суммы, 100 токенов за 1 GBP/EUR
+        tokens: planId
+          ? pricingPlans.find((p) => p.id === planId)!.tokens
+          : customAmount * 100,
       },
-      success_url: absoluteUrl("/dashboard?payment=success"),
-      cancel_url: absoluteUrl("/pricing?payment=cancelled"),
+      success_url: `https://www.invoicerly.co.uk/dashboard?payment=success`,
+      cancel_url: `https://www.invoicerly.co.uk/pricing?payment=cancelled`,
     });
-
-    if (!checkoutSession.url) {
-      return new NextResponse("Error creating checkout session", {
-        status: 500,
-      });
-    }
 
     return NextResponse.json({ url: checkoutSession.url });
   } catch (error) {

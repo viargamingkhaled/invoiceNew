@@ -65,7 +65,7 @@ export default function PricingClient() {
     return rates[rates.length-1] || 20;
   }, [country]);
 
-  const handlePurchase = async (planId: string) => {
+  const handlePurchase = async (planId: string | null, customAmount?: number) => {
     if (!signedIn) {
       return router.push('/auth/signin?mode=login');
     }
@@ -76,7 +76,7 @@ export default function PricingClient() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         // ИЗМЕНЕНО: Отправляем на сервер и ID плана, и ВАЛЮТУ
-        body: JSON.stringify({ planId, currency }),
+        body: JSON.stringify({ planId, currency, customAmount }),
       });
 
       const data = await response.json();
@@ -158,7 +158,10 @@ export default function PricingClient() {
             );
           })}
 
-          <CustomPlanCard currency={currency} />
+          <CustomPlanCard
+            currency={currency}
+            onPurchase={(amount, curr) => handlePurchase(null, amount)}
+          />
         </div>
 
         <div className="mt-12 grid md:grid-cols-2 gap-6">
@@ -220,7 +223,7 @@ export default function PricingClient() {
   );
 }
 
-function CustomPlanCard({ currency }: { currency: Currency }) {
+function CustomPlanCard({ currency, onPurchase }: { currency: Currency; onPurchase: (amount: number, currency: Currency) => void; }) {
   const [price, setPrice] = useState<number>(5);
   const TOKENS_PER_UNIT = 100;
   const TOKENS_PER_INVOICE = 10;
@@ -255,7 +258,9 @@ function CustomPlanCard({ currency }: { currency: Currency }) {
         <li>Min {currency === 'GBP' ? '£5' : '€5'}</li>
       </ul>
       <div className="mt-6">
-        <Button className="w-full" size="lg">Buy tokens</Button>
+        <Button className="w-full" size="lg" onClick={() => onPurchase(price, currency)}>
+          Buy tokens
+        </Button>
       </div>
     </motion.div>
   );
