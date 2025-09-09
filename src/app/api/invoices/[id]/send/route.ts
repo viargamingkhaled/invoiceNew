@@ -6,12 +6,12 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// Эта функция нужна, чтобы делать внутренние запросы к другим API-роутам
 const absoluteUrl = (path: string) => {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
   return `${baseUrl}${path}`;
 };
 
+// ИСПРАВЛЕНО: Тип второго аргумента теперь правильный
 export async function POST(
   req: Request,
   { params }: { params: { id: string } },
@@ -33,7 +33,7 @@ export async function POST(
     const invoice = await prisma.invoice.findFirst({
       where: {
         id: params.id,
-        userId: session.user.id, // Убедимся, что пользователь отправляет свой инвойс
+        userId: session.user.id,
       },
       include: { user: { include: { company: true } } },
     });
@@ -42,7 +42,6 @@ export async function POST(
       return new NextResponse("Invoice not found", { status: 404 });
     }
 
-    // ИСПРАВЛЕНИЕ: Вместо генерации PDF здесь, мы запрашиваем его у нашего же API
     const pdfResponse = await fetch(absoluteUrl(`/api/pdf/${invoice.id}`));
     if (!pdfResponse.ok) {
       throw new Error("Failed to fetch PDF for attachment");
