@@ -1,7 +1,7 @@
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
-import { NextRequest, NextResponse } from "next/server"; // ИЗМЕНЕНО: Добавлен NextRequest
+import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -11,28 +11,26 @@ const absoluteUrl = (path: string) => {
   return `${baseUrl}${path}`;
 };
 
-// ИЗМЕНЕНО: Используем правильные типы NextRequest и NextResponse
-export async function POST(
-  req: NextRequest,
-  { params }: { params: { id: string } },
-) {
+// Функция теперь принимает только один аргумент `req`
+export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const { email: toEmail } = await req.json();
-    if (!toEmail) {
+    // ИЗМЕНЕНО: Получаем и email, и invoiceId из тела запроса
+    const { email: toEmail, invoiceId } = await req.json();
+    if (!toEmail || !invoiceId) {
       return NextResponse.json(
-        { message: "Recipient email is required" },
+        { message: "Recipient email and Invoice ID are required" },
         { status: 400 },
       );
     }
 
     const invoice = await prisma.invoice.findFirst({
       where: {
-        id: params.id,
+        id: invoiceId, // Используем ID из тела запроса
         userId: session.user.id,
       },
       include: { user: { include: { company: true } } },
@@ -45,13 +43,8 @@ export async function POST(
       );
     }
 
-    // Этот роут теперь зависит от /api/pdf/[id], убедимся что он есть
     const pdfResponse = await fetch(absoluteUrl(`/api/pdf/${invoice.id}`));
     if (!pdfResponse.ok) {
-      const errorText = await pdfResponse.text();
-      console.error(
-        `Failed to fetch PDF. Status: ${pdfResponse.status}. Body: ${errorText}`,
-      );
       throw new Error("Failed to fetch PDF for attachment");
     }
     const pdfBlob = await pdfResponse.blob();

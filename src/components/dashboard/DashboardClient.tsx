@@ -391,14 +391,17 @@ export default function DashboardClient() {
               onSendEmail={async () => {
                 const clientEmail = (viewInv.clientMeta?.email as string) || '';
                 const recipientEmail = prompt("Please enter the recipient's email address:", clientEmail);
+
                 if (recipientEmail) {
                   const r = await markReadyIfDraft(viewInv.id);
                   if (r.ok) {
                     try {
-                      const res = await fetch(`/api/invoices/${viewInv.id}/send`, {
+                      // ИЗМЕНЕНО: URL теперь /api/invoices/send
+                      const res = await fetch(`/api/invoices/send`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email: recipientEmail }),
+                        // ИЗМЕНЕНО: Добавляем invoiceId в тело запроса
+                        body: JSON.stringify({ email: recipientEmail, invoiceId: viewInv.id }),
                       });
                       if (!res.ok) throw new Error('Failed to send email.');
                       alert('Email queued successfully!');
