@@ -388,7 +388,28 @@ export default function DashboardClient() {
               onRefresh={async(id)=>{ const inv = await fetchInvoice(id); if(inv) setViewInv(inv); }}
               onDownload={()=>ensureReadyAndDownload(viewInv.id)}
               onShare={async()=>{ const r = await markReadyIfDraft(viewInv.id); if(!r.ok){ alert(r.err||'Failed'); return;} const url = `${window.location.origin}/s/${viewInv.id}`; await navigator.clipboard.writeText(url); alert('Share link copied'); }}
-              onSendEmail={async()=>{ const r = await markReadyIfDraft(viewInv.id); if(r.ok){ alert('Email queued'); } else { alert(r.err||'Failed'); }}}
+              onSendEmail={async () => {
+                const clientEmail = (viewInv.clientMeta?.email as string) || '';
+                const recipientEmail = prompt("Please enter the recipient's email address:", clientEmail);
+                if (recipientEmail) {
+                  const r = await markReadyIfDraft(viewInv.id);
+                  if (r.ok) {
+                    try {
+                      const res = await fetch(`/api/invoices/${viewInv.id}/send`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: recipientEmail }),
+                      });
+                      if (!res.ok) throw new Error('Failed to send email.');
+                      alert('Email queued successfully!');
+                    } catch {
+                      alert('Error sending email. Please try again.');
+                    }
+                  } else {
+                    alert(r.err || 'Failed to prepare invoice for sending.');
+                  }
+                }
+              }}
               onSave={async(next)=>{
                 const res = await fetch(`/api/invoices/${viewInv.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(next) });
                 if (res.ok) { const j = await res.json(); setViewInv(j.invoice); setInvoices(prev=>prev.map(x=>x.id===j.invoice.id? { ...x, client: j.invoice.client, subtotal: j.invoice.subtotal, tax: j.invoice.tax, total: j.invoice.total } : x)); }
