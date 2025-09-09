@@ -1,82 +1,32 @@
-'use client';
+import { Suspense } from 'react';
+import SignInClient from './SignInClient'; // <-- Мы импортируем ВАШ компонент
 
-import { Button, Card, Input } from '@/components';
-import { signIn } from 'next-auth/react';
-import { useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+export const metadata = { title: 'Sign in' };
+
+// Это простая заглушка, которая будет показываться на мгновение
+// пока загружается основной компонент формы
+function LoadingSkeleton() {
+    return (
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+            <div className="w-full max-w-md p-6 space-y-4 bg-white border rounded-lg shadow-lg animate-pulse">
+                <div className="h-8 bg-slate-200 rounded w-3/4 mx-auto"></div>
+                <div className="h-4 bg-slate-200 rounded w-full mx-auto"></div>
+                <div className="pt-6 space-y-4">
+                    <div className="h-4 bg-slate-200 rounded w-1/4"></div>
+                    <div className="h-10 bg-slate-200 rounded"></div>
+                    <div className="h-12 bg-slate-300 rounded"></div>
+                </div>
+            </div>
+        </div>
+    );
+}
 
 export default function SignInPage() {
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
-  const initialMode = searchParams.get('mode') === 'login' ? 'login' : 'signup';
-
-  const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    setSuccess(null);
-
-    try {
-      const res = await signIn('email', {
-        email,
-        redirect: false,
-        callbackUrl,
-      });
-
-      if (res?.error) {
-        throw new Error(res.error);
-      }
-
-      if (res?.ok) {
-        setSuccess('Check your email for the magic link to sign in!');
-      } else {
-        throw new Error('Something went wrong. Please try again.');
-      }
-
-    } catch (err: any) {
-      setError(err.message || 'An unknown error occurred.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
-        <Card className="shadow-lg">
-          <h1 className="text-2xl font-bold text-center">
-            {initialMode === 'login' ? 'Sign In' : 'Create Account'}
-          </h1>
-          <p className="mt-2 text-center text-sm text-slate-600">
-            Enter your email to receive a magic link.
-          </p>
-
-          {error && <div className="mt-4 bg-red-50 border border-red-200 text-red-800 rounded-lg p-3 text-sm">{error}</div>}
-          {success && <div className="mt-4 bg-green-50 border border-green-200 text-green-800 rounded-lg p-3 text-sm">{success}</div>}
-
-          {!success && (
-            <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
-              <Input
-                label="Email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                required
-              />
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? 'Sending...' : 'Continue with Email'}
-              </Button>
-            </form>
-          )}
-
-        </Card>
-      </div>
-    </div>
+    // Suspense говорит Next.js: "Покажи LoadingSkeleton,
+    // а когда браузер будет готов, загрузи SignInClient"
+    <Suspense fallback={<LoadingSkeleton />}>
+      <SignInClient />
+    </Suspense>
   );
 }
