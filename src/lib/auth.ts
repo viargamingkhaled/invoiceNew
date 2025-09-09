@@ -1,11 +1,11 @@
 import { prisma } from "@/lib/prisma";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import bcrypt from "bcrypt";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma as any),
+  // ИЗМЕНЕНО: Строка с PrismaAdapter была полностью удалена, чтобы убрать конфликт.
+
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -41,29 +41,26 @@ export const authOptions: NextAuthOptions = {
   ],
   debug: process.env.NODE_ENV === "development",
   session: {
-    strategy: "jwt",
+    strategy: "jwt", // Мы явно используем JWT, поэтому адаптер не нужен.
   },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
+    // Этот колбэк вызывается после успешной authorize
     async jwt({ token, user }) {
-      if (user && user.email) {
-        const dbUser = await prisma.user.findUnique({
-          where: { email: user.email as string },
-          select: { id: true, tokenBalance: true, currency: true },
-        });
-        if (dbUser) {
-          token.id = dbUser.id;
-          token.tokenBalance = dbUser.tokenBalance ?? 0;
-          token.currency = (dbUser.currency as string) ?? "GBP";
-        }
+      // `user` передается сюда только при первом входе
+      if (user) {
+        token.id = user.id;
+        token.tokenBalance = (user as any).tokenBalance ?? 0;
+        token.currency = (user as any).currency ?? "GBP";
       }
       return token;
     },
+    // Этот колбэк передает данные из токена в клиентский объект session
     async session({ session, token }) {
-      if (session.user && token && token.id) {
+      if (session.user && token) {
         session.user.id = token.id;
-        session.user.tokenBalance = token.tokenBalance;
-        session.user.currency = token.currency;
+        (session.user as any).tokenBalance = token.tokenBalance;
+        (session.user as any).currency = token.currency;
       }
       return session;
     },
