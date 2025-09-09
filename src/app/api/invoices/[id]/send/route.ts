@@ -1,7 +1,7 @@
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server"; // ИЗМЕНЕНО: Добавлен NextRequest
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -11,15 +11,15 @@ const absoluteUrl = (path: string) => {
   return `${baseUrl}${path}`;
 };
 
-// ИСПРАВЛЕНО: Тип второго аргумента теперь правильный
+// ИЗМЕНЕНО: Используем правильные типы NextRequest и NextResponse
 export async function POST(
-  req: Request,
+  req: NextRequest,
   { params }: { params: { id: string } },
 ) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     const { email: toEmail } = await req.json();
@@ -39,11 +39,19 @@ export async function POST(
     });
 
     if (!invoice) {
-      return new NextResponse("Invoice not found", { status: 404 });
+      return NextResponse.json(
+        { message: "Invoice not found" },
+        { status: 404 },
+      );
     }
 
+    // Этот роут теперь зависит от /api/pdf/[id], убедимся что он есть
     const pdfResponse = await fetch(absoluteUrl(`/api/pdf/${invoice.id}`));
     if (!pdfResponse.ok) {
+      const errorText = await pdfResponse.text();
+      console.error(
+        `Failed to fetch PDF. Status: ${pdfResponse.status}. Body: ${errorText}`,
+      );
       throw new Error("Failed to fetch PDF for attachment");
     }
     const pdfBlob = await pdfResponse.blob();
