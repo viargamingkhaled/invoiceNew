@@ -6,8 +6,6 @@ import Stripe from "stripe";
 
 export async function POST(req: Request) {
   const body = await req.text();
-
-  // ИСПРАВЛЕНО: Правильный синтаксис для получения заголовков
   const headersList = await headers();
   const signature = headersList.get("Stripe-Signature") as string;
 
@@ -36,26 +34,26 @@ export async function POST(req: Request) {
     }
 
     try {
-      const user = await prisma.user.findUnique({ where: { id: userId } });
-      if (!user) {
-        return new NextResponse("User not found", { status: 404 });
-      }
+      const numericTokens = parseInt(tokensToAdd, 10);
 
-      await prisma.user.update({
+      // ИЗМЕНЕНО: Используем атомарную операцию `increment`
+      // Это гарантирует, что баланс обновится корректно, даже при одновременных операциях.
+      const updatedUser = await prisma.user.update({
         where: { id: userId },
         data: {
           tokenBalance: {
-            increment: parseInt(tokensToAdd, 10),
+            increment: numericTokens,
           },
         },
       });
 
+      // Теперь создаем запись в Ledger с уже обновленным балансом
       await prisma.ledgerEntry.create({
         data: {
           userId: userId,
           type: "STRIPE_PURCHASE",
-          delta: parseInt(tokensToAdd, 10),
-          balanceAfter: user.tokenBalance + parseInt(tokensToAdd, 10),
+          delta: numericTokens,
+          balanceAfter: updatedUser.tokenBalance, // Используем актуальный баланс
           receiptUrl:
             typeof session.payment_intent === "string"
               ? `https://dashboard.stripe.com/payments/${session.payment_intent}`
