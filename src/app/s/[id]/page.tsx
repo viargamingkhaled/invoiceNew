@@ -1,17 +1,21 @@
 import InvoiceA4 from '@/components/pdf/InvoiceA4';
 import { prisma } from '@/lib/prisma';
+import { notFound } from 'next/navigation';
 
-// ИЗМЕНЕНО: Мы создаем специальный тип для пропсов этой страницы.
-// Это стандартный и самый надежный способ для Next.js App Router.
+// Тип для пропсов, соответствующий Next.js 15
 type SharedInvoicePageProps = {
   params: {
     id: string;
   };
 };
 
+// Функция теперь `async`, чтобы использовать `await`
 export default async function SharedInvoicePage({ params }: SharedInvoicePageProps) {
+  // `params` больше не Promise здесь, так как Next.js обрабатывает это для страниц
+  const { id } = params;
+
   const invoice = await prisma.invoice.findUnique({
-    where: { id: params.id },
+    where: { id: id },
     include: {
       user: {
         include: {
@@ -23,11 +27,8 @@ export default async function SharedInvoicePage({ params }: SharedInvoicePagePro
   });
 
   if (!invoice) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p>Invoice not found.</p>
-      </div>
-    );
+    // Используем стандартный `notFound` из Next.js для отображения 404
+    notFound();
   }
 
   return (
