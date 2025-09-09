@@ -1,12 +1,24 @@
-import InvoiceA4 from '@/components/pdf/InvoiceA4'; // ИСПРАВЛЕНО: Добавлен импорт
+import InvoiceA4 from '@/components/pdf/InvoiceA4';
 import { prisma } from '@/lib/prisma';
 
-export default async function SharedInvoicePage({ params }: { params: { id: string } }) {
+// ИЗМЕНЕНО: Мы создаем специальный тип для пропсов этой страницы.
+// Это стандартный и самый надежный способ для Next.js App Router.
+type SharedInvoicePageProps = {
+  params: {
+    id: string;
+  };
+};
+
+export default async function SharedInvoicePage({ params }: SharedInvoicePageProps) {
   const invoice = await prisma.invoice.findUnique({
     where: { id: params.id },
     include: {
-      user: { include: { company: true } },
-      items: true, // ИСПРАВЛЕНО: Явно запрашиваем связанные `items`
+      user: {
+        include: {
+          company: true,
+        },
+      },
+      items: true,
     },
   });
 
@@ -26,7 +38,7 @@ export default async function SharedInvoicePage({ params }: { params: { id: stri
             items={invoice.items.map(it => ({
               desc: it.description,
               qty: it.quantity,
-              rate: it.rate.toNumber(), // Prisma Decimal -> number
+              rate: it.rate.toNumber(),
               tax: it.tax
             }))}
             subtotal={invoice.subtotal.toNumber()}
