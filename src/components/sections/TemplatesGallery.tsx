@@ -192,3 +192,5 @@ function TemplateCard({ tpl, index, reduce, onWaitlist }: { tpl: { id: string; n
     </motion.div>
   );
 }
+
+

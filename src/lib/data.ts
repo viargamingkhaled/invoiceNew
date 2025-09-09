@@ -90,3 +90,5 @@ export const TEMPLATES: TemplateInfo[] = [
   { id: 'education', name: 'Education', status: 'preview', badge: 'Coming soon', cta: 'waitlist' },
   { id: 'nonprofit', name: 'Non-profit', status: 'preview', badge: 'Coming soon', cta: 'waitlist' },
 ];
+
+

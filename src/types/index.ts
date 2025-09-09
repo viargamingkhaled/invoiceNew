@@ -74,3 +74,5 @@ export interface TemplateInfo {
   badge?: 'Available' | 'Coming soon' | 'Pro';
   cta?: 'use' | 'waitlist';
 }
+
+

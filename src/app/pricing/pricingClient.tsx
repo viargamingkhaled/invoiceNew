@@ -1,31 +1,18 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import { Loader2 } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
+
 import Section from '@/components/layout/Section';
-import Button from '@/components/ui/Button';
 import Pill from '@/components/policy/Pill';
+import Button from '@/components/ui/Button';
 import Segmented from '@/components/ui/Segmented';
 import { CC, VAT_RATES } from '@/lib/constants';
-import { useSession } from 'next-auth/react';
-
-type Currency = 'GBP' | 'EUR';
-
-type Plan = {
-  id: 'beginner' | 'pro' | 'business';
-  name: string;
-  baseGBP: number;
-  baseEUR: number;
-  popular?: boolean;
-  cta: string;
-  bullets: string[];
-};
-
-const PLANS: Plan[] = [
-  { id: 'beginner', name: 'Beginner', baseGBP: 10, baseEUR: 10, cta: 'Buy tokens', bullets: ['Top up 1,000 tokens (~100 invoices)','No subscription','Draft/preview free'] },
-  { id: 'pro', name: 'Pro', baseGBP: 50, baseEUR: 50, popular: true, cta: 'Buy tokens', bullets: ['Top up 5,000 tokens (~500 invoices)','Templates & logo','Payment links','Read receipts'] },
-  { id: 'business', name: 'Business', baseGBP: 100, baseEUR: 100, cta: 'Buy tokens', bullets: ['Top up 10,000 tokens (~1,000 invoices)','Teams & roles','Integrations (Stripe/Wise)','API & webhooks'] },
-];
+import { Currency, pricingPlans } from '@/lib/plans';
 
 const COUNTRIES = Object.keys(CC);
 
@@ -64,24 +51,12 @@ function Price({ amount, currency, vatRate }: { amount: number; currency: Curren
   );
 }
 
-function ComparisonRow({ feature, free, pro, business }: { feature: string; free?: boolean | string; pro?: boolean | string; business?: boolean | string }) {
-  const Cell = ({ v }: { v?: boolean | string }) => (
-    <div className="px-3 py-2 text-sm border-t border-black/10">{v===true? 'Yes' : v===false? 'No' : (v || '-')}</div>
-  );
-  return (
-    <div className="grid grid-cols-4">
-      <div className="px-3 py-2 text-sm font-medium border-t border-black/10">{feature}</div>
-      <Cell v={free} />
-      <Cell v={pro} />
-      <Cell v={business} />
-    </div>
-  );
-}
-
 export default function PricingClient() {
   const [currency, setCurrency] = useState<Currency>('GBP');
   const [country, setCountry] = useState<string>('United Kingdom');
+  const [isLoading, setIsLoading] = useState<string | null>(null);
   const { status } = useSession();
+  const router = useRouter();
   const signedIn = status === 'authenticated';
 
   const vatRate = useMemo(() => {
@@ -89,6 +64,35 @@ export default function PricingClient() {
     const rates = (VAT_RATES as Record<string, number[]>)[code] || [0,20];
     return rates[rates.length-1] || 20;
   }, [country]);
+
+  const handlePurchase = async (planId: string) => {
+    if (!signedIn) {
+      return router.push('/auth/signin?mode=login');
+    }
+
+    setIsLoading(planId);
+    try {
+      const response = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        // ИЗМЕНЕНО: Отправляем на сервер и ID плана, и ВАЛЮТУ
+        body: JSON.stringify({ planId, currency }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.url) {
+        throw new Error(data.error || 'Something went wrong.');
+      }
+
+      window.location.href = data.url;
+
+    } catch (error) {
+      console.error("Stripe checkout error:", error);
+      toast.error('Could not create payment session. Please try again.');
+      setIsLoading(null);
+    }
+  };
 
   return (
     <div className="bg-slate-50 min-h-screen">
@@ -99,12 +103,12 @@ export default function PricingClient() {
           <p className="mt-2 text-slate-600">Choose a top-up, set your country & currency — we estimate VAT for transparency.</p>
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-            <Segmented 
+            <Segmented
               options={[{label:'GBP', value:'GBP'},{label:'EUR', value:'EUR'}]}
               value={currency}
               onChange={(v)=>setCurrency(v as Currency)}
             />
-            <select 
+            <select
               className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm"
               value={country}
               onChange={(e)=>setCountry(e.target.value)}
@@ -115,12 +119,11 @@ export default function PricingClient() {
         </div>
 
         <div className="mt-10 grid md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {PLANS.map((plan) => {
+          {pricingPlans.map((plan) => {
             const base = currency==='GBP'? plan.baseGBP : plan.baseEUR;
-            const TOKENS_PER_UNIT = 100;
-            const TOKENS_PER_INVOICE = 10;
-            const tokens = Math.round(base * TOKENS_PER_UNIT);
-            const invoices = Math.round(tokens / TOKENS_PER_INVOICE);
+            const invoices = Math.round(plan.tokens / 10);
+            const loading = isLoading === plan.id;
+
             return (
               <motion.div key={plan.id} className={`rounded-2xl bg-white border border-black/10 shadow-sm p-6 flex flex-col ${plan.popular ? 'md:-mt-4' : ''}`}
                 initial={plan.popular ? { scale: 1.02, opacity: 0, y: 16 } : { opacity: 0, y: 16 }}
@@ -135,24 +138,28 @@ export default function PricingClient() {
                 <div className="mt-3">
                   <Price amount={base} currency={currency} vatRate={vatRate} />
                 </div>
-                <div className="mt-1 text-xs text-slate-600">= {tokens} tokens (~{invoices} invoices)</div>
+                <div className="mt-1 text-xs text-slate-600">= {plan.tokens} tokens (~{invoices} invoices)</div>
                 <ul className="mt-4 space-y-2 text-sm text-slate-700 list-disc pl-5">
                   {plan.bullets.map((b) => (
                     <li key={b}>{b}</li>
                   ))}
                 </ul>
                 <div className="mt-6">
-                  <Button className="w-full" size="lg">{plan.cta}</Button>
+                  <Button
+                    className="w-full"
+                    size="lg"
+                    onClick={() => handlePurchase(plan.id)}
+                    disabled={loading}
+                  >
+                    {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : plan.cta}
+                  </Button>
                 </div>
               </motion.div>
             );
           })}
 
-          {/* Custom plan */}
           <CustomPlanCard currency={currency} />
         </div>
-
-        {/* Compare plans section removed as requested */}
 
         <div className="mt-12 grid md:grid-cols-2 gap-6">
           <div className="rounded-2xl border border-black/10 bg-white p-6">
@@ -253,4 +260,3 @@ function CustomPlanCard({ currency }: { currency: Currency }) {
     </motion.div>
   );
 }
-

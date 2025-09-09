@@ -1,14 +1,15 @@
 ﻿'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import { Button, Card, Input } from '@/components';
 import Section from '@/components/layout/Section';
-import { Card, Button, Input } from '@/components';
 import InvoiceA4 from '@/components/pdf/InvoiceA4';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
+// ТИПЫ И ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
 type Currency = 'GBP' | 'EUR';
 type InvoiceStatus = 'Draft' | 'Ready' | 'Error' | 'Sent' | 'Paid' | 'Overdue';
 type Invoice = { id: string; number: string; date: string; client: string; currency: Currency; subtotal: number; tax: number; total: number; status: InvoiceStatus };
-type LedgerRow = { id: string; ts: string; type: 'Top-up' | 'Invoice' | 'Adjust'; delta: number; balanceAfter: number; currency?: Currency; amount?: number; receiptUrl?: string };
+type LedgerRow = { id: string; ts: string; type: 'Top-up' | 'Invoice' | 'Adjust' | 'STRIPE_PURCHASE'; delta: number; balanceAfter: number; currency?: Currency; amount?: number; receiptUrl?: string };
 type Company = { name: string; vat?: string; reg?: string; address1?: string; city?: string; country?: string; iban?: string; bankName?: string; bic?: string };
 type Me = { id: string; name: string | null; email: string | null; tokenBalance: number; currency: Currency; company: Company | null };
 
@@ -21,12 +22,17 @@ const fmtMoney = (n: number, c: Currency) => {
 };
 
 function money(n: number, c: Currency) {
-  const sym = c === 'GBP' ? 'ВЈ' : 'в‚¬';
+  const sym = c === 'GBP' ? '£' : '€';
   const abs = Math.abs(n);
   const opts: Intl.NumberFormatOptions = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
   try { return `${n < 0 ? '-' : ''}${sym}${new Intl.NumberFormat(undefined, opts).format(abs)}`; } catch { return `${sym}${abs.toFixed(2)}`; }
 }
 function int(n: number) { try { return new Intl.NumberFormat().format(Math.round(n)); } catch { return String(Math.round(n)); } }
+
+
+// ====================================================================
+// ОСНОВНОЙ КОМПОНЕНТ
+// ====================================================================
 
 export default function DashboardClient() {
   const bcRef = useRef<BroadcastChannel | null>(null);
@@ -41,18 +47,10 @@ export default function DashboardClient() {
   const [form, setForm] = useState<Company>({ name: '' });
   const [viewId, setViewId] = useState<string | null>(null);
   const [viewInv, setViewInv] = useState<any | null>(null);
-  const [printing, setPrinting] = useState<null | {
-    currency: string;
-    items: Array<{ desc: string; qty: number; rate: number; tax: number }>;
-    subtotal: number; tax: number; total: number;
-    sender: { company: string; vat?: string; address?: string; city?: string; country?: string; iban?: string; bankName?: string; bic?: string };
-    client: { name: string; vat?: string; address?: string; city?: string; country?: string };
-    invoiceNo: string; invoiceDate: string; invoiceDue: string; notes?: string; logoUrl?: string;
-  }>(null);
+  const [printing, setPrinting] = useState<any>(null);
 
   // load data
   useEffect(() => {
-    // Init BroadcastChannel for cross-tab updates
     try { bcRef.current = new BroadcastChannel('app-events'); } catch {}
     const cleanup = () => { try { bcRef.current?.close(); } catch {} };
     const loadAll = async () => {
@@ -118,7 +116,6 @@ export default function DashboardClient() {
       setMe({ ...me, tokenBalance: j.tokenBalance });
       try { bcRef.current?.postMessage({ type: 'tokens-updated', tokenBalance: j.tokenBalance }); } catch {}
     }
-    // refresh ledger
     const ledRes = await fetch('/api/ledger');
     if (ledRes.ok) { const { ledger } = await ledRes.json(); setLedger(ledger); }
     return { ok: true };
@@ -151,7 +148,6 @@ export default function DashboardClient() {
       setInvoices(prev => [ { ...invoice, date: new Date(invoice.date).toISOString().slice(0,10) }, ...prev ]);
       setMe({ ...me, tokenBalance });
       try { bcRef.current?.postMessage({ type: 'tokens-updated', tokenBalance }); } catch {}
-      // refresh ledger
       const ledRes = await fetch('/api/ledger');
       if (ledRes.ok) {
         const { ledger } = await ledRes.json();
@@ -210,12 +206,19 @@ export default function DashboardClient() {
   const invView = invoices.slice(invRange[0], invRange[1]);
   const ledgerView = ledger.slice(ledRange[0], ledRange[1]);
 
+  const onInvoiceSlice = useCallback((from: number, to: number) => {
+    setInvSlice([from, to]);
+  }, []);
+
+  const onLedgerSlice = useCallback((from: number, to: number) => {
+    setLedSlice([from, to]);
+  }, []);
+
   return (
     <>
     <main className="bg-slate-50 min-h-screen">
       <style>{`.reveal-in{opacity:1;transform:translateY(0);filter:blur(0)}[data-reveal]{opacity:0;transform:translateY(6px);filter:blur(4px);transition:all .45s ease}`}</style>
       <Section className="py-6">
-        {/* Greeting & balance (compact, Р±РµР· Р±СѓР»Р»РµС‚РѕРІ) */}
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Hello, {userName}</h1>
@@ -227,9 +230,7 @@ export default function DashboardClient() {
             <a href="#company-settings" className="rounded-xl border border-black/10 bg-white px-4 py-2 text-sm">Company settings</a>
           </div>
         </div>
-        {/* РЈР±СЂР°Р»Рё Р±Р»РѕРє Р±С‹СЃС‚СЂС‹С… РґРµР№СЃС‚РІРёР№, С‡С‚РѕР±С‹ РёР·Р±РµР¶Р°С‚СЊ Р»РёС€РЅРёС… РїСѓСЃС‚РѕС‚ */}
 
-        {/* Р”РІРµ РєРѕР»РѕРЅРєРё РЅР° РѕРґРЅРѕРј СѓСЂРѕРІРЅРµ: РёРЅРІРѕР№СЃС‹ СЃР»РµРІР°, РёСЃС‚РѕСЂРёСЏ С‚РѕРєРµРЅРѕРІ СЃРїСЂР°РІР° */}
         <div className="mt-4 grid lg:grid-cols-2 gap-4 items-start">
           <Card padding="sm" data-reveal>
               <div className="flex items-center justify-between">
@@ -249,55 +250,54 @@ export default function DashboardClient() {
                     </tr>
                   </thead>
                   <tbody>
-  {invView.map(inv => (
-    <React.Fragment key={inv.id}>
-      <tr className={`border-t ${viewId===inv.id ? 'border-black' : 'border-black/10'}`}>
-        <td className={`px-3 py-2 font-mono text-[12px] ${viewId===inv.id ? 'border-t-2 border-l-2 border-black rounded-tl-xl' : ''}`}>{inv.number}</td>
-        <td className={`px-3 py-2 ${viewId===inv.id ? 'border-t-2 border-black' : ''}`}>{new Date(inv.date).toISOString().slice(0,10)}</td>
-        <td className={`px-3 py-2 ${viewId===inv.id ? 'border-t-2 border-black' : ''}`}>{inv.client}</td>
-        <td className={`px-3 py-2 text-right ${viewId===inv.id ? 'border-t-2 border-black' : ''}`}>{fmtMoney(inv.total, inv.currency)}</td>
-        <td className={`px-3 py-2 ${viewId===inv.id ? 'border-t-2 border-black' : ''}`}>
-          <span className={`rounded-full px-2 py-0.5 text-[11px] border ${
-            inv.status==='Ready' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' :
-            inv.status==='Error' ? 'border-rose-200 bg-rose-50 text-rose-800' :
-            inv.status==='Paid' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' :
-            inv.status==='Sent' ? 'border-blue-200 bg-blue-50 text-blue-800' :
-            inv.status==='Overdue' ? 'border-rose-200 bg-rose-50 text-rose-800' :
-            'border-black/10'
-          }`}>{inv.status}</span>
-        </td>
-        <td className={`px-3 py-2 text-right ${viewId===inv.id ? 'border-t-2 border-r-2 border-black rounded-tr-xl' : ''}`}>
-          <button className="text-sm underline mr-2" onClick={()=>openView(inv.id)}>{viewId===inv.id? 'Hide' : 'View'}</button>
-          <button className="text-sm underline" onClick={()=>ensureReadyAndDownload(inv.id)}>Download</button>
-        </td>
-      </tr>
-      {viewId===inv.id && viewInv && (
-        <tr className={`bg-white ${viewId===inv.id ? '' : 'border-t border-black/10'}`}>
-          <td className={`px-3 py-3 ${viewId===inv.id ? 'border-l-2 border-r-2 border-b-2 border-black rounded-b-xl' : ''}`} colSpan={6}>
-            <div className="p-2">
-              <ModalInvoiceView
-                invoice={viewInv}
-                onClose={()=>{ setViewId(null); setViewInv(null); }}
-                onRefresh={async(id)=>{ const iv = await fetchInvoice(id); if(iv) setViewInv(iv); }}
-                onDownload={()=>ensureReadyAndDownload(viewInv.id)}
-                onShare={async()=>{ const r = await markReadyIfDraft(viewInv.id); if(!r.ok){ alert(r.err||'Failed'); return;} const url = `${window.location.origin}/s/${viewInv.id}`; await navigator.clipboard.writeText(url); alert('Share link copied'); }}
-                onSendEmail={async()=>{ const r = await markReadyIfDraft(viewInv.id); if(r.ok){ alert('Email queued'); } else { alert(r.err||'Failed'); }}}
-                onSave={async(next)=>{
-                  const res = await fetch(`/api/invoices/${viewInv.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(next) });
-                  if (res.ok) { const j = await res.json(); setViewInv(j.invoice); setInvoices(prev=>prev.map(x=>x.id===j.invoice.id? { ...x, client: j.invoice.client, subtotal: j.invoice.subtotal, tax: j.invoice.tax, total: j.invoice.total } : x)); }
-                  else { const j = await res.json().catch(()=>({error:'Failed'})); alert(j.error||'Failed to save'); }
-                }}
-              />
-            </div>
-          </td>
-        </tr>
-      )}
-    </React.Fragment>
-  ))}
-</tbody>
+                    {invView.map(inv => (
+                      <React.Fragment key={inv.id}>
+                        <tr className={`border-t ${viewId===inv.id ? 'border-black' : 'border-black/10'}`}>
+                          <td className={`px-3 py-2 font-mono text-[12px] ${viewId===inv.id ? 'border-t-2 border-l-2 border-black rounded-tl-xl' : ''}`}>{inv.number}</td>
+                          <td className={`px-3 py-2 ${viewId===inv.id ? 'border-t-2 border-black' : ''}`}>{new Date(inv.date).toISOString().slice(0,10)}</td>
+                          <td className={`px-3 py-2 ${viewId===inv.id ? 'border-t-2 border-black' : ''}`}>{inv.client}</td>
+                          <td className={`px-3 py-2 text-right ${viewId===inv.id ? 'border-t-2 border-black' : ''}`}>{fmtMoney(inv.total, inv.currency)}</td>
+                          <td className={`px-3 py-2 ${viewId===inv.id ? 'border-t-2 border-black' : ''}`}>
+                            <span className={`rounded-full px-2 py-0.5 text-[11px] border ${
+                              inv.status==='Ready' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' :
+                              inv.status==='Error' ? 'border-rose-200 bg-rose-50 text-rose-800' :
+                              inv.status==='Paid' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' :
+                              inv.status==='Sent' ? 'border-blue-200 bg-blue-50 text-blue-800' :
+                              inv.status==='Overdue' ? 'border-rose-200 bg-rose-50 text-rose-800' :
+                              'border-black/10'
+                            }`}>{inv.status}</span>
+                          </td>
+                          <td className={`px-3 py-2 text-right ${viewId===inv.id ? 'border-t-2 border-r-2 border-black rounded-tr-xl' : ''}`}>
+                            <button className="text-sm underline mr-2" onClick={()=>openView(inv.id)}>{viewId===inv.id? 'Hide' : 'View'}</button>
+                            <button className="text-sm underline" onClick={()=>ensureReadyAndDownload(inv.id)}>Download</button>
+                          </td>
+                        </tr>
+                        {viewId===inv.id && viewInv && (
+                          <tr className={`bg-white ${viewId===inv.id ? '' : 'border-t border-black/10'}`}>
+                            <td className={`px-3 py-3 ${viewId===inv.id ? 'border-l-2 border-r-2 border-b-2 border-black rounded-b-xl' : ''}`} colSpan={6}>
+                              <div className="p-2">
+                                <ModalInvoiceView
+                                  invoice={viewInv}
+                                  onClose={()=>{ setViewId(null); setViewInv(null); }}
+                                  onRefresh={async(id)=>{ const iv = await fetchInvoice(id); if(iv) setViewInv(iv); }}
+                                  onDownload={()=>ensureReadyAndDownload(viewInv.id)}
+                                  onShare={async()=>{ const r = await markReadyIfDraft(viewInv.id); if(!r.ok){ alert(r.err||'Failed'); return;} const url = `${window.location.origin}/s/${viewInv.id}`; await navigator.clipboard.writeText(url); alert('Share link copied'); }}
+                                  onSendEmail={async()=>{ const r = await markReadyIfDraft(viewInv.id); if(r.ok){ alert('Email queued'); } else { alert(r.err||'Failed'); }}}
+                                  onSave={async(next)=>{
+                                    const res = await fetch(`/api/invoices/${viewInv.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(next) });
+                                    if (res.ok) { const j = await res.json(); setViewInv(j.invoice); setInvoices(prev=>prev.map(x=>x.id===j.invoice.id? { ...x, client: j.invoice.client, subtotal: j.invoice.subtotal, tax: j.invoice.tax, total: j.invoice.total } : x)); }
+                                    else { const j = await res.json().catch(()=>({error:'Failed'})); alert(j.error||'Failed to save'); }
+                                  }}
+                                />
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </tbody>
                  </table>
-                 {/* РџР°РіРёРЅР°С†РёСЏ РёРЅРІРѕР№СЃРѕРІ */}
-                 <InvoicePager total={invoices.length} pageSize={20} onSlice={(from, to)=>setInvSlice([from,to])} />
+                 <InvoicePager total={invoices.length} pageSize={20} onSlice={onInvoiceSlice} />
               </div>
           </Card>
 
@@ -321,18 +321,16 @@ export default function DashboardClient() {
                         <td className="px-3 py-2">{row.type}</td>
                         <td className={`px-3 py-2 text-right ${row.delta>0?'text-emerald-700':'text-slate-900'}`}>{row.delta>0? `+${int(row.delta)}` : `-${int(Math.abs(row.delta))}`} tokens</td>
                         <td className="px-3 py-2 text-right">{int(row.balanceAfter)}</td>
-                        <td className="px-3 py-2 text-right">{row.type==='Top-up'? <a className="underline text-sm" href={row.receiptUrl||'#'}>Receipt</a> : '-'}</td>
+                        <td className="px-3 py-2 text-right">{row.type==='Top-up' || row.type === 'STRIPE_PURCHASE' ? <a className="underline text-sm" href={row.receiptUrl||'#'} target="_blank" rel="noopener noreferrer">Receipt</a> : '-'}</td>
                       </tr>
                     ))}
                   </tbody>
                  </table>
-                 {/* РџР°РіРёРЅР°С†РёСЏ Р»РµРґР¶РµСЂР° */}
-                 <LedgerPager total={ledger.length} pageSize={20} onSlice={(from,to)=>setLedSlice([from,to])} />
+                 <LedgerPager total={ledger.length} pageSize={20} onSlice={onLedgerSlice} />
               </div>
           </Card>
         </div>
 
-        {/* Company settings РЅРёР¶Рµ, РЅР° РІСЃСЋ С€РёСЂРёРЅСѓ */}
         <div className="mt-6 scroll-mt-24" id="company-settings">
             <Card padding="sm">
               <div className="text-base font-semibold">Company settings</div>
@@ -356,17 +354,15 @@ export default function DashboardClient() {
                   <Input label="SWIFT / BIC" value={form.bic||''} onChange={(e)=>setForm({...form, bic:e.target.value})} placeholder="BANKGB2L" />
                 </div>
                 <div className="mt-2">
-                  <Button disabled={savingCompany} variant="primary" type="submit">{savingCompany? 'SavingвЂ¦' : 'Save company'}</Button>
+                  <Button disabled={savingCompany} variant="primary" type="submit">{savingCompany? 'Saving…' : 'Save company'}</Button>
                 </div>
               </form>
             </Card>
         </div>
       </Section>
     </main>
-    {/* Hidden print area for dashboard */}
     {printing && (
       <div id="dash-print-area" style={{ position:'absolute', left: '-10000px', top: 0, width: '100%' }}>
-        {/* @ts-ignore */}
         <InvoiceA4
           currency={printing.currency}
           items={printing.items as any}
@@ -382,9 +378,7 @@ export default function DashboardClient() {
         />
       </div>
     )}
-
-    {/* Simple modal view */}
-    {false && viewId && viewInv && (
+    {viewId && viewInv && (
       <div className="fixed inset-0 z-50">
         <div className="absolute inset-0 bg-black/30" onClick={()=>{ setViewId(null); setViewInv(null); }} />
         <div className="absolute inset-0 flex items-center justify-center p-4">
@@ -410,6 +404,9 @@ export default function DashboardClient() {
   );
 }
 
+
+// === ВЫНЕСЕННЫЕ КОМПОНЕНТЫ ===
+
 function TablePager({ total, pageSize = 20, onSlice }: { total: number; pageSize?: number; onSlice: (from: number, to: number) => void }) {
   const [page, setPage] = useState(1);
   const pages = Math.max(1, Math.ceil(total / pageSize));
@@ -424,7 +421,7 @@ function TablePager({ total, pageSize = 20, onSlice }: { total: number; pageSize
 
   return (
     <div className="flex items-center justify-between p-3">
-      <div className="text-xs text-slate-600">Showing {Math.min((page - 1) * pageSize + 1, total)}вЂ“{Math.min(page * pageSize, total)} of {total}</div>
+      <div className="text-xs text-slate-600">Showing {Math.min((page - 1) * pageSize + 1, total)}–{Math.min(page * pageSize, total)} of {total}</div>
       <div className="flex items-center gap-2">
         <Button size="sm" variant="outline" disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Prev</Button>
         <div className="text-xs text-slate-600">{page} / {pages}</div>
@@ -513,7 +510,7 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
     <div className="flex flex-col max-h-[90vh]">
       <div className="flex items-center justify-between p-3 border-b border-black/10">
         <div className="text-base font-semibold">Invoice {invoice.number}</div>
-        <button className="text-xl leading-none px-2" aria-label="Close" onClick={onClose}>Г—</button>
+        <button className="text-xl leading-none px-2" aria-label="Close" onClick={onClose}>×</button>
       </div>
 
       <div className="p-3 border-b border-black/10 flex items-center gap-2">
@@ -528,26 +525,16 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
         ) : (
           <>
             <div className="flex flex-wrap items-center gap-3 w-full">
-              <div className="text-sm text-slate-700">Totals: Subtotal <b>{fmtMoney(totals.subtotal, invoice.currency)}</b> В· Tax <b>{fmtMoney(totals.tax, invoice.currency)}</b> В· Total <b>{fmtMoney(totals.total, invoice.currency)}</b></div>
+              <div className="text-sm text-slate-700">Totals: Subtotal <b>{fmtMoney(totals.subtotal, invoice.currency)}</b> · Tax <b>{fmtMoney(totals.tax, invoice.currency)}</b> · Total <b>{fmtMoney(totals.total, invoice.currency)}</b></div>
               <div className="ml-auto flex items-center gap-2">
                 <button className="text-sm underline" onClick={async()=>{
-                  // Save seller (company) first
                   await fetch('/api/company', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(company) });
-                  // Save invoice client details + items
                   await fetch(`/api/invoices/${invoice.id}`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                       client: client.name,
-                      clientMeta: {
-                        vat: client.vat,
-                        address: client.address,
-                        city: client.city,
-                        country: client.country,
-                        iban: (client as any).iban || '',
-                        bankName: (client as any).bankName || '',
-                        bic: (client as any).bic || '',
-                      },
+                      clientMeta: { vat: client.vat, address: client.address, city: client.city, country: client.country, iban: (client as any).iban || '', bankName: (client as any).bankName || '', bic: (client as any).bic || '' },
                       items: items.map(it=>({ description: it.desc, quantity: it.qty, rate: it.rate, tax: it.tax }))
                     })
                   });
@@ -564,7 +551,6 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
       <div className="p-4 overflow-auto" style={{ maxHeight: 'calc(90vh - 110px)' }}>
         {!editing ? (
           <div className="max-w-[800px] mx-auto">
-            {/* Full invoice preview */}
             <InvoiceA4
               currency={invoice.currency}
               items={(invoice.items||[]).map((it:any)=>({ desc: it.description, qty: it.quantity, rate: it.rate, tax: it.tax }))}
@@ -581,7 +567,6 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6 max-w-4xl mx-auto">
-            {/* Seller */}
             <div className="grid gap-2">
               <div className="text-sm font-semibold">Seller</div>
               <input className="rounded border px-2 py-1 text-sm" placeholder="Company name" value={company.name} onChange={(e)=>setCompany({ ...company, name: e.target.value })} />
@@ -601,7 +586,6 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
               </div>
             </div>
 
-            {/* Client */}
             <div className="grid gap-2">
               <div className="text-sm font-semibold">Client</div>
               <input className="rounded border px-2 py-1 text-sm" placeholder="Client name" value={client.name} onChange={(e)=>setClient({ ...client, name: e.target.value })} />
@@ -619,7 +603,6 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
               </div>
             </div>
 
-            {/* Items */}
             <div className="grid gap-2">
               <div className="text-sm font-semibold">Items</div>
               <div className="grid gap-1">
@@ -667,6 +650,3 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onShare, 
     </div>
   );
 }
-
-
-

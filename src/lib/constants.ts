@@ -116,3 +116,5 @@ export const VAT_RATES: VatRates = {
   CH: [0, 2.6, 3.8, 8.1],
   IS: [0, 11, 24]
 };
+
+
