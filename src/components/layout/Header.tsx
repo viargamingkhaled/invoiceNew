@@ -6,8 +6,9 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { THEME } from '@/lib/theme';
-import Segmented from '@/components/ui/Segmented';
+import CurrencyDropdown from '@/components/ui/CurrencyDropdown';
 import { useSession, signOut } from 'next-auth/react';
+import { Currency, getAvailableCurrencies } from '@/lib/currency';
 
 export default function Header() {
   const pathname = usePathname();
@@ -21,10 +22,7 @@ export default function Header() {
   const isTokenCalc = pathname === '/token-calculator';
   const isAbout = pathname === '/about';
   const isDashboard = pathname === '/dashboard';
-  const [currency, setCurrency] = useState<'GBP' | 'EUR'>(() => {
-    if (typeof window === 'undefined') return 'GBP';
-    try { return (localStorage.getItem('currency') as 'GBP'|'EUR') || 'GBP'; } catch { return 'GBP'; }
-  });
+  const [currency, setCurrency] = useState<Currency>('GBP');
   const [helpOpen, setHelpOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileHelpOpen, setMobileHelpOpen] = useState(false);
@@ -43,7 +41,7 @@ export default function Header() {
         if (data.type === 'tokens-updated' && typeof data.tokenBalance === 'number') {
           setTokens(data.tokenBalance);
         }
-        if (data.type === 'currency-updated' && (data.currency === 'GBP' || data.currency === 'EUR')) {
+        if (data.type === 'currency-updated' && getAvailableCurrencies().includes(data.currency)) {
           setCurrency(data.currency);
           try { localStorage.setItem('currency', data.currency); } catch {}
         }
@@ -52,9 +50,18 @@ export default function Header() {
     return () => { try { bcRef.current?.close(); } catch {} };
   }, []);
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => { 
+    setMounted(true);
+    // Load currency from localStorage after mount to prevent hydration mismatch
+    try {
+      const savedCurrency = localStorage.getItem('currency') as Currency;
+      if (savedCurrency && getAvailableCurrencies().includes(savedCurrency)) {
+        setCurrency(savedCurrency);
+      }
+    } catch {}
+  }, []);
 
-  const onCurrencyChange = (next: 'GBP'|'EUR') => {
+  const onCurrencyChange = (next: Currency) => {
     setCurrency(next);
     try { localStorage.setItem('currency', next); } catch {}
     try { bcRef.current?.postMessage({ type: 'currency-updated', currency: next }); } catch {}
@@ -111,7 +118,7 @@ export default function Header() {
               className="flex items-center gap-2"
             >
               <div className={`h-7 w-7 rounded-xl ${THEME.primary.bg}`}></div>
-              <span>Invoicerly</span>
+              <span>Ventira</span>
             </motion.span>
           </Link>
           
@@ -148,23 +155,22 @@ export default function Header() {
         
         <div className="hidden sm:flex items-center gap-3">
           <div className="hidden md:block">
-            <Segmented
-              options={[{ label: 'GBP', value: 'GBP' }, { label: 'EUR', value: 'EUR' }]}
+            <CurrencyDropdown
               value={currency}
-              onChange={(v)=>onCurrencyChange(v as 'GBP'|'EUR')}
+              onChange={onCurrencyChange}
             />
           </div>
           {!signedIn ? (
             <>
               <Link
                 href="/auth/signin?mode=login"
-                className="rounded-xl bg-slate-900 hover:bg-black text-white px-4 py-2 text-sm transition-colors"
+                className="rounded-xl bg-[#0B1221] hover:bg-[#0A0F1A] text-white px-4 py-2 text-sm transition-colors"
               >
                 Log in
               </Link>
               <Link
                 href="/auth/signin?mode=signup"
-                className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm transition-colors"
+                className="rounded-xl bg-[#0F766E] hover:bg-[#0C5F59] text-white px-4 py-2 text-sm transition-colors"
               >
                 Sign up
               </Link>
@@ -174,10 +180,13 @@ export default function Header() {
               <div className="rounded-xl border border-black/10 bg-white px-3 py-1.5 text-sm text-slate-700">
                 Tokens: {typeof tokens === 'number' ? tokens : ((session?.user as any)?.tokenBalance ?? 0)}
               </div>
-              <Link href="/pricing" className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 text-sm transition-colors">Top-Up</Link>
+              <Link href="/pricing" className="rounded-xl bg-[#0F766E] hover:bg-[#0C5F59] text-white px-3 py-1.5 text-sm transition-colors">Top-Up</Link>
               <button
-                onClick={() => signOut({ callbackUrl: '/' })}
-                className="rounded-xl bg-slate-900 hover:bg-black text-white px-4 py-2 text-sm transition-colors"
+                onClick={() => {
+                  signOut({ redirect: false });
+                  window.location.href = 'http://localhost:3000/';
+                }}
+                className="rounded-xl bg-[#0B1221] hover:bg-[#0A0F1A] text-white px-4 py-2 text-sm transition-colors"
               >
                 Sign out
               </button>
@@ -274,28 +283,31 @@ export default function Header() {
 
                   <div className="mt-4">
                     <div className="mb-2 text-xs text-slate-500">Currency</div>
-                    <Segmented
-                      options={[{ label: 'GBP', value: 'GBP' }, { label: 'EUR', value: 'EUR' }]}
+                    <CurrencyDropdown
                       value={currency}
-                      onChange={(v)=>onCurrencyChange(v as 'GBP'|'EUR')}
+                      onChange={onCurrencyChange}
                     />
                   </div>
 
                   <div className="mt-4 grid gap-2">
                     {!signedIn ? (
                       <>
-                        <Link href="/auth/signin?mode=login" className="rounded-xl bg-slate-900 hover:bg-black text-white px-4 py-2 text-sm text-center" onClick={closeMobile}>Log in</Link>
-                        <Link href="/auth/signin?mode=signup" className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm text-center" onClick={closeMobile}>Sign up</Link>
+                        <Link href="/auth/signin?mode=login" className="rounded-xl bg-[#0B1221] hover:bg-[#0A0F1A] text-white px-4 py-2 text-sm text-center" onClick={closeMobile}>Log in</Link>
+                        <Link href="/auth/signin?mode=signup" className="rounded-xl bg-[#0F766E] hover:bg-[#0C5F59] text-white px-4 py-2 text-sm text-center" onClick={closeMobile}>Sign up</Link>
                       </>
                     ) : (
                       <>
                         <div className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm text-slate-700">
                           Tokens: {typeof tokens === 'number' ? tokens : ((session?.user as any)?.tokenBalance ?? 0)}
                         </div>
-                        <Link href="/pricing" className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm text-center" onClick={closeMobile}>Top-Up</Link>
+                        <Link href="/pricing" className="rounded-xl bg-[#0F766E] hover:bg-[#0C5F59] text-white px-4 py-2 text-sm text-center" onClick={closeMobile}>Top-Up</Link>
                         <button
-                          onClick={() => { closeMobile(); signOut({ callbackUrl: '/' }); }}
-                          className="rounded-xl bg-slate-900 hover:bg-black text-white px-4 py-2 text-sm"
+                          onClick={() => { 
+                            closeMobile(); 
+                            signOut({ redirect: false });
+                            window.location.href = 'http://localhost:3000/';
+                          }}
+                          className="rounded-xl bg-[#0B1221] hover:bg-[#0A0F1A] text-white px-4 py-2 text-sm"
                         >
                           Sign out
                         </button>

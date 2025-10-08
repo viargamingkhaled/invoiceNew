@@ -3,8 +3,9 @@ import InvoiceA4 from '@/components/pdf/InvoiceA4';
 
 export const dynamic = 'force-dynamic';
 
-export default async function PrintInvoicePage({ params, searchParams }: { params: Promise<{ id: string }>, searchParams?: Promise<{ due?: string }> }) {
-  const { id } = await params;
+export default async function PrintInvoicePage({ params, searchParams }: { params: Promise<any>, searchParams?: Promise<any> }) {
+  const resolvedParams = await params;
+  const id = resolvedParams.id as string;
   const sp = (await (searchParams || Promise.resolve({}))) as any;
   const invoice = await prisma.invoice.findUnique({ where: { id }, include: { items: true, user: { include: { company: true } } } });
   if (!invoice) return <div className="p-6">Not found.</div>;

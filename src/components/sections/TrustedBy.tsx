@@ -110,6 +110,7 @@ function LogoMonoColor({ brand, height = 20, priority }: { brand: (typeof BRANDS
           width={120}
           height={height}
           className="h-[22px] w-auto object-contain opacity-90 grayscale contrast-100 saturate-0"
+          style={{ width: 'auto', height: 'auto' }}
           priority={priority}
           loading={priority ? 'eager' : 'lazy'}
         />
@@ -121,6 +122,7 @@ function LogoMonoColor({ brand, height = 20, priority }: { brand: (typeof BRANDS
           width={120}
           height={height}
           className="absolute inset-0 h-[22px] w-auto object-contain opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+          style={{ width: 'auto', height: 'auto' }}
           priority={false}
           loading="lazy"
         />

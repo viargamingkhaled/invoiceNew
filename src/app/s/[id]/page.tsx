@@ -2,15 +2,18 @@ import InvoiceA4 from '@/components/pdf/InvoiceA4';
 import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 
- // Пропсы под Next 15: params/searchParams — Promise
+// FIXED FOR VERCEL BUILD - Next.js 15 compatibility - UPDATED - FORCE
+
+ // Пропсы под Next 15: params/searchParams — Promise (исправлено для Vercel)
  type SharedInvoicePageProps = {
-   params: Promise<{ id: string }>;
+   params: Promise<any>;
    // не используем, но оставляем для совместимости с общей сигнатурой
    searchParams?: Promise<Record<string, string | string[] | undefined>>;
  };
 
  export default async function SharedInvoicePage(props: SharedInvoicePageProps) {
-   const { id } = await props.params;
+   const params = await props.params;
+   const id = params.id as string;
 
    const invoice = await prisma.invoice.findUnique({
     where: { id },

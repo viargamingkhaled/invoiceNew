@@ -57,7 +57,11 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || "fallback-secret-for-dev",
+  pages: {
+    signIn: '/auth/signin',
+    signOut: '/',
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -74,6 +78,24 @@ export const authOptions: NextAuthOptions = {
         (session.user as any).currency = token.currency;
       }
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      // Force localhost for development
+      const localBaseUrl = 'http://localhost:3000';
+      
+      // If it's a relative URL, use localhost
+      if (url.startsWith("/")) return `${localBaseUrl}${url}`;
+      
+      // If it's an absolute URL, check if it's localhost
+      try {
+        const urlObj = new URL(url);
+        if (urlObj.origin === localBaseUrl) return url;
+      } catch {
+        // Invalid URL, return localhost
+      }
+      
+      // Default to localhost
+      return localBaseUrl;
     },
   },
 };

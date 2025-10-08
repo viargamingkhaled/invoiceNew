@@ -1,0 +1,11 @@
+<!-- Placeholder for slide images -->
+<!-- Add these files to /public folder: -->
+<!-- slide1.webp - for first slide -->
+<!-- slide2.webp - for second slide -->  
+<!-- slide3.webp - for third slide -->
+
+
+
+
+
+

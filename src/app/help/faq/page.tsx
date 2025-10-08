@@ -108,7 +108,7 @@ const FAQ_DATA: FAQItem[] = [
   {
     id: 'card-numbers',
     question: 'Do you keep card numbers?',
-    answer: 'No. Payments handled by providers (e.g., Stripe).',
+    answer: 'No. Payments are processed securely through our payment system.',
     category: 'account',
   },
   {

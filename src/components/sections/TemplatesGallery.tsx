@@ -3,195 +3,321 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import Section from '@/components/layout/Section';
 import Card from '@/components/ui/Card';
-import { TEMPLATES } from '@/lib/data';
-import Button from '@/components/ui/Button';
+import { HOME_V2_DATA } from '@/lib/home-v2-data';
+import { Button } from '@/components/ui/Button';
 import { PaperPatternBG } from '@/components/graphics/Patterns';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import NordicGridPreview from './NordicGridPreview';
+import BoldHeaderPreview from './BoldHeaderPreview';
+import MinimalMonoPreview from './MinimalMonoPreview';
+import BusinessPortraitPreview from './BusinessPortraitPreview';
+import CleanA4Preview from './CleanA4Preview';
+import ProLedgerPreview from './ProLedgerPreview';
+import CompactFitPreview from './CompactFitPreview';
+import ModernStripePreview from './ModernStripePreview';
+import TemplateModal from '@/components/ui/TemplateModal';
+import { Invoice } from '@/types/invoice';
 
 export default function TemplatesGallery() {
   const reduce = useReducedMotion();
-  const [waitlistOpen, setWaitlistOpen] = useState(false);
-  const [selectedTpl, setSelectedTpl] = useState<string | null>(null);
-  const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState<string | null>(null);
+  const { templates } = HOME_V2_DATA;
+  const router = useRouter();
+  
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<{
+    name: string;
+    component: React.ComponentType<any>;
+    templateId: string;
+  } | null>(null);
 
-  const openWaitlist = (id: string) => {
-    setSelectedTpl(id);
-    setWaitlistOpen(true);
-    setSubmitted(null);
+  // Mock invoice data for preview
+  const mockInvoice: Invoice = {
+    company: {
+      name: "Ventira Ltd",
+      address: "221B Baker Street\nLondon, UK",
+      email: "hello@ventira.co.uk",
+      phone: "+44 20 7123 4567",
+      vatNumber: "GB123456789",
+      registrationNumber: "12345678"
+    },
+    client: {
+      name: "Client Company Ltd",
+      address: "123 Business Street\nLondon, UK",
+      email: "billing@client.com",
+      phone: "+44 20 7654 3210",
+      vatNumber: "GB987654321"
+    },
+    items: [
+      {
+        description: "Design workshop",
+        quantity: 2,
+        unitPrice: 600,
+        vatRate: 20
+      },
+      {
+        description: "UI template",
+        quantity: 1,
+        unitPrice: 250,
+        vatRate: 0
+      }
+    ],
+    invoiceNumber: "VI-2025-001",
+    issueDate: "2025-01-15",
+    dueDate: "2025-01-29",
+    currency: "GBP",
+    vatMode: "Domestic",
+    notes: "Payment within 14 days"
   };
-  const closeWaitlist = () => setWaitlistOpen(false);
-  const submitWaitlist = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.includes('@')) return;
-    setSubmitted('Thanks! You are on the waitlist.');
-    // Placeholder for analytics/vote
-    if (typeof window !== 'undefined') {
-      // eslint-disable-next-line no-console
-      console.log('vote_waitlist', { template: selectedTpl, email });
+
+  // Get template props based on template type
+  const getTemplateProps = (templateId: string) => {
+    const baseProps = {
+      currency: mockInvoice.currency,
+      zeroNote: "Zero-rated supply",
+      logoUrl: undefined,
+      items: mockInvoice.items.map(item => ({
+        desc: item.description,
+        qty: item.quantity,
+        rate: item.unitPrice,
+        tax: item.vatRate ?? 0
+      })),
+      sender: {
+        company: mockInvoice.company.name,
+        vat: mockInvoice.company.vatNumber,
+        address: mockInvoice.company.address,
+        city: "London",
+        country: "UK",
+        email: mockInvoice.company.email,
+        phone: mockInvoice.company.phone
+      },
+      client: {
+        company: mockInvoice.client.name,
+        vat: mockInvoice.client.vatNumber,
+        address: mockInvoice.client.address,
+        city: "London",
+        country: "UK",
+        email: mockInvoice.client.email,
+        phone: mockInvoice.client.phone
+      },
+      invoiceNo: mockInvoice.invoiceNumber,
+      invoiceDate: mockInvoice.issueDate,
+      invoiceDue: mockInvoice.dueDate,
+      notes: mockInvoice.notes
+    };
+
+    // Calculate totals for InvoicePaper
+    const subtotal = mockInvoice.items.reduce((sum, item) => sum + (item.quantity * item.unitPrice), 0);
+    const taxTotal = mockInvoice.items.reduce(
+      (sum, item) => sum + (item.quantity * item.unitPrice * ((item.vatRate ?? 0) / 100)),
+      0
+    );
+    const total = subtotal + taxTotal;
+
+    switch (templateId) {
+      case 'clean-a4':
+        return {
+          ...baseProps,
+          subtotal,
+          taxTotal,
+          total
+        };
+      case 'nordic-grid':
+      case 'bold-header':
+      case 'minimal-mono':
+      case 'business-portrait':
+        return {
+          invoice: mockInvoice
+        };
+      default:
+        return baseProps;
     }
   };
+
+  // Handle template preview
+  const handlePreview = (templateId: string) => {
+    // Import template components dynamically
+    const templateComponents: Record<string, React.ComponentType<any>> = {
+      'clean-a4': require('@/components/generator/InvoicePaper').default,
+      'pro-ledger': require('@/components/pdf/InvoiceConstructionA4').default,
+      'compact-fit': require('@/components/pdf/InvoiceITServicesA4').default,
+      'modern-stripe': require('@/components/pdf/InvoiceConsultingA4').default,
+      'nordic-grid': require('@/components/pdf/InvoiceNordicGridA4').default,
+      'bold-header': require('@/components/pdf/InvoiceBoldHeaderA4').default,
+      'minimal-mono': require('@/components/pdf/InvoiceMinimalMonoA4').default,
+      'business-portrait': require('@/components/pdf/InvoiceBusinessPortraitA4').default,
+    };
+
+    const template = templates.find(t => t.id === templateId);
+    const TemplateComponent = templateComponents[templateId];
+    
+    if (template && TemplateComponent) {
+      setSelectedTemplate({
+        name: template.name,
+        component: TemplateComponent,
+        templateId: templateId
+      });
+      setIsModalOpen(true);
+    }
+  };
+
+  // Handle template use
+  const handleUseTemplate = (templateId: string) => {
+    const template = templates.find(t => t.id === templateId);
+    if (template) {
+      router.push(`/generator?template=${encodeURIComponent(template.name)}`);
+    }
+  };
+
   return (
-    <Section className="py-10">
-      <Card>
-        <motion.h2
-          className="text-xl font-semibold mb-2"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          viewport={{ once: true }}
-        >
-          Templates Gallery (preview)
-        </motion.h2>
-        <p className="text-sm text-slate-600 mb-4">
-          One production template today. More templates soon - vote which we ship next.
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Header */}
+      <motion.div
+        className="text-center mb-12"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        viewport={{ once: true }}
+      >
+        <h2 className="text-3xl sm:text-4xl font-bold text-[#0B1221] mb-4">
+          Professional Templates
+        </h2>
+        <p className="text-lg text-[#6B7280]">
+          Choose from 8 carefully designed templates that work for any business
         </p>
+      </motion.div>
 
-        {/* TODO list removed after completion */}
+      {/* Templates Grid */}
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {templates.map((template, index) => (
+          <TemplateCard
+            key={template.id}
+            template={template}
+            index={index}
+            reduce={reduce}
+            onPreview={handlePreview}
+            onUse={handleUseTemplate}
+          />
+        ))}
+      </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-slate-700">
-          {TEMPLATES.map((tpl, index) => (
-            <TemplateCard
-              key={tpl.id}
-              tpl={tpl}
-              index={index}
-              reduce={reduce}
-              onWaitlist={() => openWaitlist(tpl.id)}
-            />
-          ))}
-        </div>
-
-        {/* Waitlist Modal */}
-        {waitlistOpen && (
-          <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            onClick={closeWaitlist}
-            aria-modal="true"
-            role="dialog"
-            aria-labelledby="waitlist-title"
-          >
-            <div className="absolute inset-0 bg-black/40" />
-            <motion.div
-              className="relative z-10 w-full max-w-md rounded-2xl bg-white border border-black/10 p-6 shadow-lg"
-              initial={reduce ? {} : { scale: 0.96, opacity: 0 }}
-              animate={reduce ? {} : { scale: 1, opacity: 1 }}
-              transition={{ duration: 0.2 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h3 id="waitlist-title" className="text-lg font-semibold">Join waitlist</h3>
-              <p className="text-sm text-slate-600 mt-1">Be the first to know when the template is available.</p>
-              <form onSubmit={submitWaitlist} className="mt-4 grid gap-3">
-                <input
-                  type="email"
-                  placeholder="you@company.com"
-                  className="w-full rounded-xl border border-black/10 px-3 py-2 text-sm focus:outline-none focus:ring-4 focus:ring-slate-400/20"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  autoFocus
-                />
-                <div className="flex items-center gap-2">
-                  <Button type="submit">Join</Button>
-                  <Button variant="outline" onClick={closeWaitlist} type="button">Cancel</Button>
-                </div>
-                {submitted && (
-                  <div className="text-xs text-emerald-700" role="status" aria-live="polite">{submitted}</div>
-                )}
-              </form>
-            </motion.div>
-          </motion.div>
-        )}
-      </Card>
-    </Section>
+      {/* Template Modal */}
+      {selectedTemplate && (
+        <TemplateModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          templateName={selectedTemplate.name}
+          templateComponent={selectedTemplate.component}
+          templateId={selectedTemplate.templateId}
+          getTemplateProps={getTemplateProps}
+        />
+      )}
+    </div>
   );
 }
 
-function TemplateCard({ tpl, index, reduce, onWaitlist }: { tpl: { id: string; name: string; status: string; badge?: string; cta?: string }, index: number, reduce: boolean | null, onWaitlist: ()=>void }) {
+function TemplateCard({ template, index, reduce, onPreview, onUse }: { 
+  template: { id: string; name: string; subtitle: string; previewLabel: string; status: string }, 
+  index: number, 
+  reduce: boolean | null,
+  onPreview: (templateId: string) => void,
+  onUse: (templateId: string) => void
+}) {
   const [hovered, setHovered] = useState(false);
-  const [pageFlip, setPageFlip] = useState(0);
-  const router = useRouter();
 
-  useEffect(() => {
-    const isReduced = !!reduce;
-    if (!hovered || isReduced || tpl.status !== 'available') return;
-    const id = setInterval(() => setPageFlip((p) => (p === 0 ? 1 : 0)), 700);
-    return () => clearInterval(id);
-  }, [hovered, reduce, tpl.status]);
+  const handleUseTemplate = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onUse(template.id);
+  };
 
-  const onKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      if (tpl.status === 'available') router.push('/generator');
-      else onWaitlist();
-    }
+  const handlePreview = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onPreview(template.id);
   };
 
   return (
     <motion.div
-      key={tpl.id}
-      className="group relative rounded-xl border border-black/10 p-4 bg-gradient-to-br from-slate-50 to-white hover:shadow-sm cursor-pointer focus-within:ring-2 focus-within:ring-blue-600/30 focus-visible:ring-2 focus-visible:ring-blue-600/30 outline-none"
-      initial={!!reduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 20, filter: 'blur(4px)' }}
-      whileInView={!!reduce ? undefined : { opacity: 1, y: 0, filter: 'blur(0px)' }}
-      transition={{ delay: index * 0.06, duration: 0.3 }}
+      className="group relative rounded-2xl border border-black/10 p-6 bg-white hover:shadow-lg cursor-pointer transition-all duration-200 focus-within:ring-2 focus-within:ring-[#0F766E]/30 focus-visible:ring-2 focus-visible:ring-[#0F766E]/30 outline-none"
+      initial={!!reduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      whileInView={!!reduce ? undefined : { opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.1, duration: 0.5 }}
       viewport={{ once: true }}
-      whileHover={!!reduce ? undefined : { y: -2, boxShadow: '0 8px 20px rgba(0,0,0,0.08)' }}
+      whileHover={!!reduce ? undefined : { y: -4 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       tabIndex={0}
       role="group"
-      aria-label={`${tpl.name} — ${tpl.status === 'available' ? 'Available now' : 'Preview only'}. ${tpl.status === 'available' ? 'Use this template' : 'Join waitlist'}.`}
-      onKeyDown={onKeyDown}
+      aria-label={`${template.name} template - ${template.subtitle}`}
+      onClick={handleUseTemplate}
     >
-      {/* Placeholder with shimmer & pattern */}
-      <div className="relative h-28 rounded-lg bg-slate-100 border border-black/5 mb-3 overflow-hidden">
-        <PaperPatternBG className="text-slate-900" />
-        {/* Shimmer stripe */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="hidden group-hover:block absolute -inset-y-10 -left-1/2 h-40 w-1/2 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-shimmer" />
-        </div>
-        {/* Mini page flip for available template */}
-        {tpl.status === 'available' && (
-          <div className="absolute inset-2 grid grid-cols-2 gap-1">
-            <motion.div
-              key={pageFlip}
-              className="col-span-1 rounded bg-white border border-black/10"
-              initial={!!reduce ? {} : { opacity: 0.6, x: -6 }}
-              animate={!!reduce ? {} : { opacity: 1, x: 0 }}
-              transition={{ duration: 0.2 }}
-            />
-            <motion.div
-              key={`p${pageFlip}`}
-              className="col-span-1 rounded bg-white border border-black/10"
-              initial={!!reduce ? {} : { opacity: 0.6, x: 6 }}
-              animate={!!reduce ? {} : { opacity: 1, x: 0 }}
-              transition={{ duration: 0.2 }}
-            />
-          </div>
+      {/* Preview Placeholder */}
+      <div className="relative h-32 rounded-xl bg-gradient-to-br from-[#F6F7F8] to-[#FFFFFF] border border-black/5 mb-4 overflow-hidden">
+        {template.id === 'clean-a4' ? (
+          <CleanA4Preview className="h-full" />
+        ) : template.id === 'pro-ledger' ? (
+          <ProLedgerPreview className="h-full" />
+        ) : template.id === 'compact-fit' ? (
+          <CompactFitPreview className="h-full" />
+        ) : template.id === 'modern-stripe' ? (
+          <ModernStripePreview className="h-full" />
+        ) : template.id === 'nordic-grid' ? (
+          <NordicGridPreview className="h-full" />
+        ) : template.id === 'bold-header' ? (
+          <BoldHeaderPreview className="h-full" />
+        ) : template.id === 'minimal-mono' ? (
+          <MinimalMonoPreview className="h-full" />
+        ) : template.id === 'business-portrait' ? (
+          <BusinessPortraitPreview className="h-full" />
+        ) : (
+          <>
+            <PaperPatternBG className="text-[#0F766E]" />
+            
+            {/* Template Preview */}
+            <div className="absolute inset-2 bg-white rounded-lg border border-black/5 flex items-center justify-center">
+              <div className="text-center">
+                <div className="w-8 h-8 bg-[#0F766E] rounded-lg mx-auto mb-2 flex items-center justify-center">
+                  <span className="text-white text-sm font-bold">A4</span>
+                </div>
+                <p className="text-xs text-[#6B7280] font-medium">
+                  {template.previewLabel}
+                </p>
+              </div>
+            </div>
+          </>
         )}
       </div>
 
-      {/* Badge in corner */}
-      {tpl.badge && (
-        <span className="absolute top-2 right-2 text-[10px] rounded-full px-2 py-1 bg-slate-900 text-white">
-          {tpl.badge}
-        </span>
-      )}
-      <div className="font-medium">{tpl.name}</div>
-      <div className="text-xs text-slate-500">{tpl.status === 'available' ? 'Available now' : 'Preview only'}</div>
+      {/* Template Info */}
+      <div className="space-y-2">
+        <h3 className="font-semibold text-[#0B1221] group-hover:text-[#0F766E] transition-colors duration-200">
+          {template.name}
+        </h3>
+        <p className="text-sm text-[#6B7280]">
+          {template.subtitle}
+        </p>
+      </div>
 
-      {/* CTAs */}
-      <div className="mt-3 flex gap-2">
-        {tpl.status === 'available' ? (
-          <Button href="/generator" size="sm">Use this template</Button>
-        ) : (
-          <Button size="sm" variant="outline" onClick={onWaitlist}>Join waitlist</Button>
-        )}
+      {/* CTA Buttons */}
+      <div className="mt-4 flex gap-2">
+        <Button 
+          size="sm" 
+          variant="outline"
+          onClick={handlePreview}
+          className="flex-1"
+        >
+          Preview
+        </Button>
+        <Button 
+          size="sm" 
+          onClick={handleUseTemplate}
+          className="flex-1"
+        >
+          Use
+        </Button>
       </div>
     </motion.div>
   );
 }
-
 
 

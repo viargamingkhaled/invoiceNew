@@ -6,8 +6,7 @@ import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Segmented from '@/components/ui/Segmented';
-
-type Currency = 'GBP' | 'EUR' | 'AUD';
+import { Currency, convertFromGBP, convertToGBP, formatCurrency, getCurrencySymbol, getAvailableCurrencies, calculateTokens, calculateAmountFromTokens } from '@/lib/currency';
 
 const MIN_AMOUNT = 5;
 const MAX_AMOUNT = 500;
@@ -34,6 +33,31 @@ export default function TokenCalculatorPage() {
   const [isUpdatingFromAmount, setIsUpdatingFromAmount] = useState(false);
   const [isUpdatingFromInvoices, setIsUpdatingFromInvoices] = useState(false);
 
+  // Sync currency with header
+  useEffect(() => {
+    try {
+      const bc = new BroadcastChannel('app-events');
+      bc.onmessage = (ev: MessageEvent) => {
+        const data: any = (ev as any)?.data || {};
+        if (data.type === 'currency-updated' && getAvailableCurrencies().includes(data.currency)) {
+          setCurrency(data.currency);
+          try { localStorage.setItem('currency', data.currency); } catch {}
+        }
+      };
+      return () => bc.close();
+    } catch {}
+  }, []);
+
+  // Load currency from localStorage after mount to prevent hydration mismatch
+  useEffect(() => {
+    try {
+      const savedCurrency = localStorage.getItem('currency') as Currency;
+      if (savedCurrency && getAvailableCurrencies().includes(savedCurrency)) {
+        setCurrency(savedCurrency);
+      }
+    } catch {}
+  }, []);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       // @ts-ignore
@@ -44,7 +68,7 @@ export default function TokenCalculatorPage() {
   }, []);
 
   // Calculate tokens and invoices
-  const tokens = amount * 100;
+  const tokens = calculateTokens(amount, currency);
   const calculatedInvoices = Math.floor(tokens / 10);
   const effectiveCostPerInvoice = amount / calculatedInvoices;
 
@@ -90,24 +114,14 @@ export default function TokenCalculatorPage() {
     setInvoicesNeeded(newInvoices);
     
     // Update amount after invoices change
-    const newAmount = Math.max(MIN_AMOUNT, Math.min(MAX_AMOUNT, newInvoices * 0.1));
-    setAmount(Math.round(newAmount * 100) / 100);
+    const tokensNeeded = newInvoices * 10;
+    const amountGBP = tokensNeeded / 100; // Convert tokens to GBP
+    const newAmount = calculateAmountFromTokens(tokensNeeded, currency);
+    setAmount(Math.max(MIN_AMOUNT, Math.min(MAX_AMOUNT, newAmount)));
     
     setTimeout(() => {
       setIsUpdatingFromInvoices(false);
     }, 0);
-  };
-
-  const handleCurrencyChange = (value: string) => {
-    const newCurrency = value as Currency;
-    setCurrency(newCurrency);
-    
-    if (typeof window !== 'undefined') {
-      // @ts-ignore
-      window.gtag?.('event', 'calc_change_currency', {
-        currency: newCurrency,
-      });
-    }
   };
 
   const handleTopUpClick = () => {
@@ -156,25 +170,10 @@ export default function TokenCalculatorPage() {
               Calculate Tokens
             </h2>
             
-            {/* Currency Toggle */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-slate-700 mb-3">
-                Currency
-              </label>
-              <Segmented
-                options={[
-                  { value: 'GBP', label: 'GBP (£)' },
-                  { value: 'EUR', label: 'EUR (€)' }
-                ]}
-                value={currency}
-                onChange={handleCurrencyChange}
-              />
-            </div>
-
             {/* Amount Input */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-slate-700 mb-3">
-                Amount ({currency === 'GBP' ? '£' : '€'})
+                Amount ({getCurrencySymbol(currency)})
               </label>
               <div className="space-y-3">
                 <Input
@@ -196,8 +195,8 @@ export default function TokenCalculatorPage() {
                   className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer slider"
                 />
                 <div className="flex justify-between text-xs text-slate-500">
-                  <span>{currency === 'GBP' ? '£' : '€'}5</span>
-                  <span>{currency === 'GBP' ? '£' : '€'}500</span>
+                  <span>{getCurrencySymbol(currency)}5</span>
+                  <span>{getCurrencySymbol(currency)}500</span>
                 </div>
               </div>
             </div>
@@ -223,7 +222,7 @@ export default function TokenCalculatorPage() {
             {amount < MIN_AMOUNT && (
               <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
                 <p className="text-sm text-amber-800">
-                  Minimum amount is {currency === 'GBP' ? '£' : '€'}{MIN_AMOUNT}
+                  Minimum amount is {getCurrencySymbol(currency)}{MIN_AMOUNT}
                 </p>
               </div>
             )}
@@ -231,7 +230,7 @@ export default function TokenCalculatorPage() {
             {amount >= MAX_AMOUNT && (
               <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                 <p className="text-sm text-blue-800">
-                  Need more than {currency === 'GBP' ? '£' : '€'}{MAX_AMOUNT}? 
+                  Need more than {getCurrencySymbol(currency)}{MAX_AMOUNT}? 
                   <a href="/contact" className="ml-1 underline hover:no-underline">
                     Contact us for bank transfer
                   </a>
@@ -250,7 +249,7 @@ export default function TokenCalculatorPage() {
               <div className="flex justify-between items-center py-3 border-b border-slate-200">
                 <span className="text-slate-600">Tokens you'll get</span>
                 <span className="text-2xl font-bold text-slate-900">
-                  {tokens.toLocaleString()}
+                  {tokens.toLocaleString('en-US')}
                 </span>
               </div>
               
@@ -264,7 +263,7 @@ export default function TokenCalculatorPage() {
               <div className="flex justify-between items-center py-3 border-b border-slate-200">
                 <span className="text-slate-600">Effective cost per invoice</span>
                 <span className="text-2xl font-bold text-emerald-600">
-                  {currency === 'GBP' ? '£' : '€'}{effectiveCostPerInvoice.toFixed(2)}
+                  {formatCurrency(effectiveCostPerInvoice, currency)}
                 </span>
               </div>
             </div>
@@ -283,7 +282,7 @@ export default function TokenCalculatorPage() {
                 className="w-full"
                 onClick={handleTopUpClick}
               >
-                Top up {currency === 'GBP' ? '£' : '€'}{amount}
+                Top up {formatCurrency(amount, currency)}
               </Button>
               
               <div className="flex gap-3">
@@ -323,9 +322,25 @@ export default function TokenCalculatorPage() {
             />
             <ExampleCard
               currency="EUR"
-              amount={50}
+              amount={12}
               onSelect={() => {
                 setCurrency('EUR');
+                setAmount(12);
+              }}
+            />
+            <ExampleCard
+              currency="USD"
+              amount={13}
+              onSelect={() => {
+                setCurrency('USD');
+                setAmount(13);
+              }}
+            />
+            <ExampleCard
+              currency="PLN"
+              amount={50}
+              onSelect={() => {
+                setCurrency('PLN');
                 setAmount(50);
               }}
             />
@@ -391,7 +406,7 @@ function ExampleCard({
   amount: number;
   onSelect: () => void;
 }) {
-  const tokens = amount * 100;
+  const tokens = calculateTokens(amount, currency);
   const invoices = Math.floor(tokens / 10);
   const costPerInvoice = amount / invoices;
 
@@ -402,13 +417,13 @@ function ExampleCard({
     >
       <div className="text-center">
         <div className="text-2xl font-bold text-slate-900 mb-2">
-          {currency === 'GBP' ? '£' : '€'}{amount}
+          {formatCurrency(amount, currency)}
         </div>
         <div className="text-sm text-slate-600 space-y-1">
-          <div>{tokens.toLocaleString()} tokens</div>
+          <div>{tokens.toLocaleString('en-US')} tokens</div>
           <div>≈ {invoices} invoices</div>
           <div className="text-emerald-600 font-medium">
-            {currency === 'GBP' ? '£' : '€'}{costPerInvoice.toFixed(2)} per invoice
+            {formatCurrency(costPerInvoice, currency)} per invoice
           </div>
         </div>
       </div>

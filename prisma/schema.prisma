@@ -11,7 +11,9 @@ datasource db {
 enum Currency {
   GBP
   EUR
-  AUD
+  USD
+  PLN
+  CZK
 }
 
 enum InvoiceStatus {

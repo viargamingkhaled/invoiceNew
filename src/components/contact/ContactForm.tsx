@@ -3,10 +3,10 @@
 import { useMemo, useState } from 'react';
 import Card from '@/components/ui/Card';
 import Label from '@/components/ui/Label';
-import Input from '@/components/ui/Input';
+import { Input } from '@/components/ui/Input';
 import Textarea from '@/components/ui/Textarea';
 import Select from '@/components/ui/Select';
-import Button from '@/components/ui/Button';
+import { Button } from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
 import { CURRENCY_BY_COUNTRY } from '@/lib/constants';
 

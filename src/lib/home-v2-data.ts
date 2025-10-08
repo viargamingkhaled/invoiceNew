@@ -1,0 +1,165 @@
+// Ventira Home v2 Data Structure
+// Based on ventira-home-v2-spec-en.md
+
+export interface HeroSlide {
+  title: string;
+  subtitle: string;
+  posterLabel: string;
+}
+
+export interface TemplateInfo {
+  id: string;
+  name: string;
+  subtitle: string;
+  previewLabel: string;
+  status: 'available' | 'preview' | 'pro';
+}
+
+export interface WhyUsItem {
+  title: string;
+  desc: string;
+}
+
+export interface PlanTopUp {
+  amountGBP: number | 'custom';
+  approxInvoices: number | 'user-defined';
+  features: string[];
+  popular?: boolean;
+}
+
+export interface Review {
+  text: string;
+  author: string;
+  role: string;
+}
+
+export interface QuickStartData {
+  placeholders: {
+    company: string;
+    email: string;
+  };
+  vatModes: string[];
+  ctaLabel: string;
+}
+
+export interface HomeV2Data {
+  meta: {
+    version: string;
+  };
+  palette: {
+    primary: string;
+    accent: string;
+    surface: string;
+    panel: string;
+    text: string;
+    muted: string;
+    success: string;
+    warning: string;
+  };
+  hero: {
+    slides: HeroSlide[];
+    ctaPrimary: string;
+    ctaSecondary: string;
+    autoplayMs: number;
+  };
+  templates: TemplateInfo[];
+  whyUs: WhyUsItem[];
+  plansTopUp: PlanTopUp[];
+  trustedBy: string[];
+  reviews: Review[];
+  quickStart: QuickStartData;
+}
+
+// Main data structure
+export const HOME_V2_DATA: HomeV2Data = {
+  meta: { version: "1.0.0" },
+  palette: {
+    primary: "#0F766E",
+    accent: "#14B8A6",
+    surface: "#F6F7F8",
+    panel: "#FFFFFF",
+    text: "#0B1221",
+    muted: "#6B7280",
+    success: "#22C55E",
+    warning: "#EAB308"
+  },
+  hero: {
+    slides: [
+      { 
+        title: "Build invoices in seconds", 
+        subtitle: "Live A4 preview before you download", 
+        posterLabel: "Slide A1: A4 preview + From/To/Amount" 
+      },
+      { 
+        title: "VAT-ready for UK & EU", 
+        subtitle: "Domestic · Intra‑EU · Export — correct totals every time", 
+        posterLabel: "Slide A2: VAT toggle → totals update" 
+      },
+      { 
+        title: "Pick from 8 professional templates", 
+        subtitle: "Clean A4, Pro Ledger, Compact Fit, Modern Stripe and more", 
+        posterLabel: "Slide A3: 3 template thumbnails" 
+      }
+    ],
+    ctaPrimary: "Choose a template",
+    ctaSecondary: "See plans",
+    autoplayMs: 5000
+  },
+  templates: [
+    // Existing templates (4)
+    { id: "clean-a4", name: "Clean A4", subtitle: "Airy headings", previewLabel: "A4 • Clean", status: "available" },
+    { id: "pro-ledger", name: "Pro Ledger", subtitle: "Strong table", previewLabel: "A4 • Ledger", status: "available" },
+    { id: "compact-fit", name: "Compact Fit", subtitle: "One‑page dense", previewLabel: "A4 • Compact", status: "available" },
+    { id: "modern-stripe", name: "Modern Stripe", subtitle: "Thin dividers", previewLabel: "A4 • Stripe", status: "available" },
+    // New templates (4)
+    { id: "nordic-grid", name: "Nordic Grid", subtitle: "Strict grid", previewLabel: "A4 • Nordic", status: "available" },
+    { id: "bold-header", name: "Bold Header", subtitle: "Accent masthead", previewLabel: "A4 • Bold", status: "available" },
+    { id: "minimal-mono", name: "Minimal Mono", subtitle: "Monospaced digits", previewLabel: "A4 • Mono", status: "available" },
+    { id: "business-portrait", name: "Business Portrait", subtitle: "Logo & stamp", previewLabel: "A4 • Portrait", status: "available" }
+  ],
+  whyUs: [
+    { title: "Real VAT formats", desc: "UK/EU: Domestic, Intra‑EU, Export" },
+    { title: "Live A4 preview", desc: "See PDF before download" },
+    { title: "No subscriptions", desc: "Top‑up tokens, no lock‑in" },
+    { title: "Lightning‑fast", desc: "LCP < 2.5s · INP < 200ms" },
+    { title: "Enterprise‑friendly", desc: "Numbering, branding, send via email" }
+  ],
+  plansTopUp: [
+    { amountGBP: 10, approxInvoices: 100, features: ["All 8 templates", "PDF export", "Email send", "Custom numbering mask"] },
+    { amountGBP: 25, approxInvoices: 250, features: ["All 8 templates", "PDF export", "Email send", "Custom numbering mask"] },
+    { amountGBP: 50, approxInvoices: 500, features: ["All 8 templates", "PDF export", "Email send", "Custom numbering mask"], popular: true },
+    { amountGBP: "custom", approxInvoices: "user-defined", features: ["All 8 templates", "PDF export", "Email send", "Custom numbering mask"] }
+  ],
+  trustedBy: ["Northwick Labs Ltd", "Wrenfield Supply Co.", "Elm & Pine Studio", "Kleinwerk GmbH", "Fernstadt Digital GmbH", "Deltawave BV"],
+  reviews: [
+    { text: "Clean PDFs, VAT correct on the first try.", author: "A. Patel", role: "Founder" },
+    { text: "Templates look professional and export fast.", author: "M. Rossi", role: "Accountant" },
+    { text: "Tokens are simple; no subscription stress.", author: "K. Jansons", role: "Freelancer" },
+    { text: "Exactly what our small firm needed.", author: "E. Novak", role: "SMB Owner" }
+  ],
+  quickStart: {
+    placeholders: { 
+      company: "Ventira Ltd, GB123456789", 
+      email: "you@company.com" 
+    },
+    vatModes: ["Domestic", "Intra‑EU", "Export"],
+    ctaLabel: "Open generator"
+  }
+};
+
+// Helper functions
+export const getTokensFromGBP = (amountGBP: number): number => {
+  return amountGBP * 100; // 1 GBP = 100 tokens
+};
+
+export const getInvoicesFromTokens = (tokens: number): number => {
+  return Math.floor(tokens / 10); // 1 invoice = 10 tokens
+};
+
+export const getInvoicesFromGBP = (amountGBP: number): number => {
+  return getInvoicesFromTokens(getTokensFromGBP(amountGBP));
+};
+
+
+
+

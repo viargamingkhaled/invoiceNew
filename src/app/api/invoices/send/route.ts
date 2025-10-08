@@ -6,7 +6,17 @@ import { Resend } from "resend";
 import chromium from "@sparticuz/chromium";
 import puppeteer from "puppeteer-core";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let resendClient: Resend | null = null;
+
+function getResendClient() {
+  if (resendClient) return resendClient;
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    throw new Error("RESEND_API_KEY is not configured");
+  }
+  resendClient = new Resend(apiKey);
+  return resendClient;
+}
 
 const absoluteUrl = (path: string) => {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
@@ -93,6 +103,7 @@ export async function POST(req: Request) {
       try { await browser.close(); } catch {}
     }
 
+    const resend = getResendClient();
     await resend.emails.send({
       from: `Invoicerly <${process.env.EMAIL_FROM || "info@invoicerly.co.uk"}>`,
       to: toEmail,
@@ -108,6 +119,13 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ message: "Email sent successfully" });
   } catch (error) {
+    if (error instanceof Error && error.message.includes("RESEND_API_KEY")) {
+      console.error("[INVOICE_SEND_ERROR]", error.message);
+      return NextResponse.json(
+        { message: "Email service is not configured. Please try again later." },
+        { status: 500 },
+      );
+    }
     console.error("[INVOICE_SEND_ERROR]", error);
     return NextResponse.json(
       { message: error instanceof Error ? error.message : "Internal Server Error" },

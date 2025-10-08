@@ -1,24 +1,24 @@
-﻿// Currency conversion rates (GBP as base currency)
+// Currency conversion rates (GBP as base currency)
 // Rates are updated periodically - these are approximate rates as of October 2024
 export const TOKENS_PER_GBP = 100; // 1 GBP = 100 tokens
 
 export const CURRENCY_RATES = {
-  GBP: 1.0,    // Base currency
-  EUR: 1.16,   // 1 GBP = 1.16 EUR
-  USD: 1.27,   // 1 GBP = 1.27 USD  
-  PLN: 5.12,   // 1 GBP = 5.12 PLN
-  CZK: 29.8,   // 1 GBP = 29.8 CZK
+  GBP: 1.0, // Base currency
+  EUR: 1.16, // 1 GBP = 1.16 EUR
+  USD: 1.27, // 1 GBP = 1.27 USD
+  PLN: 5.12, // 1 GBP = 5.12 PLN
+  CZK: 29.8, // 1 GBP = 29.8 CZK
 } as const;
 
 export type Currency = keyof typeof CURRENCY_RATES;
 
 // Currency symbols and formatting
 export const CURRENCY_INFO = {
-  GBP: { symbol: 'ВЈ', name: 'British Pound', locale: 'en-GB' },
-  EUR: { symbol: 'в‚¬', name: 'Euro', locale: 'de-DE' },
+  GBP: { symbol: '\u00A3', name: 'British Pound', locale: 'en-GB' },
+  EUR: { symbol: '\u20AC', name: 'Euro', locale: 'de-DE' },
   USD: { symbol: '$', name: 'US Dollar', locale: 'en-US' },
-  PLN: { symbol: 'zЕ‚', name: 'Polish ZЕ‚oty', locale: 'pl-PL' },
-  CZK: { symbol: 'KДЌ', name: 'Czech Koruna', locale: 'cs-CZ' },
+  PLN: { symbol: 'z\u0142', name: 'Polish Z\u0142oty', locale: 'pl-PL' },
+  CZK: { symbol: 'K\u010D', name: 'Czech Koruna', locale: 'cs-CZ' },
 } as const;
 
 // Convert amount from GBP to target currency
@@ -37,17 +37,17 @@ export function convertToGBP(amount: number, fromCurrency: Currency): number {
 export function formatCurrency(amount: number, currency: Currency): string {
   const info = CURRENCY_INFO[currency];
   const locale = info.locale;
-  
+
   try {
     return new Intl.NumberFormat(locale, {
       style: 'currency',
-      currency: currency,
+      currency,
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(amount);
-  } catch (error) {
+  } catch {
     // Fallback formatting
-    return ${info.symbol};
+    return info.symbol + amount.toFixed(2);
   }
 }
 

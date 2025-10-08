@@ -16,6 +16,7 @@ module.exports = {
         'slide-up': 'slideUp 0.5s ease-out',
         'slide-in-left': 'slideInLeft 0.5s ease-out',
         'slide-in-right': 'slideInRight 0.5s ease-out',
+        'marquee': 'marquee 14s linear infinite',
       },
       keyframes: {
         fadeIn: {
@@ -34,11 +35,12 @@ module.exports = {
           '0%': { transform: 'translateX(20px)', opacity: '0' },
           '100%': { transform: 'translateX(0)', opacity: '1' },
         },
+        marquee: {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-100%)' },
+        },
       },
     },
   },
   plugins: [],
 }
-
-
-

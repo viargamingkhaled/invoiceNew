@@ -1,9 +1,9 @@
 'use client';
 
 import Section from '@/components/layout/Section';
-import Button from '@/components/ui/Button';
+import { Button } from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
-import Input from '@/components/ui/Input';
+import { Input } from '@/components/ui/Input';
 import Textarea from '@/components/ui/Textarea';
 import { motion } from 'framer-motion';
 import { useState } from 'react';

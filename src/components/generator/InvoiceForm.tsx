@@ -1,23 +1,39 @@
 'use client';
 
 import InvoiceA4 from '@/components/pdf/InvoiceA4';
-import Button from '@/components/ui/Button';
-import Input from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 import LogoUploader from '@/components/ui/LogoUploader';
 import Textarea from '@/components/ui/Textarea';
 import { CC, CURRENCY_BY_COUNTRY, VAT_RATES } from '@/lib/constants';
-import { Item, TaxMode } from '@/types/invoice';
+import { Item, TaxMode, Invoice as PdfInvoice } from '@/types/invoice';
 import { motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import InvoicePaper from './InvoicePaper';
 import InvoiceConstructionA4 from '@/components/pdf/InvoiceConstructionA4';
 import InvoiceITServicesA4 from '@/components/pdf/InvoiceITServicesA4';
 import InvoiceConsultingA4 from '@/components/pdf/InvoiceConsultingA4';
+import InvoiceNordicGridA4 from '@/components/pdf/InvoiceNordicGridA4';
+import InvoiceBoldHeaderA4 from '@/components/pdf/InvoiceBoldHeaderA4';
+import InvoiceMinimalMonoA4 from '@/components/pdf/InvoiceMinimalMonoA4';
+import InvoiceBusinessPortraitA4 from '@/components/pdf/InvoiceBusinessPortraitA4';
 import TemplatePreview from '@/components/generator/TemplatePreview';
 
 interface InvoiceFormProps {
   signedIn: boolean;
 }
+
+const TAX_MODE_LABEL: Record<TaxMode, string> = {
+  domestic: 'Domestic',
+  intraEU_rc: 'Intra-EU (reverse charge)',
+  uk_eu_cross: 'UK to EU (zero rate)',
+  export: 'Export',
+};
+
+const getTaxModeLabel = (mode: TaxMode): string => TAX_MODE_LABEL[mode] ?? 'Domestic';
+
+const joinAddress = (...parts: Array<string | undefined | null>) =>
+  parts.filter((part) => typeof part === 'string' && part.trim().length > 0).join(', ');
 
 export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
   const bcRef = useRef<BroadcastChannel | null>(null);
@@ -80,7 +96,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
   const [notes, setNotes] = useState('Add notes and comments');
   const [logo, setLogo] = useState<string | null>(null);
   // Template selection (visual/layout preset)
-  const [template, setTemplate] = useState<'Freelance' | 'Construction' | 'IT Services' | 'Consulting'>('Freelance');
+  const [template, setTemplate] = useState<'CleanA4' | 'Pro Ledger' | 'Compact Fit' | 'Modern Stripe' | 'Nordic Grid' | 'Bold Header' | 'Minimal Mono' | 'Business Portrait'>('CleanA4');
 
   const gated = !signedIn;
   const [banner, setBanner] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
@@ -137,6 +153,46 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     0
   );
   const total = subtotal + taxTotal;
+
+  const pdfInvoiceCompany = {
+    name: sender.company,
+    vatNumber: sender.vat || undefined,
+    address: joinAddress(sender.address, sender.city, sender.country),
+    city: sender.city || undefined,
+    country: sender.country || undefined,
+    iban: sender.iban || undefined,
+    bankName: sender.bankName || undefined,
+    bic: sender.bic || undefined,
+    logoUrl: logo || undefined,
+  };
+
+  const pdfInvoiceClient = {
+    name: client.name,
+    vatNumber: client.vat || undefined,
+    address: joinAddress(client.address, client.city, client.country),
+    city: client.city || undefined,
+    country: client.country || undefined,
+    email: client.email || undefined,
+  };
+
+  const pdfInvoiceItems = items.map((item) => ({
+    description: item.desc,
+    quantity: Number(item.qty) || 0,
+    unitPrice: Number(item.rate) || 0,
+    vatRate: Number(item.tax) || 0,
+  }));
+
+  const pdfInvoice: PdfInvoice = {
+    company: pdfInvoiceCompany,
+    client: pdfInvoiceClient,
+    items: pdfInvoiceItems,
+    invoiceNumber: invoiceMeta.number,
+    issueDate: invoiceMeta.date,
+    dueDate: invoiceMeta.due,
+    currency,
+    vatMode: getTaxModeLabel(taxMode),
+    notes,
+  };
 
   // Keep buffers aligned with items length (e.g., when prefilled or reset)
   useEffect(() => {
@@ -634,13 +690,17 @@ const sendEmail = async () => {
           <span className="font-medium ml-3">Template:</span>
           <select
             value={template}
-            onChange={(e)=>setTemplate(e.target.value as 'Freelance' | 'Construction' | 'IT Services' | 'Consulting')}
+            onChange={(e)=>setTemplate(e.target.value as 'CleanA4' | 'Pro Ledger' | 'Compact Fit' | 'Modern Stripe' | 'Nordic Grid' | 'Bold Header' | 'Minimal Mono' | 'Business Portrait')}
             className="rounded-lg border border-black/10 bg-white px-2.5 py-2"
           >
-            <option value="Freelance">Freelance</option>
-            <option value="Construction">Construction</option>
-            <option value="IT Services">IT Services</option>
-            <option value="Consulting">Consulting</option>
+            <option value="CleanA4">CleanA4</option>
+            <option value="Pro Ledger">Pro Ledger</option>
+            <option value="Compact Fit">Compact Fit</option>
+            <option value="Modern Stripe">Modern Stripe</option>
+            <option value="Nordic Grid">Nordic Grid</option>
+            <option value="Bold Header">Bold Header</option>
+            <option value="Minimal Mono">Minimal Mono</option>
+            <option value="Business Portrait">Business Portrait</option>
           </select>
         </div>
         <div className="flex items-center gap-2">
@@ -857,7 +917,23 @@ const sendEmail = async () => {
               <p className="text-xs text-slate-500 mt-1">A4 layout</p>
             </div>
             <TemplatePreview>
-              {template === 'Construction' ? (
+              {template === 'CleanA4' ? (
+                <InvoicePaper
+                  currency={currency}
+                  zeroNote={zeroNote}
+                  logoUrl={logo || undefined}
+                  items={items}
+                  subtotal={subtotal}
+                  taxTotal={taxTotal}
+                  total={total}
+                  sender={sender}
+                  client={client}
+                  invoiceNo={invoiceMeta.number}
+                  invoiceDate={invoiceMeta.date}
+                  invoiceDue={invoiceMeta.due}
+                  notes={notes}
+                />
+              ) : template === 'Pro Ledger' ? (
                 <InvoiceConstructionA4
                   currency={currency}
                   zeroNote={zeroNote}
@@ -873,7 +949,7 @@ const sendEmail = async () => {
                   invoiceDue={invoiceMeta.due}
                   notes={notes}
                 />
-              ) : template === 'IT Services' ? (
+              ) : template === 'Compact Fit' ? (
                 <InvoiceITServicesA4
                   currency={currency}
                   zeroNote={zeroNote}
@@ -889,7 +965,7 @@ const sendEmail = async () => {
                   invoiceDue={invoiceMeta.due}
                   notes={notes}
                 />
-              ) : template === 'Consulting' ? (
+              ) : template === 'Modern Stripe' ? (
                 <InvoiceConsultingA4
                   currency={currency}
                   zeroNote={zeroNote}
@@ -905,6 +981,14 @@ const sendEmail = async () => {
                   invoiceDue={invoiceMeta.due}
                   notes={notes}
                 />
+              ) : template === 'Nordic Grid' ? (
+                <InvoiceNordicGridA4 invoice={pdfInvoice} />
+              ) : template === 'Bold Header' ? (
+                <InvoiceBoldHeaderA4 invoice={pdfInvoice} />
+              ) : template === 'Minimal Mono' ? (
+                <InvoiceMinimalMonoA4 invoice={pdfInvoice} />
+              ) : template === 'Business Portrait' ? (
+                <InvoiceBusinessPortraitA4 invoice={pdfInvoice} />
               ) : (
                 <InvoicePaper
                   currency={currency}
@@ -939,7 +1023,23 @@ const sendEmail = async () => {
       </div>
 
       {/* Print-only A4 template (isolated on print) */}
-      {template === 'Construction' ? (
+      {template === 'CleanA4' ? (
+        <InvoicePaper
+          currency={currency}
+          zeroNote={zeroNote}
+          logoUrl={logo || undefined}
+          items={items}
+          subtotal={subtotal}
+          taxTotal={taxTotal}
+          total={total}
+          sender={sender}
+          client={client}
+          invoiceNo={invoiceMeta.number}
+          invoiceDate={invoiceMeta.date}
+          invoiceDue={invoiceMeta.due}
+          notes={notes}
+        />
+      ) : template === 'Pro Ledger' ? (
         <InvoiceConstructionA4
           currency={currency}
           zeroNote={zeroNote}
@@ -970,7 +1070,7 @@ const sendEmail = async () => {
           invoiceDue={invoiceMeta.due}
           notes={notes}
         />
-      ) : template === 'IT Services' ? (
+      ) : template === 'Compact Fit' ? (
         <InvoiceITServicesA4
           currency={currency}
           zeroNote={zeroNote}
@@ -1001,7 +1101,7 @@ const sendEmail = async () => {
           invoiceDue={invoiceMeta.due}
           notes={notes}
         />
-      ) : template === 'Consulting' ? (
+      ) : template === 'Modern Stripe' ? (
         <InvoiceConsultingA4
           currency={currency}
           zeroNote={zeroNote}
@@ -1032,6 +1132,14 @@ const sendEmail = async () => {
           invoiceDue={invoiceMeta.due}
           notes={notes}
         />
+      ) : template === 'Nordic Grid' ? (
+        <InvoiceNordicGridA4 invoice={pdfInvoice} />
+      ) : template === 'Bold Header' ? (
+        <InvoiceBoldHeaderA4 invoice={pdfInvoice} />
+      ) : template === 'Minimal Mono' ? (
+        <InvoiceMinimalMonoA4 invoice={pdfInvoice} />
+      ) : template === 'Business Portrait' ? (
+        <InvoiceBusinessPortraitA4 invoice={pdfInvoice} />
       ) : (
         <InvoiceA4
           currency={currency}
@@ -1067,5 +1175,3 @@ const sendEmail = async () => {
     </div>
   );
 }
-
-

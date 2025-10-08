@@ -7,9 +7,10 @@ import puppeteer from "puppeteer-core";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(req: Request, { params }: { params: Promise<any> }) {
   try {
-    const { id } = await params;
+    const resolvedParams = await params;
+    const id = resolvedParams.id as string;
     console.log(`[PDF_API] Generating PDF for invoice ${id}`);
     
     const session = await getServerSession(authOptions);

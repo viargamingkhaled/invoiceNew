@@ -6,10 +6,8 @@ import Section from '@/components/layout/Section';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import { THEME } from '@/lib/theme';
-import { useState } from 'react';
 
 export default function StatusPageClient() {
-  const [incidentFilter, setIncidentFilter] = useState('all');
 
   // Mock data based on JSON fallbacks
   const statusData = {
@@ -29,32 +27,6 @@ export default function StatusPageClient() {
       { label: 'PDF Export', value: '99.96%' },
       { label: 'Email & Share', value: '99.95%' },
       { label: 'Overall', value: '99.96%' }
-    ],
-    incidents: [
-      {
-        id: '2025-09-18-pdf',
-        title: 'Partial outage — PDF Export',
-        timeRange: '2025-09-18 10:12–11:03 UK',
-        components: ['pdf'],
-        impact: '~12% of PDF exports failed',
-        status: 'resolved',
-        rootCause: 'Autoscaling misconfiguration',
-        timeline: [
-          { t: '10:12', msg: 'Issue detected' },
-          { t: '10:20', msg: 'Investigation underway' },
-          { t: '10:41', msg: 'Scaling fix applied' },
-          { t: '11:03', msg: 'Resolved' }
-        ]
-      }
-    ],
-    maintenance: [
-      {
-        id: '2025-10-20-db',
-        title: 'Database maintenance',
-        window: '2025-10-20 22:00–23:00 UK',
-        impact: 'Possible brief read-only mode',
-        status: 'scheduled'
-      }
     ]
   };
 
@@ -252,131 +224,6 @@ export default function StatusPageClient() {
         </motion.div>
       </Section>
 
-      {/* Recent Incidents Section */}
-      <Section className="py-16">
-        <motion.div
-          className="max-w-4xl mx-auto"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          <h2 className={`text-3xl font-bold ${THEME.text} mb-8 text-center`}>
-            Recent Incidents
-          </h2>
-
-          {/* Filter buttons */}
-          <div className="flex flex-wrap gap-2 mb-6 justify-center">
-            {['all', 'generator', 'pdf', 'email', 'dashboard', 'api', 'payments'].map((filter) => (
-              <button
-                key={filter}
-                onClick={() => setIncidentFilter(filter)}
-                className={`px-3 py-1 text-sm rounded-full border ${
-                  incidentFilter === filter
-                    ? 'bg-slate-900 text-white border-slate-900'
-                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-                }`}
-              >
-                {filter === 'all' ? 'All' : filter.charAt(0).toUpperCase() + filter.slice(1)}
-              </button>
-            ))}
-          </div>
-
-          {statusData.incidents.length > 0 ? (
-            <div className="space-y-4">
-              {statusData.incidents.map((incident, index) => (
-                <motion.div
-                  key={incident.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1, duration: 0.6 }}
-                  viewport={{ once: true }}
-                >
-                  <Card className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <h3 className="font-semibold text-slate-900 mb-1">{incident.title}</h3>
-                        <p className="text-sm text-slate-600">{incident.timeRange}</p>
-                        <p className="text-sm text-slate-600 mt-1">Impact: {incident.impact}</p>
-                      </div>
-                      <div className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-medium">
-                        <span className="capitalize">{incident.status}</span>
-                      </div>
-                    </div>
-                    
-                    <div className="mb-4">
-                      <h4 className="font-medium text-slate-900 mb-2">Root Cause</h4>
-                      <p className="text-sm text-slate-600">{incident.rootCause}</p>
-                    </div>
-
-                    <div>
-                      <h4 className="font-medium text-slate-900 mb-2">Timeline</h4>
-                      <div className="space-y-2">
-                        {incident.timeline.map((event, eventIndex) => (
-                          <div key={eventIndex} className="flex items-center gap-3 text-sm">
-                            <span className="font-mono text-slate-500 min-w-[40px]">{event.t}</span>
-                            <span className="text-slate-600">{event.msg}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          ) : (
-            <Card className="p-8 text-center">
-              <p className="text-slate-600">No incidents in the selected period.</p>
-            </Card>
-          )}
-        </motion.div>
-      </Section>
-
-      {/* Scheduled Maintenance Section */}
-      <Section className="py-16 bg-slate-50/50">
-        <motion.div
-          className="max-w-4xl mx-auto"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          <h2 className={`text-3xl font-bold ${THEME.text} mb-8 text-center`}>
-            Scheduled Maintenance
-          </h2>
-
-          {statusData.maintenance.length > 0 ? (
-            <div className="space-y-4">
-              {statusData.maintenance.map((item, index) => (
-                <motion.div
-                  key={item.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1, duration: 0.6 }}
-                  viewport={{ once: true }}
-                >
-                  <Card className="p-6">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h3 className="font-semibold text-slate-900 mb-1">{item.title}</h3>
-                        <p className="text-sm text-slate-600 mb-1">{item.window}</p>
-                        <p className="text-sm text-slate-600">Impact: {item.impact}</p>
-                      </div>
-                      <div className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
-                        <span className="capitalize">{item.status}</span>
-                      </div>
-                    </div>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          ) : (
-            <Card className="p-8 text-center">
-              <p className="text-slate-600">No maintenance scheduled.</p>
-            </Card>
-          )}
-        </motion.div>
-      </Section>
 
       {/* Subscribe Section */}
       <Section className="py-16">

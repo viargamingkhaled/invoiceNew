@@ -129,7 +129,7 @@ export default function BillingTokensPage() {
                   <div className="space-y-3">
                     <div className="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
                       <span className="text-sm text-slate-600">Tokens</span>
-                      <span className="font-semibold text-slate-900">{calculateTokens(customAmount).toLocaleString()}</span>
+                      <span className="font-semibold text-slate-900">{calculateTokens(customAmount).toLocaleString('en-US')}</span>
                     </div>
                     <div className="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
                       <span className="text-sm text-slate-600">Invoices</span>
@@ -155,7 +155,7 @@ export default function BillingTokensPage() {
                           {pkg.currency} {pkg.amount}
                         </div>
                         <div className="text-sm text-slate-600 mb-2">
-                          {pkg.tokens.toLocaleString()} tokens
+                          {pkg.tokens.toLocaleString('en-US')} tokens
                         </div>
                         <div className="text-xs text-slate-500">
                           ≈{pkg.invoices} invoices
@@ -196,9 +196,9 @@ export default function BillingTokensPage() {
                       All transactions are recorded in your token ledger. You can access:
                     </p>
                     <ul className="text-sm text-slate-600 space-y-1 ml-4">
-                      <li>• Receipts via Stripe dashboard</li>
                       <li>• Transaction history in your Dashboard</li>
                       <li>• Detailed ledger with invoice numbers</li>
+                      <li>• Automatic receipt generation</li>
                     </ul>
                   </div>
                 </div>
@@ -238,7 +238,7 @@ export default function BillingTokensPage() {
                           }`}>
                             {entry.delta > 0 ? `+${entry.delta}` : entry.delta}
                           </td>
-                          <td className="px-3 py-2 text-right font-medium">{entry.balance.toLocaleString()}</td>
+                          <td className="px-3 py-2 text-right font-medium">{entry.balance.toLocaleString('en-US')}</td>
                           <td className="px-3 py-2 text-slate-600">{entry.invoiceNumber || '-'}</td>
                           <td className="px-3 py-2 text-center">
                             {entry.receiptUrl ? (
@@ -337,7 +337,7 @@ export default function BillingTokensPage() {
                     {filteredPackages.slice(0, 3).map((pkg, index) => (
                       <div key={index} className="text-sm">
                         <div className="font-medium text-slate-900">
-                          {pkg.currency} {pkg.amount} → {pkg.tokens.toLocaleString()} tokens
+                          {pkg.currency} {pkg.amount} → {pkg.tokens.toLocaleString('en-US')} tokens
                         </div>
                         <div className="text-slate-600">
                           ≈{pkg.invoices} invoices → ≈{pkg.currency} {pkg.costPerInvoice.toFixed(2)} per invoice

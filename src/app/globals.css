@@ -23,14 +23,29 @@
 }
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  /* Palette B - Ledger Calm */
+  --brand: #0F766E;      /* Primary teal */
+  --accent: #14B8A6;     /* Accent teal */
+  --surface: #F6F7F8;    /* Surface */
+  --panel: #FFFFFF;      /* Panel */
+  --text: #0B1221;       /* Text */
+  --muted: #6B7280;      /* Muted */
+  --success: #22C55E;    /* Success green */
+  --warning: #EAB308;    /* Warning yellow */
+  
+  /* Design tokens */
+  --radius: 16px;
+  --gutter: 24px;
+  
+  /* Legacy support */
+  --background: #F6F7F8;
+  --foreground: #0B1221;
 }
 
 body {
-  color: var(--foreground);
-  background: #f8fafc;
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text);
+  background: var(--surface);
+  font-family: 'Inter', 'Manrope', system-ui, -apple-system, sans-serif;
 }
 
 @layer utilities {

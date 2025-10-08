@@ -1,73 +1,78 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Section from '@/components/layout/Section';
-import Card from '@/components/ui/Card';
-import { FEATURES } from '@/lib/data';
-import { LayoutPanelLeft, Eye, Banknote, Save, Hash } from 'lucide-react';
-import { CurrencyPatternBG, InvoiceNumberPatternBG } from '@/components/graphics/Patterns';
-
-const ICONS_BY_ID: Record<string, (props: any) => JSX.Element> = {
-  singleColumn: (props: any) => <LayoutPanelLeft {...props} />,
-  livePreview: (props: any) => <Eye {...props} />,
-  multiCurrency: (props: any) => <Banknote {...props} />,
-  autoSave: (props: any) => <Save {...props} />,
-};
+import { CheckCircle } from 'lucide-react';
+import { HOME_V2_DATA } from '@/lib/home-v2-data';
 
 export default function WhyUs() {
+  const { whyUs } = HOME_V2_DATA;
+
   return (
-    <Section id="why-us" className="py-12">
-      <motion.div 
-        className="text-center mb-8"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        viewport={{ once: true }}
-      >
-        <h2 className="text-2xl sm:text-3xl font-bold">Why choose us</h2>
-        <p className="mt-2 text-slate-600">Fewer clicks and fewer errors when invoicing.</p>
-      </motion.div>
-      
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {FEATURES.map((feature, index) => {
-          const Icon = ICONS_BY_ID[feature.id] || ((p: any) => <Hash {...p} />);
-          const showCurrencyPattern = feature.id === 'multiCurrency';
-          const showInvoicePattern = feature.id === 'autoSave';
-          return (
+    <section className="py-16 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <motion.div
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="text-3xl sm:text-4xl font-bold text-[#0B1221] mb-4">
+            Why choose us
+          </h2>
+          <p className="text-lg text-[#6B7280] max-w-2xl mx-auto">
+            Built for professionals who need reliable, fast, and compliant invoicing
+          </p>
+        </motion.div>
+
+        {/* Features Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {whyUs.map((item, index) => (
             <motion.div
-              key={feature.title}
+              key={index}
+              className="flex items-start space-x-4 p-6 rounded-2xl hover:bg-[#F6F7F8] transition-colors duration-200 group"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1, duration: 0.5 }}
               viewport={{ once: true }}
             >
-              <Card className="relative overflow-hidden transition-all duration-200 motion-reduce:transition-none hover:-translate-y-[2px] hover:shadow-md hover:border-slate-300 focus-within:ring-2 focus-within:ring-blue-600/30 focus-within:outline-none" padding="md">
-                {/* Accent top line */}
-                <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-b from-blue-600 to-transparent" aria-hidden="true" />
-                {/* Subtle patterns */}
-                {showCurrencyPattern && <CurrencyPatternBG className="text-slate-900" />}
-                {showInvoicePattern && <InvoiceNumberPatternBG className="text-slate-900" />}
-
-                <div className="flex items-center gap-2">
-                  <Icon size={20} className="opacity-80" aria-hidden="true" />
-                  <span className="sr-only">{feature.title}</span>
-                  <h3 className="font-semibold text-lg">{feature.title}</h3>
+              {/* Icon */}
+              <div className="flex-shrink-0">
+                <div className="w-12 h-12 bg-[#0F766E] rounded-xl flex items-center justify-center group-hover:bg-[#14B8A6] transition-colors duration-200">
+                  <CheckCircle className="w-6 h-6 text-white" />
                 </div>
-                <p className="mt-2 text-sm text-slate-700">{feature.description}</p>
-                {feature.metric && (
-                  <p className="mt-1 text-[12px] leading-5 text-slate-500">{feature.metric}</p>
-                )}
+              </div>
 
-                {/* Keyboard focus target */}
-                <div tabIndex={0} aria-hidden="true" className="absolute inset-0 outline-none" />
-              </Card>
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                <h3 className="text-lg font-semibold text-[#0B1221] mb-2 group-hover:text-[#0F766E] transition-colors duration-200">
+                  {item.title}
+                </h3>
+                <p className="text-[#6B7280] leading-relaxed">
+                  {item.desc}
+                </p>
+              </div>
             </motion.div>
-          );
-        })}
+          ))}
+        </div>
+
+        {/* Additional Info */}
+        <motion.div
+          className="mt-16 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.5 }}
+          viewport={{ once: true }}
+        >
+          <div className="inline-flex items-center space-x-2 px-4 py-2 bg-[#F6F7F8] rounded-xl">
+            <div className="w-2 h-2 bg-[#22C55E] rounded-full animate-pulse"></div>
+            <span className="text-sm font-medium text-[#0B1221]">
+              All features included in every plan
+            </span>
+          </div>
+        </motion.div>
       </div>
-    </Section>
+    </section>
   );
 }
-
-
-

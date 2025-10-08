@@ -9,7 +9,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 type Currency = 'GBP' | 'EUR' | 'AUD';
 type InvoiceStatus = 'Draft' | 'Ready' | 'Error' | 'Sent' | 'Paid' | 'Overdue';
 type Invoice = { id: string; number: string; date: string; client: string; currency: Currency; subtotal: number; tax: number; total: number; status: InvoiceStatus };
-type LedgerRow = { id: string; ts: string; type: 'Top-up' | 'Invoice' | 'Adjust' | 'STRIPE_PURCHASE'; delta: number; balanceAfter: number; currency?: Currency; amount?: number; receiptUrl?: string; invoiceNumber?: string };
+type LedgerRow = { id: string; ts: string; type: 'Top-up' | 'Invoice' | 'Adjust'; delta: number; balanceAfter: number; currency?: Currency; amount?: number; receiptUrl?: string; invoiceNumber?: string };
 type Company = { name: string; vat?: string; reg?: string; address1?: string; city?: string; country?: string; iban?: string; bankName?: string; bic?: string };
 type Me = { id: string; name: string | null; email: string | null; tokenBalance: number; currency: Currency; company: Company | null };
 
@@ -316,12 +316,12 @@ export default function DashboardClient() {
                   <tbody>
                     {ledgerView.map(row => (
                       <tr key={row.id} className="border-t border-black/10">
-                        <td className="px-3 py-2 whitespace-nowrap">{new Date(row.ts).toLocaleString()}</td>
+                        <td className="px-3 py-2 whitespace-nowrap">{new Date(row.ts).toLocaleString('en-US')}</td>
                         <td className="px-3 py-2">{row.type}</td>
                         <td className="px-3 py-2">{row.invoiceNumber || '-'}</td>
                         <td className={`px-3 py-2 text-right ${row.delta>0?'text-emerald-700':'text-slate-900'}`}>{row.delta>0? `+${int(row.delta)}` : `-${int(Math.abs(row.delta))}`} tokens</td>
                         <td className="px-3 py-2 text-right">{int(row.balanceAfter)}</td>
-                        <td className="px-3 py-2 text-right">{row.type==='Top-up' || row.type === 'STRIPE_PURCHASE' ? <a className="underline text-sm" href={row.receiptUrl||'#'} target="_blank" rel="noopener noreferrer">Receipt</a> : '-'}</td>
+                        <td className="px-3 py-2 text-right">{row.type==='Top-up' ? <a className="underline text-sm" href={row.receiptUrl||'#'} target="_blank" rel="noopener noreferrer">Receipt</a> : '-'}</td>
                       </tr>
                     ))}
                   </tbody>

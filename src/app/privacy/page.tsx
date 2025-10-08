@@ -78,7 +78,7 @@ When retention ends, we delete or anonymize data.` },
   { id: 'sharing', title: 'Sharing & Processors', body: `We share data only with:
 
 • Service providers (processors): cloud hosting & storage, email delivery, analytics, logging/monitoring, customer support, and PDF generation.
-• Payment processors: e.g., Stripe for card payments and potentially Wise for settlements—card details are processed by the provider and never stored on our servers.
+• Payment processors: secure payment processing services—payment details are processed by the provider and never stored on our servers.
 • Professional advisors (legal/accounting) and authorities when required by law.
 • Business transfers: if we undergo a merger, acquisition, or asset sale, we’ll notify you and continue to protect your data.
 

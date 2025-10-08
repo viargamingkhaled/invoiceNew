@@ -9,16 +9,16 @@ import { toast } from 'sonner';
 
 import Section from '@/components/layout/Section';
 import Pill from '@/components/policy/Pill';
-import Button from '@/components/ui/Button';
+import { Button } from '@/components/ui/Button';
 import Segmented from '@/components/ui/Segmented';
 import { CC, VAT_RATES } from '@/lib/constants';
-import { Currency, pricingPlans } from '@/lib/plans';
+import { Currency, convertFromGBP, convertToGBP, formatCurrency, getCurrencySymbol, getAvailableCurrencies } from '@/lib/currency';
+import { pricingPlans, getPlanPrice } from '@/lib/plans';
 
 const COUNTRIES = Object.keys(CC);
 
 function money(n: number, currency: Currency) {
-  const locale = currency === 'GBP' ? 'en-GB' : 'en-IE';
-  return new Intl.NumberFormat(locale, { style: 'currency', currency, maximumFractionDigits: n % 1 === 0 ? 0 : 2 }).format(n);
+  return formatCurrency(n, currency);
 }
 
 function Badge({ children }: { children: React.ReactNode }) {
@@ -53,10 +53,7 @@ function Price({ amount, currency, vatRate }: { amount: number; currency: Curren
 
 export default function PricingClient() {
   const bcRef = useRef<BroadcastChannel | null>(null);
-  const [currency, setCurrency] = useState<Currency>(()=>{
-    if (typeof window === 'undefined') return 'GBP';
-    try { return (localStorage.getItem('currency') as Currency) || 'GBP'; } catch { return 'GBP'; }
-  });
+  const [currency, setCurrency] = useState<Currency>('GBP');
   const [country, setCountry] = useState<string>('United Kingdom');
   const [isLoading, setIsLoading] = useState<string | null>(null);
   const { status } = useSession();
@@ -74,13 +71,23 @@ export default function PricingClient() {
       bcRef.current = new BroadcastChannel('app-events');
       bcRef.current.onmessage = (ev: MessageEvent) => {
         const data: any = (ev as any)?.data || {};
-        if (data.type === 'currency-updated' && (data.currency === 'GBP' || data.currency === 'EUR')) {
+        if (data.type === 'currency-updated' && getAvailableCurrencies().includes(data.currency)) {
           setCurrency(data.currency);
           try { localStorage.setItem('currency', data.currency); } catch {}
         }
       };
     } catch {}
     return () => { try { bcRef.current?.close(); } catch {} };
+  }, []);
+
+  // Load currency from localStorage after mount to prevent hydration mismatch
+  useEffect(() => {
+    try {
+      const savedCurrency = localStorage.getItem('currency') as Currency;
+      if (savedCurrency && getAvailableCurrencies().includes(savedCurrency)) {
+        setCurrency(savedCurrency);
+      }
+    } catch {}
   }, []);
 
   const handlePurchase = async (planId: string | null, customAmount?: number) => {
@@ -90,24 +97,54 @@ export default function PricingClient() {
 
     setIsLoading(planId);
     try {
-      const response = await fetch('/api/stripe/checkout', {
+      // Определяем количество токенов для пополнения
+      let tokensToAdd = 0;
+      let amountGBP = 0;
+      
+      if (customAmount) {
+        amountGBP = convertToGBP(customAmount, currency);
+        tokensToAdd = Math.round(amountGBP * 100); // 100 токенов за 1 GBP
+      } else if (planId) {
+        const plan = pricingPlans.find(p => p.id === planId);
+        if (plan) {
+          tokensToAdd = plan.tokens;
+          amountGBP = plan.baseGBP;
+        }
+      }
+
+      if (tokensToAdd <= 0) {
+        throw new Error('Invalid amount');
+      }
+
+      const response = await fetch('/api/ledger', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        // ИЗМЕНЕНО: Отправляем на сервер и ID плана, и ВАЛЮТУ
-        body: JSON.stringify({ planId, currency, customAmount }),
+        body: JSON.stringify({ 
+          type: 'Top-up', 
+          amount: amountGBP, // Always store in GBP
+          currency: 'GBP' // Always store in GBP
+        }),
       });
 
       const data = await response.json();
 
-      if (!response.ok || !data.url) {
+      if (!response.ok) {
         throw new Error(data.error || 'Something went wrong.');
       }
 
-      window.location.href = data.url;
+      toast.success(`Successfully added ${tokensToAdd} tokens to your account!`);
+      setIsLoading(null);
+
+      // Обновляем BroadcastChannel для синхронизации с другими компонентами
+      try {
+        const bc = new BroadcastChannel('app-events');
+        bc.postMessage({ type: 'tokens-updated', tokenBalance: data.tokenBalance });
+        bc.close();
+      } catch {}
 
     } catch (error) {
-      console.error("Stripe checkout error:", error);
-      toast.error('Could not create payment session. Please try again.');
+      console.error("Top-up error:", error);
+      toast.error('Could not add tokens. Please try again.');
       setIsLoading(null);
     }
   };
@@ -118,14 +155,9 @@ export default function PricingClient() {
         <div className="text-center">
           <div className="inline-flex items-center gap-2"><Pill>UK-first</Pill><Pill>EU-ready</Pill><Pill>Prices exclude VAT</Pill></div>
           <h1 className="mt-4 text-3xl sm:text-4xl font-bold">Top-Up</h1>
-          <p className="mt-2 text-slate-600">Choose a top-up, set your country & currency — we estimate VAT for transparency.</p>
+          <p className="mt-2 text-slate-600">Choose a top-up, set your country — we estimate VAT for transparency.</p>
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-            <Segmented
-              options={[{label:'GBP', value:'GBP'},{label:'EUR', value:'EUR'}]}
-              value={currency}
-              onChange={(v)=>setCurrency(v as Currency)}
-            />
             <select
               className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm"
               value={country}
@@ -138,7 +170,7 @@ export default function PricingClient() {
 
         <div className="mt-10 grid md:grid-cols-3 lg:grid-cols-4 gap-6">
           {pricingPlans.map((plan) => {
-            const base = currency==='GBP'? plan.baseGBP : plan.baseEUR;
+            const base = getPlanPrice(plan, currency);
             const invoices = Math.round(plan.tokens / 10);
             const loading = isLoading === plan.id;
 
@@ -242,10 +274,10 @@ export default function PricingClient() {
 }
 
 function CustomPlanCard({ currency, onPurchase }: { currency: Currency; onPurchase: (amount: number, currency: Currency) => void; }) {
-  const [priceInput, setPriceInput] = useState<string>('5');
+  const [priceInput, setPriceInput] = useState<string>('0.01');
   const TOKENS_PER_UNIT = 100;
   const TOKENS_PER_INVOICE = 10;
-  const min = 5;
+  const min = 0.01;
   const numericPrice = parseFloat(priceInput || '0');
   const validNumber = Number.isFinite(numericPrice);
   const tokens = Math.max(0, Math.round((validNumber ? numericPrice : 0) * TOKENS_PER_UNIT));
@@ -263,20 +295,20 @@ function CustomPlanCard({ currency, onPurchase }: { currency: Currency; onPurcha
         <span className="text-xs rounded-full px-2 py-1 bg-slate-100 border border-black/10 text-slate-700">EARLY / SUPPORTER</span>
       </div>
       <div className="mt-3 flex items-center gap-2">
-        <span className="text-3xl font-bold">{currency === 'GBP' ? '£' : '€'}</span>
+        <span className="text-3xl font-bold">{getCurrencySymbol(currency)}</span>
         <input type="number" step="any" value={priceInput}
           onChange={onChange}
           className="w-24 text-3xl font-bold bg-transparent border-b border-black/10 focus:outline-none focus:ring-0" aria-label="Custom price" />
         <span className="text-base font-normal text-slate-500">/one-time</span>
       </div>
       {(!validNumber || numericPrice < min) && (
-        <div className="mt-1 text-[11px] text-red-600">Minimum amount is {currency === 'GBP' ? '£' : '€'}5.00</div>
+        <div className="mt-1 text-[11px] text-red-600">Minimum amount is {getCurrencySymbol(currency)}0.01</div>
       )}
       <div className="mt-1 text-xs text-slate-600">= {tokens} tokens (~{invoices} invoices)</div>
       <ul className="mt-4 space-y-2 text-sm text-slate-700 list-disc pl-5">
         <li>Top up your account</li>
         <li>No subscription — pay what you need</li>
-        <li>Min {currency === 'GBP' ? '£5' : '€5'}</li>
+        <li>Min {currency === 'GBP' ? '£0.01' : '€0.01'}</li>
       </ul>
       <div className="mt-6">
         <Button className="w-full" size="lg" onClick={() => onPurchase(numericPrice, currency)} disabled={!validNumber || numericPrice < min}>

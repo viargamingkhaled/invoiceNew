@@ -15,11 +15,20 @@ export interface Theme {
     text: string;
     bg: string;
   };
+  success: {
+    text: string;
+    bg: string;
+  };
+  warning: {
+    text: string;
+    bg: string;
+  };
 }
 
 export interface PricingPlan {
   name: string;
-  price: string;
+  baseGBP: number;
+  tokens: number;
   points: string[];
   cta: string;
   popular: boolean;
