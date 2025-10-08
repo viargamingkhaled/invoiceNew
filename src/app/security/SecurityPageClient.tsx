@@ -544,8 +544,6 @@ export default function SecurityPageClient() {
             </ul>
             
             <div className="flex flex-wrap gap-4">
-              <Link href="/legal/dpa" className="text-blue-600 hover:underline text-sm">DPA</Link>
-              <Link href="/legal/subprocessors" className="text-blue-600 hover:underline text-sm">Subprocessors</Link>
               <Link href="/privacy" className="text-blue-600 hover:underline text-sm">Privacy Policy</Link>
             </div>
           </Card>
@@ -569,10 +567,6 @@ export default function SecurityPageClient() {
             <p className="text-slate-600 mb-6">
               We use third-party providers for hosting, email, analytics, and payments. Each provider signs data protection terms and meets our security requirements.
             </p>
-            
-            <Link href="/legal/subprocessors" className="text-blue-600 hover:underline text-sm">
-              See current list →
-            </Link>
           </Card>
         </motion.div>
       </Section>
