@@ -1,0 +1,266 @@
+{
+  "page": "Service Status",
+  "route": "/status",
+  "language": "en-GB",
+  "meta": {
+    "title": "Service Status | Invoicerly",
+    "description": "Live view of Invoicerly availability, uptime, incidents, and maintenance.",
+    "og": {
+      "title": "Service Status | Invoicerly",
+      "type": "website",
+      "url": "https://www.invoicerly.co.uk/status",
+      "image": "/assets/og/status.png",
+      "description": "Current component status, incident history, and uptime charts."
+    },
+    "schemaOrg": {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Service Status",
+      "description": "Public status page for Invoicerly services.",
+      "url": "https://www.invoicerly.co.uk/status"
+    },
+    "lastUpdated": "2025-10-08",
+    "canonical": "https://www.invoicerly.co.uk/status",
+    "noindex": false
+  },
+  "layout": {
+    "type": "2-column",
+    "breakpoints": {
+      "lg": { "contentWidth": 760, "rightWidth": 320 },
+      "sm": "stacked"
+    },
+    "sticky": { "rightHelp": true },
+    "breadcrumbs": [
+      { "label": "Home", "href": "/" },
+      { "label": "Status", "href": "/status" }
+    ]
+  },
+  "rightHelp": {
+    "title": "Subscribe to updates",
+    "content": "Get incident and maintenance updates.",
+    "subscribe": {
+      "emailForm": { "action": "/api/status/subscribe", "method": "POST" },
+      "rss": { "label": "RSS/Atom feed", "href": "/status/rss.xml" }
+    },
+    "links": [
+      { "label": "Security & Trust", "href": "/security" },
+      { "label": "Refund Policy", "href": "/refund" }
+    ]
+  },
+  "content": [
+    {
+      "id": "hero",
+      "type": "hero",
+      "props": {
+        "eyebrow": "Service Status",
+        "title": "{{current_status_title}}",
+        "subtitle": "Live availability, incidents, and maintenance.",
+        "badges": [
+          { "type": "status", "label": "Overall", "value": "{{current_status_badge}}" },
+          { "type": "metric", "label": "90‑day uptime", "value": "{{uptime_90d_overall}}" }
+        ],
+        "lastUpdated": "{{last_updated}}"
+      }
+    },
+    {
+      "id": "components",
+      "type": "section",
+      "title": "Components",
+      "components": [
+        {
+          "type": "components-grid",
+          "items": [
+            { "key": "generator", "label": "Invoice Generator", "status": "{{comp_generator}}" },
+            { "key": "pdf", "label": "PDF Export", "status": "{{comp_pdf}}" },
+            { "key": "email", "label": "Email & Share", "status": "{{comp_email}}" },
+            { "key": "dashboard", "label": "Dashboard & Auth", "status": "{{comp_dashboard}}" },
+            { "key": "api", "label": "API & Webhooks", "status": "{{comp_api}}" },
+            { "key": "payments", "label": "Payments", "status": "{{comp_payments}}" }
+          ],
+          "legend": [
+            { "value": "operational", "label": "Operational", "color": "green" },
+            { "value": "degraded", "label": "Degraded", "color": "amber" },
+            { "value": "partial", "label": "Partial outage", "color": "orange" },
+            { "value": "major", "label": "Major outage", "color": "red" },
+            { "value": "maintenance", "label": "Maintenance", "color": "blue" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "uptime",
+      "type": "section",
+      "title": "Uptime (last 90 days)",
+      "components": [
+        {
+          "type": "uptime-cards",
+          "items": [
+            { "label": "Invoice Generator", "value": "{{uptime_90d_generator}}", "spark": "{{spark_90d_generator}}" },
+            { "label": "PDF Export", "value": "{{uptime_90d_pdf}}", "spark": "{{spark_90d_pdf}}" },
+            { "label": "Email & Share", "value": "{{uptime_90d_email}}", "spark": "{{spark_90d_email}}" },
+            { "label": "Overall", "value": "{{uptime_90d_overall}}", "spark": "{{spark_90d_overall}}" }
+          ],
+          "note": "Targets: 99.9% monthly uptime for core features."
+        }
+      ]
+    },
+    {
+      "id": "incidents",
+      "type": "section",
+      "title": "Recent Incidents",
+      "components": [
+        {
+          "type": "incident-timeline",
+          "filters": [
+            { "key": "all", "label": "All" },
+            { "key": "generator", "label": "Invoice Generator" },
+            { "key": "pdf", "label": "PDF Export" },
+            { "key": "email", "label": "Email & Share" },
+            { "key": "dashboard", "label": "Dashboard & Auth" },
+            { "key": "api", "label": "API & Webhooks" },
+            { "key": "payments", "label": "Payments" }
+          ],
+          "items": "{{incidents_list}}",
+          "emptyText": "No incidents in the selected period."
+        }
+      ]
+    },
+    {
+      "id": "maintenance",
+      "type": "section",
+      "title": "Scheduled Maintenance",
+      "components": [
+        {
+          "type": "maintenance-list",
+          "items": "{{maintenance_list}}",
+          "emptyText": "No maintenance scheduled."
+        }
+      ]
+    },
+    {
+      "id": "subscribe",
+      "type": "section",
+      "title": "Subscribe to updates",
+      "components": [
+        {
+          "type": "subscribe-form",
+          "placeholder": "your@email",
+          "action": "/api/status/subscribe",
+          "method": "POST",
+          "note": "We’ll email incident and maintenance updates. Unsubscribe anytime."
+        },
+        {
+          "type": "links",
+          "items": [ { "label": "RSS/Atom feed", "href": "/status/rss.xml" } ]
+        }
+      ]
+    },
+    {
+      "id": "sla-support",
+      "type": "section",
+      "title": "SLA & Support",
+      "components": [
+        {
+          "type": "paragraph",
+          "text": "Availability target is 99.9% monthly for core features. If you’re experiencing an issue, check open incidents above or contact support."
+        },
+        {
+          "type": "key-value",
+          "items": [
+            { "key": "Support email", "value": "info@mail.com" },
+            { "key": "Hours (UK)", "value": "09:00–18:00" }
+          ]
+        },
+        {
+          "type": "links",
+          "items": [ { "label": "Security & Incident response", "href": "/security#incidents" } ]
+        }
+      ]
+    }
+  ],
+  "dynamic": {
+    "bindings": {
+      "current_status_title": "statusService.state.title",
+      "current_status_badge": "statusService.state.badge",
+      "uptime_90d_overall": "statusService.metrics.overall90d",
+      "uptime_90d_generator": "statusService.metrics.generator90d",
+      "uptime_90d_pdf": "statusService.metrics.pdf90d",
+      "uptime_90d_email": "statusService.metrics.email90d",
+      "spark_90d_overall": "statusService.sparklines.overall",
+      "spark_90d_generator": "statusService.sparklines.generator",
+      "spark_90d_pdf": "statusService.sparklines.pdf",
+      "spark_90d_email": "statusService.sparklines.email",
+      "comp_generator": "statusService.components.generator",
+      "comp_pdf": "statusService.components.pdf",
+      "comp_email": "statusService.components.email",
+      "comp_dashboard": "statusService.components.dashboard",
+      "comp_api": "statusService.components.api",
+      "comp_payments": "statusService.components.payments",
+      "incidents_list": "statusService.incidents.recent",
+      "maintenance_list": "statusService.maintenance.upcoming",
+      "last_updated": "statusService.state.lastUpdated"
+    },
+    "fallbacks": {
+      "current_status_title": "All systems operational",
+      "current_status_badge": "Operational",
+      "uptime_90d_overall": "99.96%",
+      "uptime_90d_generator": "99.98%",
+      "uptime_90d_pdf": "99.96%",
+      "uptime_90d_email": "99.95%",
+      "spark_90d_overall": [],
+      "spark_90d_generator": [],
+      "spark_90d_pdf": [],
+      "spark_90d_email": [],
+      "comp_generator": "operational",
+      "comp_pdf": "operational",
+      "comp_email": "operational",
+      "comp_dashboard": "operational",
+      "comp_api": "operational",
+      "comp_payments": "operational",
+      "incidents_list": [
+        {
+          "id": "2025-09-18-pdf",
+          "title": "Partial outage — PDF Export",
+          "timeRange": "2025-09-18 10:12–11:03 UK",
+          "components": ["pdf"],
+          "impact": "~12% of PDF exports failed",
+          "status": "resolved",
+          "rootCause": "Autoscaling misconfiguration",
+          "timeline": [
+            { "t": "10:12", "msg": "Issue detected" },
+            { "t": "10:20", "msg": "Investigation underway" },
+            { "t": "10:41", "msg": "Scaling fix applied" },
+            { "t": "11:03", "msg": "Resolved" }
+          ]
+        }
+      ],
+      "maintenance_list": [
+        {
+          "id": "2025-10-20-db",
+          "title": "Database maintenance",
+          "window": "2025-10-20 22:00–23:00 UK",
+          "impact": "Possible brief read-only mode",
+          "status": "scheduled"
+        }
+      ],
+      "last_updated": "2025-10-08 12:00 UK"
+    }
+  },
+  "a11y": {
+    "headingOrder": "H1 hero, H2 sections",
+    "focusStyles": true,
+    "prefersReducedMotion": true,
+    "aria": {
+      "statusBadge": "aria-live=polite",
+      "componentsLegend": "aria-describedby='legend'"
+    }
+  },
+  "analytics": {
+    "pageView": "status_view",
+    "events": [
+      { "id": "status_view_component", "on": "component_toggle", "payload": ["key", "status"] },
+      { "id": "status_filter_incidents", "on": "incident_filter", "payload": ["filter"] },
+      { "id": "status_subscribe", "on": "subscribe_submit", "payload": ["channel"] }
+    ]
+  }
+}
