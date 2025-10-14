@@ -9,7 +9,6 @@ import { CC, CURRENCY_BY_COUNTRY, VAT_RATES } from '@/lib/constants';
 import { Item, TaxMode, Invoice as PdfInvoice } from '@/types/invoice';
 import { motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 import InvoicePaper from './InvoicePaper';
 import InvoiceConstructionA4 from '@/components/pdf/InvoiceConstructionA4';
 import InvoiceITServicesA4 from '@/components/pdf/InvoiceITServicesA4';
@@ -37,7 +36,6 @@ const joinAddress = (...parts: Array<string | undefined | null>) =>
   parts.filter((part) => typeof part === 'string' && part.trim().length > 0).join(', ');
 
 export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
-  const searchParams = useSearchParams();
   const bcRef = useRef<BroadcastChannel | null>(null);
   const printRef = useRef<HTMLDivElement>(null);
 
@@ -261,37 +259,6 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
       }
     })();
   }, []);
-
-  // Handle URL parameters from quick start form
-  useEffect(() => {
-    const fromParam = searchParams.get('from');
-    const emailParam = searchParams.get('email');
-    const vatParam = searchParams.get('vat');
-    const vatModeParam = searchParams.get('vatMode');
-
-    if (fromParam) {
-      setSender(prev => ({ ...prev, company: fromParam }));
-    }
-
-    if (vatParam) {
-      setSender(prev => ({ ...prev, vat: vatParam }));
-    }
-
-    if (emailParam) {
-      setClient(prev => ({ ...prev, email: emailParam }));
-    }
-
-    if (vatModeParam) {
-      // Convert vatMode parameter back to TaxMode
-      const modeMap: Record<string, TaxMode> = {
-        'domestic': 'domestic',
-        'intra-eu': 'intraEU_rc',
-        'export': 'export'
-      };
-      const taxMode = modeMap[vatModeParam] || 'domestic';
-      setTaxMode(taxMode);
-    }
-  }, [searchParams]);
 
   // Live sync: BroadcastChannel + focus refresh
   useEffect(() => {

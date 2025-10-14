@@ -14,9 +14,8 @@ export default function StartQuickForm() {
   const { placeholders, vatModes, ctaLabel } = quickStart;
 
   const [formData, setFormData] = useState({
-    company: '',
-    email: '',
-    vat: '',
+    company: placeholders.company,
+    email: placeholders.email,
     vatMode: vatModes[0]
   });
 
@@ -54,10 +53,6 @@ export default function StartQuickForm() {
       newErrors.email = 'Please enter a valid email address';
     }
 
-    if (!formData.vat.trim()) {
-      newErrors.vat = 'VAT number is required';
-    }
-
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       setIsSubmitting(false);
@@ -72,8 +67,7 @@ export default function StartQuickForm() {
     const params = new URLSearchParams({
       from: formData.company,
       email: formData.email,
-      vat: formData.vat,
-      vatMode: vatSlug,
+      vat: vatSlug,
     });
 
     // Navigate to generator with pre-filled data
@@ -111,7 +105,7 @@ export default function StartQuickForm() {
             {/* Company Field */}
             <div>
               <label htmlFor="company" className="block text-sm font-medium text-[#0B1221] mb-2">
-                Company
+                From company
               </label>
               <Input
                 id="company"
@@ -125,27 +119,6 @@ export default function StartQuickForm() {
               {errors.company && (
                 <p id="company-error" className="mt-1 text-sm text-red-600">
                   {errors.company}
-                </p>
-              )}
-            </div>
-
-            {/* VAT Field */}
-            <div>
-              <label htmlFor="vat" className="block text-sm font-medium text-[#0B1221] mb-2">
-                VAT
-              </label>
-              <Input
-                id="vat"
-                type="text"
-                value={formData.vat}
-                onChange={(e) => handleInputChange('vat', e.target.value)}
-                placeholder={placeholders.vat}
-                className={`w-full ${errors.vat ? 'border-red-500 focus:ring-red-500/30' : ''}`}
-                aria-describedby={errors.vat ? 'vat-error' : undefined}
-              />
-              {errors.vat && (
-                <p id="vat-error" className="mt-1 text-sm text-red-600">
-                  {errors.vat}
                 </p>
               )}
             </div>

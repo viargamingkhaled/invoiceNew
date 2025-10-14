@@ -38,7 +38,6 @@ export interface QuickStartData {
   placeholders: {
     company: string;
     email: string;
-    vat: string;
   };
   vatModes: string[];
   ctaLabel: string;
@@ -141,9 +140,8 @@ export const HOME_V2_DATA: HomeV2Data = {
   ],
   quickStart: {
     placeholders: { 
-      company: "Your company name", 
-      email: "your@email.com",
-      vat: "GB123456789"
+      company: "Ventira Ltd, GB123456789", 
+      email: "you@company.com" 
     },
     vatModes: ["Domestic", "Intra‑EU", "Export"],
     ctaLabel: "Open generator"
