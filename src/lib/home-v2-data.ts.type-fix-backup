@@ -31,7 +31,6 @@ export interface Review {
   text: string;
   author: string;
   role: string;
-  photo?: string;
 }
 
 export interface QuickStartData {
