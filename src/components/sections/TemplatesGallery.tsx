@@ -136,29 +136,51 @@ export default function TemplatesGallery() {
   };
 
   // Handle template preview
-  const handlePreview = (templateId: string) => {
-    // Import template components dynamically
-    const templateComponents: Record<string, React.ComponentType<any>> = {
-      'clean-a4': require('@/components/generator/InvoicePaper').default,
-      'pro-ledger': require('@/components/pdf/InvoiceConstructionA4').default,
-      'compact-fit': require('@/components/pdf/InvoiceITServicesA4').default,
-      'modern-stripe': require('@/components/pdf/InvoiceConsultingA4').default,
-      'nordic-grid': require('@/components/pdf/InvoiceNordicGridA4').default,
-      'bold-header': require('@/components/pdf/InvoiceBoldHeaderA4').default,
-      'minimal-mono': require('@/components/pdf/InvoiceMinimalMonoA4').default,
-      'business-portrait': require('@/components/pdf/InvoiceBusinessPortraitA4').default,
-    };
-
+  const handlePreview = async (templateId: string) => {
     const template = templates.find(t => t.id === templateId);
-    const TemplateComponent = templateComponents[templateId];
     
-    if (template && TemplateComponent) {
-      setSelectedTemplate({
-        name: template.name,
-        component: TemplateComponent,
-        templateId: templateId
-      });
-      setIsModalOpen(true);
+    if (template) {
+      let TemplateComponent: React.ComponentType<any>;
+      
+      try {
+        switch (templateId) {
+          case 'clean-a4':
+            TemplateComponent = (await import('@/components/generator/InvoicePaper')).default;
+            break;
+          case 'pro-ledger':
+            TemplateComponent = (await import('@/components/pdf/InvoiceConstructionA4')).default;
+            break;
+          case 'compact-fit':
+            TemplateComponent = (await import('@/components/pdf/InvoiceITServicesA4')).default;
+            break;
+          case 'modern-stripe':
+            TemplateComponent = (await import('@/components/pdf/InvoiceConsultingA4')).default;
+            break;
+          case 'nordic-grid':
+            TemplateComponent = (await import('@/components/pdf/InvoiceNordicGridA4')).default;
+            break;
+          case 'bold-header':
+            TemplateComponent = (await import('@/components/pdf/InvoiceBoldHeaderA4')).default;
+            break;
+          case 'minimal-mono':
+            TemplateComponent = (await import('@/components/pdf/InvoiceMinimalMonoA4')).default;
+            break;
+          case 'business-portrait':
+            TemplateComponent = (await import('@/components/pdf/InvoiceBusinessPortraitA4')).default;
+            break;
+          default:
+            return;
+        }
+        
+        setSelectedTemplate({
+          name: template.name,
+          component: TemplateComponent,
+          templateId: templateId
+        });
+        setIsModalOpen(true);
+      } catch (error) {
+        console.error('Failed to load template component:', error);
+      }
     }
   };
 

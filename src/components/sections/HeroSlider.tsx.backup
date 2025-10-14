@@ -171,7 +171,7 @@ export default function HeroSlider({ onPrimaryClick, onSecondaryClick }: HeroSli
                     {/* Slide Image */}
                     <div className="aspect-[4/3] bg-gradient-to-br from-[#F6F7F8] to-[#FFFFFF] rounded-2xl overflow-hidden border border-black/5 shadow-inner">
                       <Image
-                        src={`/slide${currentSlide + 1}.webp`}
+                        src={`/slide${currentSlide + 1}.webp?v=${Date.now()}`}
                         alt={slides[currentSlide].posterLabel}
                         width={500}
                         height={375}

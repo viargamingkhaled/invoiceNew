@@ -12,43 +12,27 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        console.log("[AUTHORIZE START]: Attempting to sign in user...");
-
         if (!credentials?.email || !credentials?.password) {
-          console.error("[AUTHORIZE FAIL]: Missing email or password.");
           throw new Error("Invalid credentials");
         }
 
-        console.log(
-          `[AUTHORIZE STEP 1]: Searching for user with email: ${credentials.email}`,
-        );
         const user = await prisma.user.findUnique({
           where: { email: credentials.email.toLowerCase() },
         });
 
         if (!user || !user.password) {
-          console.error(
-            `[AUTHORIZE FAIL]: User not found or password not set for email: ${credentials.email}`,
-          );
           throw new Error("Invalid credentials");
         }
 
-        console.log(`[AUTHORIZE STEP 2]: User found. Comparing passwords...`);
         const isCorrectPassword = await bcrypt.compare(
           credentials.password,
           user.password,
         );
 
         if (!isCorrectPassword) {
-          console.error(
-            `[AUTHORIZE FAIL]: Password incorrect for email: ${credentials.email}`,
-          );
           throw new Error("Invalid credentials");
         }
 
-        console.log(
-          `[AUTHORIZE SUCCESS]: Passwords match for user: ${user.id}. Returning user object.`,
-        );
         return user;
       },
     }),
@@ -80,22 +64,22 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async redirect({ url, baseUrl }) {
-      // Force localhost for development
-      const localBaseUrl = 'http://localhost:3000';
+      const appUrl = process.env.NEXTAUTH_URL || baseUrl;
       
-      // If it's a relative URL, use localhost
-      if (url.startsWith("/")) return `${localBaseUrl}${url}`;
+      // If it's a relative URL, use the configured base URL
+      if (url.startsWith("/")) return `${appUrl}${url}`;
       
-      // If it's an absolute URL, check if it's localhost
+      // If it's an absolute URL, check if it's from the same origin
       try {
         const urlObj = new URL(url);
-        if (urlObj.origin === localBaseUrl) return url;
+        const appUrlObj = new URL(appUrl);
+        if (urlObj.origin === appUrlObj.origin) return url;
       } catch {
-        // Invalid URL, return localhost
+        // Invalid URL, return base URL
       }
       
-      // Default to localhost
-      return localBaseUrl;
+      // Default to configured base URL
+      return appUrl;
     },
   },
 };

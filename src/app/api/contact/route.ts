@@ -25,14 +25,9 @@ const contactFormSchema = z.object({
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    // ==========================================================
-    // == ДОБАВЬТЕ ЭТУ СТРОКУ ДЛЯ ОТЛАДКИ ==
-    console.log("Received data on server:", body);
-    // ==========================================================
     const validation = contactFormSchema.safeParse(body);
 
     if (!validation.success) {
-      console.error("Zod validation failed:", validation.error.errors);
       return NextResponse.json({ error: "Invalid input." }, { status: 400 });
     }
 
@@ -49,7 +44,6 @@ export async function POST(req: Request) {
     });
 
     if (error) {
-      console.error("Resend error:", error);
       return NextResponse.json(
         { error: "Failed to send message." },
         { status: 500 },
@@ -59,13 +53,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "Message sent successfully!" });
   } catch (error) {
     if (error instanceof Error && error.message.includes("RESEND_API_KEY")) {
-      console.error("API Error:", error.message);
       return NextResponse.json(
         { error: "Email service is not configured. Please try again later." },
         { status: 500 },
       );
     }
-    console.error("API Error:", error);
     return NextResponse.json(
       { error: "An unexpected error occurred." },
       { status: 500 },
