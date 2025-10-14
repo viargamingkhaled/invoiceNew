@@ -1054,6 +1054,157 @@ const sendEmail = async () => {
           </motion.div>
         </div>
       </div>
+
+      {/* Print-only A4 template (isolated on print) */}
+      {template === 'CleanA4' ? (
+        <InvoicePaper
+          currency={currency}
+          zeroNote={zeroNote}
+          logoUrl={logo || undefined}
+          items={items}
+          subtotal={subtotal}
+          taxTotal={taxTotal}
+          total={total}
+          sender={sender}
+          client={client}
+          invoiceNo={invoiceMeta.number}
+          invoiceDate={invoiceMeta.date}
+          invoiceDue={invoiceMeta.due}
+          notes={notes}
+        />
+      ) : template === 'Pro Ledger' ? (
+        <InvoiceConstructionA4
+          currency={currency}
+          zeroNote={zeroNote}
+          logoUrl={logo || undefined}
+          items={items}
+          subtotal={subtotal}
+          taxTotal={taxTotal}
+          total={total}
+          sender={{
+            company: sender.company,
+            vat: sender.vat,
+            address: sender.address,
+            city: sender.city,
+            country: sender.country,
+            iban: sender.iban,
+            bankName: sender.bankName,
+            bic: sender.bic,
+          }}
+          client={{
+            name: client.name,
+            vat: client.vat,
+            address: client.address,
+            city: client.city,
+            country: client.country,
+          }}
+          invoiceNo={invoiceMeta.number}
+          invoiceDate={invoiceMeta.date}
+          invoiceDue={invoiceMeta.due}
+          notes={notes}
+        />
+      ) : template === 'Compact Fit' ? (
+        <InvoiceITServicesA4
+          currency={currency}
+          zeroNote={zeroNote}
+          logoUrl={logo || undefined}
+          items={items}
+          subtotal={subtotal}
+          taxTotal={taxTotal}
+          total={total}
+          sender={{
+            company: sender.company,
+            vat: sender.vat,
+            address: sender.address,
+            city: sender.city,
+            country: sender.country,
+            iban: sender.iban,
+            bankName: sender.bankName,
+            bic: sender.bic,
+          }}
+          client={{
+            name: client.name,
+            vat: client.vat,
+            address: client.address,
+            city: client.city,
+            country: client.country,
+          }}
+          invoiceNo={invoiceMeta.number}
+          invoiceDate={invoiceMeta.date}
+          invoiceDue={invoiceMeta.due}
+          notes={notes}
+        />
+      ) : template === 'Modern Stripe' ? (
+        <InvoiceConsultingA4
+          currency={currency}
+          zeroNote={zeroNote}
+          logoUrl={logo || undefined}
+          items={items}
+          subtotal={subtotal}
+          taxTotal={taxTotal}
+          total={total}
+          sender={{
+            company: sender.company,
+            vat: sender.vat,
+            address: sender.address,
+            city: sender.city,
+            country: sender.country,
+            iban: sender.iban,
+            bankName: sender.bankName,
+            bic: sender.bic,
+          }}
+          client={{
+            name: client.name,
+            vat: client.vat,
+            address: client.address,
+            city: client.city,
+            country: client.country,
+          }}
+          invoiceNo={invoiceMeta.number}
+          invoiceDate={invoiceMeta.date}
+          invoiceDue={invoiceMeta.due}
+          notes={notes}
+        />
+      ) : template === 'Nordic Grid' ? (
+        <InvoiceNordicGridA4 invoice={pdfInvoice} />
+      ) : template === 'Bold Header' ? (
+        <InvoiceBoldHeaderA4 invoice={pdfInvoice} />
+      ) : template === 'Minimal Mono' ? (
+        <InvoiceMinimalMonoA4 invoice={pdfInvoice} />
+      ) : template === 'Business Portrait' ? (
+        <InvoiceBusinessPortraitA4 invoice={pdfInvoice} />
+      ) : (
+        <InvoiceA4
+          currency={currency}
+          zeroNote={zeroNote}
+          logoUrl={logo || undefined}
+          items={items}
+          subtotal={subtotal}
+          taxTotal={taxTotal}
+          total={total}
+          sender={{
+            company: sender.company,
+            vat: sender.vat,
+            address: sender.address,
+            city: sender.city,
+            country: sender.country,
+            iban: sender.iban,
+            bankName: sender.bankName,
+            bic: sender.bic,
+          }}
+          client={{
+            name: client.name,
+            vat: client.vat,
+            address: client.address,
+            city: client.city,
+            country: client.country,
+          }}
+          invoiceNo={invoiceMeta.number}
+          invoiceDate={invoiceMeta.date}
+          invoiceDue={invoiceMeta.due}
+          notes={notes}
+        />
+      )}
     </div>
   );
 }
