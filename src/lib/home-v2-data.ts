@@ -132,10 +132,10 @@ export const HOME_V2_DATA: HomeV2Data = {
   ],
   trustedBy: ["Northwick Labs Ltd", "Wrenfield Supply Co.", "Elm & Pine Studio", "Kleinwerk GmbH", "Fernstadt Digital GmbH", "Deltawave BV"],
   reviews: [
-    { text: "Clean PDFs, VAT correct on the first try.", author: "A. Patel", role: "Founder" },
-    { text: "Templates look professional and export fast.", author: "M. Rossi", role: "Accountant" },
-    { text: "Tokens are simple; no subscription stress.", author: "K. Jansons", role: "Freelancer" },
-    { text: "Exactly what our small firm needed.", author: "E. Novak", role: "SMB Owner" }
+    { text: "Clean PDFs, VAT correct on the first try.", author: "A. Patel", role: "Founder", photo: "/patel.webp" },
+    { text: "Templates look professional and export fast.", author: "M. Rossi", role: "Accountant", photo: "/rossi.webp" },
+    { text: "Tokens are simple; no subscription stress.", author: "K. Jansons", role: "Freelancer", photo: "/jansons.webp" },
+    { text: "Exactly what our small firm needed.", author: "E. Novak", role: "SMB Owner", photo: "/novak.webp" }
   ],
   quickStart: {
     placeholders: { 

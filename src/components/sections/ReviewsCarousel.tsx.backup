@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Quote } from 'lucide-react';
-import Image from 'next/image';
 import { HOME_V2_DATA } from '@/lib/home-v2-data';
 
 export default function ReviewsCarousel() {
@@ -94,34 +93,10 @@ export default function ReviewsCarousel() {
 
                 {/* Author Info */}
                 <div className="flex flex-col items-center space-y-2">
-                  <div className="w-16 h-16 rounded-full overflow-hidden bg-[#F6F7F8] flex items-center justify-center">
-                    {reviews[currentReview].photo ? (
-                      <Image
-                        src={reviews[currentReview].photo}
-                        alt={`${reviews[currentReview].author} photo`}
-                        width={64}
-                        height={64}
-                        className="w-full h-full object-cover"
-                        priority={currentReview === 0}
-                        onError={(e) => {
-                          // Fallback to initial if image fails to load
-                          const target = e.target as HTMLImageElement;
-                          target.style.display = 'none';
-                          const parent = target.parentElement;
-                          if (parent) {
-                            parent.innerHTML = `
-                              <span class="text-[#0F766E] text-lg font-bold">
-                                ${reviews[currentReview].author.charAt(0)}
-                              </span>
-                            `;
-                          }
-                        }}
-                      />
-                    ) : (
-                      <span className="text-[#0F766E] text-lg font-bold">
-                        {reviews[currentReview].author.charAt(0)}
-                      </span>
-                    )}
+                  <div className="w-16 h-16 bg-[#0F766E] rounded-full flex items-center justify-center">
+                    <span className="text-white text-lg font-bold">
+                      {reviews[currentReview].author.charAt(0)}
+                    </span>
                   </div>
                   <div className="text-center">
                     <div className="font-semibold text-[#0B1221]">

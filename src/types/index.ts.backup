@@ -38,7 +38,6 @@ export interface Testimonial {
   name: string;
   role: string;
   text: string;
-  photo?: string;
 }
 
 export interface InvoiceItem {
