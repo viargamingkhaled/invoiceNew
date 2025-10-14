@@ -2,15 +2,11 @@
 const nextConfig = {
   // Указываем правильную корневую директорию для Next.js
   outputFileTracingRoot: __dirname,
-  // Конфигурация для изображений
+  // Конфигурация для изображений (убираем неподдерживаемый localPatterns)
   images: {
     remotePatterns: [],
-    localPatterns: [
-      {
-        pattern: '/slide*.webp',
-        format: 'webp',
-      },
-    ],
+    // localPatterns не поддерживается в Next.js 15
+    // Статические файлы в /public работают автоматически
   },
 };
 
