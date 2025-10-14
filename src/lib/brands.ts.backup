@@ -13,17 +13,6 @@ export type Brand = {
 };
 
 export const BRANDS: Brand[] = [
-  // Real client logos (featured)
-  { id: 'northwick-labs', name: 'Northwick Labs Ltd', tier: 'featured', colorSrc: '/northwick-labs.png', consent: true },
-  { id: 'wrenfield-supply', name: 'Wrenfield Supply Co.', tier: 'featured', colorSrc: '/wrenfield-supply.jpg', consent: true },
-  { id: 'elm-pine', name: 'Elm & Pine Studio', tier: 'featured', colorSrc: '/elm-pine.avif', consent: true },
-  
-  // Real client logos (standard)
-  { id: 'kleinwerk', name: 'Kleinwerk GmbH', tier: 'standard', colorSrc: '/kleinwerk.png', consent: true },
-  { id: 'fernstadt-digital', name: 'Fernstadt Digital GmbH', tier: 'standard', colorSrc: '/fernstadt-digital.webp', consent: true },
-  { id: 'deltawave', name: 'Deltawave BV', tier: 'standard', colorSrc: '/deltawave.png', consent: true },
-  
-  // Placeholder brands (can be removed later)
   { id: 'canva', name: 'Canva', tier: 'featured', colorSrc: '/Canva-Logo.png', consent: true },
   { id: 'intercom', name: 'Intercom', tier: 'featured', colorSrc: '/Intercom_logo.png', consent: true },
   { id: 'pipedrive', name: 'Pipedrive', tier: 'featured', colorSrc: '/Pipedrive_logo.svg', consent: true },

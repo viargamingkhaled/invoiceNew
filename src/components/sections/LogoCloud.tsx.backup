@@ -1,14 +1,10 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Image from 'next/image';
-import { BRANDS } from '@/lib/brands';
+import { HOME_V2_DATA } from '@/lib/home-v2-data';
 
 export default function LogoCloud() {
-  // Get only our real client brands (first 6)
-  const clientBrands = BRANDS.filter(brand => 
-    ['northwick-labs', 'wrenfield-supply', 'elm-pine', 'kleinwerk', 'fernstadt-digital', 'deltawave'].includes(brand.id)
-  );
+  const { trustedBy } = HOME_V2_DATA;
 
   return (
     <section className="py-16 bg-[#F6F7F8]">
@@ -31,9 +27,9 @@ export default function LogoCloud() {
 
         {/* Logo Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center">
-          {clientBrands.map((brand, index) => (
+          {trustedBy.map((company, index) => (
             <motion.div
-              key={brand.id}
+              key={index}
               className="flex items-center justify-center p-4 bg-white rounded-xl border border-black/5 hover:border-[#0F766E]/20 transition-all duration-200 group"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -41,20 +37,15 @@ export default function LogoCloud() {
               viewport={{ once: true }}
               whileHover={{ y: -2 }}
             >
-              {/* Company logo */}
+              {/* Placeholder for company logo */}
               <div className="text-center">
-                <div className="w-16 h-16 flex items-center justify-center mb-2">
-                  <Image
-                    src={brand.colorSrc}
-                    alt={`${brand.name} logo`}
-                    width={64}
-                    height={64}
-                    className="max-w-full max-h-full object-contain opacity-90 group-hover:opacity-100 transition-opacity duration-200"
-                    priority={index < 3}
-                  />
+                <div className="w-12 h-12 bg-[#F6F7F8] rounded-lg flex items-center justify-center mb-2 group-hover:bg-[#0F766E]/10 transition-colors duration-200">
+                  <span className="text-lg font-bold text-[#0F766E]">
+                    {company.charAt(0)}
+                  </span>
                 </div>
                 <span className="text-sm font-medium text-[#6B7280] group-hover:text-[#0B1221] transition-colors duration-200">
-                  {brand.name}
+                  {company}
                 </span>
               </div>
             </motion.div>
