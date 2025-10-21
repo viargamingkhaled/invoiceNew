@@ -13,7 +13,7 @@ export default function Footer() {
       viewport={{ once: true }}
     >
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-5 gap-8 text-sm">
+        <div className="grid md:grid-cols-6 gap-8 text-sm">
           <div>
             <div className="font-semibold mb-2">Product</div>
             <div className="grid gap-1 text-[#6B7280]">
@@ -45,6 +45,17 @@ export default function Footer() {
             <div className="grid gap-1 text-[#6B7280]">
               <Link href="/about" className="hover:text-[#0F766E] hover:underline transition-colors">About</Link>
               <Link href="/contact" className="hover:text-[#0F766E] hover:underline transition-colors">Contact</Link>
+            </div>
+          </div>
+          <div>
+            <div className="font-semibold mb-2">Payment Methods</div>
+            <div className="flex items-center gap-3 mt-2">
+              <div className="h-8 w-12 rounded border border-black/10 bg-white flex items-center justify-center p-1">
+                <img src="/visa-logo.svg" alt="Visa" className="w-full h-full object-contain" />
+              </div>
+              <div className="h-8 w-12 rounded border border-black/10 bg-white flex items-center justify-center p-1">
+                <img src="/mastercard-logo.svg" alt="Mastercard" className="w-full h-full object-contain" />
+              </div>
             </div>
           </div>
           <div>
