@@ -9,11 +9,11 @@ import { THEME } from '@/lib/theme';
 
 export default function SecurityPageClient() {
   const pillCards = [
-    { icon: 'lock', title: 'Encryption', text: 'TLS in transit, encrypted storage at rest.' },
-    { icon: 'shield-check', title: 'Access control', text: 'Least privilege, strong auth, audited access.' },
-    { icon: 'file-check', title: 'Compliance', text: 'GDPR / UK GDPR principles observed.' },
-    { icon: 'database', title: 'Backups', text: 'Encrypted, tested restores.' },
-    { icon: 'activity', title: 'Monitoring', text: 'Alerting on errors and latency.' }
+    { icon: 'lock', title: 'Encryption', text: 'TLS 1.2+ in transit, AES-256 encryption at rest for all data.' },
+    { icon: 'shield-check', title: 'Access Control', text: 'Role-based access, MFA for admin, full audit logging.' },
+    { icon: 'file-check', title: 'Compliance', text: 'GDPR & UK GDPR compliant, SOC 2 Type II controls.' },
+    { icon: 'database', title: 'Backups', text: 'Automated encrypted backups, tested recovery procedures.' },
+    { icon: 'activity', title: 'Monitoring', text: 'Real-time threat detection, 24/7 uptime monitoring.' }
   ];
 
   const getIcon = (iconName: string) => {
@@ -72,7 +72,7 @@ export default function SecurityPageClient() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.6 }}
           >
-            We protect your data by design
+            Enterprise-grade security.<br />Built for trust.
           </motion.h1>
 
           <motion.p
@@ -81,7 +81,7 @@ export default function SecurityPageClient() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
           >
-            Encryption, access controls, monitoring, and clear processes. UK-first · EU-ready.
+            Bank-level encryption, rigorous access controls, continuous monitoring, and transparent processes. Your data security is our foundation.
           </motion.p>
 
           <motion.div
@@ -91,11 +91,11 @@ export default function SecurityPageClient() {
             transition={{ delay: 0.5, duration: 0.6 }}
           >
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-sm font-medium">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-              Uptime: 99.96%
+              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+              All Systems Operational
             </div>
             <div className="text-sm text-slate-500">
-              Last updated: 2025-10-08
+              Last reviewed: 21 Oct 2025
             </div>
           </motion.div>
         </motion.div>
@@ -116,7 +116,7 @@ export default function SecurityPageClient() {
           
           <div className="text-center mb-12">
             <p className={`text-lg ${THEME.muted} mb-8`}>
-              Invoicerly encrypts data in transit and at rest, limits access on a need-to-know basis, and monitors for threats. We do not store card numbers on our servers.
+              Ventira encrypts all data in transit and at rest, enforces strict role-based access controls, and continuously monitors for security threats. Payment card data is never stored on our servers — all transactions are processed through PCI DSS Level 1 certified payment providers.
             </p>
           </div>
 
@@ -162,21 +162,27 @@ export default function SecurityPageClient() {
           <Card className="p-8">
             <div className="space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <span className="font-semibold text-slate-900 min-w-[120px]">Controller:</span>
-                <span className="text-slate-600">GET STUFFED LTD (Reg. 15673179), UK</span>
+                <span className="font-semibold text-slate-900 min-w-[140px]">Data Controller:</span>
+                <span className="text-slate-600">VIARGAMING LTD (Company No. 15847699), United Kingdom</span>
               </div>
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <span className="font-semibold text-slate-900 min-w-[120px]">Regions:</span>
-                <span className="text-slate-600">UK & EU/EEA; SCCs + UK Addendum for transfers where required</span>
+                <span className="font-semibold text-slate-900 min-w-[140px]">Registered Office:</span>
+                <span className="text-slate-600">43 Victoria Rd, Northampton, NN1 5ED, UK</span>
+              </div>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <span className="font-semibold text-slate-900 min-w-[140px]">Data Regions:</span>
+                <span className="text-slate-600">UK & EU/EEA; Standard Contractual Clauses (SCCs) + UK IDTA for international transfers</span>
               </div>
               <div className="flex flex-col sm:flex-row sm:items-start gap-2">
-                <span className="font-semibold text-slate-900 min-w-[120px]">Policies:</span>
+                <span className="font-semibold text-slate-900 min-w-[140px]">Legal Policies:</span>
                 <div className="flex flex-wrap gap-2">
-                  <Link href="/privacy" className="text-blue-600 hover:underline text-sm">Privacy</Link>
+                  <Link href="/privacy" className="text-blue-600 hover:underline text-sm">Privacy Policy</Link>
                   <span className="text-slate-400">·</span>
-                  <Link href="/cookies" className="text-blue-600 hover:underline text-sm">Cookie</Link>
+                  <Link href="/cookies" className="text-blue-600 hover:underline text-sm">Cookie Policy</Link>
                   <span className="text-slate-400">·</span>
-                  <Link href="/refund" className="text-blue-600 hover:underline text-sm">Refund</Link>
+                  <Link href="/terms" className="text-blue-600 hover:underline text-sm">Terms & Conditions</Link>
+                  <span className="text-slate-400">·</span>
+                  <Link href="/refund" className="text-blue-600 hover:underline text-sm">Refund Policy</Link>
                 </div>
               </div>
             </div>
@@ -203,19 +209,28 @@ export default function SecurityPageClient() {
                 <svg className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span>TLS 1.2+ for all traffic; HSTS on public endpoints.</span>
+                <div>
+                  <span className="font-medium text-slate-900">TLS 1.2+ in Transit</span>
+                  <p className="text-sm mt-1">All data is encrypted in transit using TLS 1.2 or higher. HTTP Strict Transport Security (HSTS) is enforced on all public endpoints to prevent downgrade attacks.</p>
+                </div>
               </li>
               <li className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span>Encrypted storage for primary databases and assets (PDFs, logos).</span>
+                <div>
+                  <span className="font-medium text-slate-900">AES-256 Encryption at Rest</span>
+                  <p className="text-sm mt-1">All stored data — including databases, uploaded files (PDFs, logos), and backups — is encrypted at rest using industry-standard AES-256 encryption.</p>
+                </div>
               </li>
               <li className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span>Keys managed centrally with rotation; strict access to secrets.</span>
+                <div>
+                  <span className="font-medium text-slate-900">Key Management & Rotation</span>
+                  <p className="text-sm mt-1">Encryption keys are managed using secure cloud key management services with automatic rotation policies. Access to cryptographic keys is strictly controlled and audited.</p>
+                </div>
               </li>
             </ul>
           </Card>
@@ -241,19 +256,28 @@ export default function SecurityPageClient() {
                 <svg className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span>Role-based access with least privilege; strong authentication for admin.</span>
+                <div>
+                  <span className="font-medium text-slate-900">Role-Based Access & Least Privilege</span>
+                  <p className="text-sm mt-1">Access to systems and data is strictly role-based. All admin and privileged accounts require multi-factor authentication (MFA). Employees are granted only the minimum access necessary for their job function.</p>
+                </div>
               </li>
               <li className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span>All access is logged and reviewed; production access is time-bounded and ticketed.</span>
+                <div>
+                  <span className="font-medium text-slate-900">Comprehensive Audit Logging</span>
+                  <p className="text-sm mt-1">All access to production systems is logged with tamper-proof audit trails. Production access is time-bounded, ticketed, and requires explicit approval. Logs are retained and regularly reviewed for anomalies.</p>
+                </div>
               </li>
               <li className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span>Customer data access for support is limited and audited.</span>
+                <div>
+                  <span className="font-medium text-slate-900">Customer Data Protection</span>
+                  <p className="text-sm mt-1">Support team access to customer data is strictly limited to legitimate support requests. All customer data access is logged, monitored, and subject to periodic review to ensure compliance with our security policies.</p>
+                </div>
               </li>
             </ul>
           </Card>
@@ -452,27 +476,42 @@ export default function SecurityPageClient() {
 
           <Card className="p-8">
             <p className="text-slate-600 mb-6">
-              We run 24/7 on-call for production incidents, triage priority issues within 1 hour, and communicate via the Status page and email if you are impacted.
+              We maintain 24/7 incident response capabilities for production systems. Critical incidents are triaged within 1 hour, and we proactively communicate with affected users via our Status page and email notifications.
             </p>
             
-            <ol className="space-y-4 text-slate-600">
-              <li className="flex items-start gap-3">
-                <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0 mt-0.5">1</span>
-                <span>Detect and triage the incident.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0 mt-0.5">2</span>
-                <span>Update the Status page within 15 minutes for major incidents.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0 mt-0.5">3</span>
-                <span>Provide hourly updates until resolved.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0 mt-0.5">4</span>
-                <span>Publish a post-incident report for major events within 5 business days.</span>
-              </li>
-            </ol>
+            <div className="mb-6">
+              <h3 className="font-semibold text-slate-900 mb-3">Our Incident Response Process:</h3>
+              <ol className="space-y-4 text-slate-600">
+                <li className="flex items-start gap-3">
+                  <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0 mt-0.5">1</span>
+                  <div>
+                    <span className="font-medium text-slate-900">Detect & Triage</span>
+                    <p className="text-sm mt-1">Automated monitoring detects anomalies. On-call engineers assess severity and impact within 15 minutes.</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0 mt-0.5">2</span>
+                  <div>
+                    <span className="font-medium text-slate-900">Communicate</span>
+                    <p className="text-sm mt-1">Status page updated within 15 minutes for major incidents. Email notifications sent to affected users.</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0 mt-0.5">3</span>
+                  <div>
+                    <span className="font-medium text-slate-900">Resolve & Update</span>
+                    <p className="text-sm mt-1">Hourly progress updates provided until full resolution. Service restoration prioritized over root cause analysis.</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0 mt-0.5">4</span>
+                  <div>
+                    <span className="font-medium text-slate-900">Post-Incident Review</span>
+                    <p className="text-sm mt-1">Detailed post-mortem published within 5 business days for major events, including root cause, timeline, and remediation steps.</p>
+                  </div>
+                </li>
+              </ol>
+            </div>
           </Card>
         </motion.div>
       </Section>
@@ -492,15 +531,27 @@ export default function SecurityPageClient() {
 
           <Card className="p-8">
             <p className="text-slate-600 mb-6">
-              We welcome vulnerability reports. Please avoid public disclosure until remediation is complete.
+              We welcome responsible disclosure of security vulnerabilities from security researchers and the broader community. We are committed to working with researchers to verify, reproduce, and respond to legitimate reported vulnerabilities.
             </p>
             
             <Card className="p-6 bg-slate-100 border-slate-200">
-              <h3 className="font-semibold text-slate-900 mb-2">Report a security issue</h3>
+              <h3 className="font-semibold text-slate-900 mb-3">How to Report a Security Vulnerability</h3>
               <p className="text-slate-600 text-sm mb-4">
-                Email info@invoicerly.co.uk with steps to reproduce, impact, and your contact. We acknowledge within 2 business days and provide an ETA for remediation.
+                Please send a detailed report to <a href="mailto:info@ventira.co.uk" className="text-blue-600 hover:underline font-medium">info@ventira.co.uk</a> including:
               </p>
-              <Button href="mailto:info@invoicerly.co.uk" size="sm">
+              <ul className="text-slate-600 text-sm space-y-2 mb-4 ml-4 list-disc">
+                <li>Steps to reproduce the vulnerability</li>
+                <li>Potential impact and severity assessment</li>
+                <li>Any supporting proof-of-concept code or screenshots</li>
+                <li>Your contact information for follow-up</li>
+              </ul>
+              <p className="text-slate-600 text-sm mb-4">
+                <strong>Response timeline:</strong> We acknowledge all reports within 2 business days and provide regular updates throughout the remediation process. We aim to resolve critical vulnerabilities within 30 days.
+              </p>
+              <p className="text-slate-600 text-sm mb-4">
+                <strong>Coordinated disclosure:</strong> Please allow us reasonable time to address the issue before any public disclosure. We commit to transparent communication and will coordinate disclosure timing with you.
+              </p>
+              <Button href="mailto:info@ventira.co.uk" size="sm">
                 Report Security Issue
               </Button>
             </Card>
@@ -571,7 +622,7 @@ export default function SecurityPageClient() {
         </motion.div>
       </Section>
 
-      {/* Contact Section */}
+      {/* Help Section */}
       <Section className="py-16">
         <motion.div
           className="max-w-4xl mx-auto"
@@ -580,63 +631,43 @@ export default function SecurityPageClient() {
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <h2 className={`text-3xl font-bold ${THEME.text} mb-8 text-center`}>
-            Contact
-          </h2>
-
-          <Card className="p-8">
-            <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <span className="font-semibold text-slate-900 min-w-[140px]">Security:</span>
-                <a href="mailto:info@invoicerly.co.uk" className="text-blue-600 hover:underline">
-                  info@invoicerly.co.uk
-                </a>
-              </div>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <span className="font-semibold text-slate-900 min-w-[140px]">Data protection:</span>
-                <a href="mailto:info@invoicerly.co.uk" className="text-blue-600 hover:underline">
-                  info@invoicerly.co.uk
-                </a>
-              </div>
-            </div>
-          </Card>
-        </motion.div>
-      </Section>
-
-      {/* Help Section */}
-      <Section className="py-16 bg-slate-50/50">
-        <motion.div
-          className="max-w-4xl mx-auto"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          <Card className="p-8">
-            <h3 className="text-xl font-semibold text-slate-900 mb-4">Need help?</h3>
+          <Card className="p-8 bg-gradient-to-br from-slate-50 to-white border-2 border-slate-200">
+            <h3 className="text-2xl font-bold text-slate-900 mb-4">Need help?</h3>
             <p className="text-slate-600 mb-6">
-              Questions about security, data protection, or privacy? We reply within one business day.
+              Questions about security, data protection, or privacy? Our team is here to help. We typically respond within one business day.
             </p>
             
-            <div className="space-y-4">
+            <div className="space-y-4 mb-6">
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <span className="font-medium text-slate-900 min-w-[120px]">Security:</span>
-                <a href="mailto:info@invoicerly.co.uk" className="text-blue-600 hover:underline">
-                  info@invoicerly.co.uk
+                <span className="font-semibold text-slate-900 min-w-[160px]">Security inquiries:</span>
+                <a href="mailto:info@ventira.co.uk" className="text-blue-600 hover:underline font-medium">
+                  info@ventira.co.uk
                 </a>
               </div>
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <span className="font-medium text-slate-900 min-w-[120px]">Data protection:</span>
-                <a href="mailto:info@invoicerly.co.uk" className="text-blue-600 hover:underline">
-                  info@invoicerly.co.uk
+                <span className="font-semibold text-slate-900 min-w-[160px]">Data protection:</span>
+                <a href="mailto:info@ventira.co.uk" className="text-blue-600 hover:underline font-medium">
+                  info@ventira.co.uk
+                </a>
+              </div>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <span className="font-semibold text-slate-900 min-w-[160px]">Phone:</span>
+                <a href="tel:+447457423147" className="text-blue-600 hover:underline font-medium">
+                  +44 7457 423147
                 </a>
               </div>
             </div>
             
-            <div className="mt-6 pt-6 border-t border-slate-200">
+            <div className="pt-6 border-t border-slate-200">
+              <p className="text-sm text-slate-500 mb-4">Quick links:</p>
               <div className="flex flex-wrap gap-4">
-                <Link href="/status" className="text-blue-600 hover:underline text-sm">Status</Link>
-                <Link href="/privacy" className="text-blue-600 hover:underline text-sm">Privacy Policy</Link>
+                <Link href="/status" className="text-blue-600 hover:underline text-sm font-medium">System Status</Link>
+                <span className="text-slate-300">·</span>
+                <Link href="/privacy" className="text-blue-600 hover:underline text-sm font-medium">Privacy Policy</Link>
+                <span className="text-slate-300">·</span>
+                <Link href="/cookies" className="text-blue-600 hover:underline text-sm font-medium">Cookie Policy</Link>
+                <span className="text-slate-300">·</span>
+                <Link href="/terms" className="text-blue-600 hover:underline text-sm font-medium">Terms & Conditions</Link>
               </div>
             </div>
           </Card>
