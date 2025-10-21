@@ -129,7 +129,7 @@ export default function InvoiceConsultingA4({ invoice }: InvoiceConsultingA4Prop
           <div className="mt-4">
             <div className="text-sm font-semibold mb-2">Items</div>
             <div className="rounded-md overflow-hidden border border-slate-200">
-              <div className="grid grid-cols-[50px,120px,1fr,70px,70px,100px,90px,80px,90px,110px] text-[11px] bg-slate-50">
+              <div className="grid grid-cols-[50px,120px,1fr,70px,70px,100px,90px,90px,110px] text-[11px] bg-slate-50">
                 <div className="px-2 py-2">#</div>
                 <div className="px-2 py-2">Item / SKU</div>
                 <div className="px-2 py-2">Description</div>
@@ -137,7 +137,6 @@ export default function InvoiceConsultingA4({ invoice }: InvoiceConsultingA4Prop
                 <div className="px-2 py-2 right">Qty</div>
                 <div className="px-2 py-2 right">Unit price</div>
                 <div className="px-2 py-2 right">Discount</div>
-                <div className="px-2 py-2 right">Tax %</div>
                 <div className="px-2 py-2 right">Tax amt</div>
                 <div className="px-2 py-2 right">Line total</div>
               </div>
@@ -145,7 +144,7 @@ export default function InvoiceConsultingA4({ invoice }: InvoiceConsultingA4Prop
                 const unit = 'pcs';
                 const discountPct = 0;
                 return (
-                  <div key={i} className="grid grid-cols-[50px,120px,1fr,70px,70px,100px,90px,80px,90px,110px] text-[12px] border-t border-slate-100">
+                  <div key={i} className="grid grid-cols-[50px,120px,1fr,70px,70px,100px,90px,90px,110px] text-[12px] border-t border-slate-100">
                     <div className="px-2 py-2">{it.id}</div>
                     <div className="px-2 py-2">SKU-{100 + i}</div>
                     <div className="px-2 py-2">{it.description}</div>
@@ -153,7 +152,6 @@ export default function InvoiceConsultingA4({ invoice }: InvoiceConsultingA4Prop
                     <div className="px-2 py-2 right">{it.quantity}</div>
                     <div className="px-2 py-2 right">{money(it.unitPrice, currency)}</div>
                     <div className="px-2 py-2 right">{discountPct}%</div>
-                    <div className="px-2 py-2 right">{it.vatPct}%</div>
                     <div className="px-2 py-2 right">{money(it.vat, currency)}</div>
                     <div className="px-2 py-2 right">{money(it.total, currency)}</div>
                   </div>
