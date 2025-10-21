@@ -70,6 +70,8 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     iban: 'GB00BANK0000000000',
     bankName: '',
     bic: '',
+    email: 'info@invoicerly.co.uk',
+    phone: '+44 20 1234 5678',
   });
   const [client, setClient] = useState({
     name: 'Client GmbH',
@@ -166,6 +168,8 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     bankName: sender.bankName || undefined,
     bic: sender.bic || undefined,
     logoUrl: logo || undefined,
+    email: sender.email || undefined,
+    phone: sender.phone || undefined,
   };
 
   const pdfInvoiceClient = {
@@ -967,53 +971,11 @@ const sendEmail = async () => {
                   notes={notes}
                 />
               ) : template === 'Pro Ledger' ? (
-                <InvoiceConstructionA4
-                  currency={currency}
-                  zeroNote={zeroNote}
-                  logoUrl={logo || undefined}
-                  items={items}
-                  subtotal={subtotal}
-                  taxTotal={taxTotal}
-                  total={total}
-                  sender={sender}
-                  client={client}
-                  invoiceNo={invoiceMeta.number}
-                  invoiceDate={invoiceMeta.date}
-                  invoiceDue={invoiceMeta.due}
-                  notes={notes}
-                />
+                <InvoiceConstructionA4 invoice={pdfInvoice} />
               ) : template === 'Compact Fit' ? (
-                <InvoiceITServicesA4
-                  currency={currency}
-                  zeroNote={zeroNote}
-                  logoUrl={logo || undefined}
-                  items={items}
-                  subtotal={subtotal}
-                  taxTotal={taxTotal}
-                  total={total}
-                  sender={sender}
-                  client={client}
-                  invoiceNo={invoiceMeta.number}
-                  invoiceDate={invoiceMeta.date}
-                  invoiceDue={invoiceMeta.due}
-                  notes={notes}
-                />
+                <InvoiceITServicesA4 invoice={pdfInvoice} />
               ) : template === 'Modern Stripe' ? (
-                <InvoiceConsultingA4
-                  currency={currency}
-                  zeroNote={zeroNote}
-                  logoUrl={logo || undefined}
-                  items={items}
-                  subtotal={subtotal}
-                  taxTotal={taxTotal}
-                  total={total}
-                  sender={sender}
-                  client={client}
-                  invoiceNo={invoiceMeta.number}
-                  invoiceDate={invoiceMeta.date}
-                  invoiceDue={invoiceMeta.due}
-                  notes={notes}
-                />
+                <InvoiceConsultingA4 invoice={pdfInvoice} />
               ) : template === 'Nordic Grid' ? (
                 <InvoiceNordicGridA4 invoice={pdfInvoice} />
               ) : template === 'Bold Header' ? (

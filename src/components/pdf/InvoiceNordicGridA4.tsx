@@ -162,10 +162,9 @@ export default function InvoiceNordicGridA4({ invoice }: InvoiceNordicGridA4Prop
         </div>
       </div>
 
-      {/* Footer / page meta */}
-      <div className="absolute left-14 right-14 bottom-10 flex items-center justify-between text-[11px] text-slate-500">
-        <div>{invoice.company.email} • {invoice.company.phone}</div>
-        <div>Page 1 of 1</div>
+      {/* Footer */}
+      <div className="absolute left-14 right-14 bottom-10 text-center text-[11px] text-slate-500">
+        This invoice is generated electronically and is valid without a signature.
       </div>
     </div>
   );

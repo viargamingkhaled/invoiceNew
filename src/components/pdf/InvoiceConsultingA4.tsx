@@ -1,39 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { Item } from '@/types/invoice';
-
-export interface InvoiceConsultingA4Props {
-  currency: string;
-  zeroNote?: string;
-  logoUrl?: string;
-  items: Item[];
-  subtotal: number;
-  taxTotal: number;
-  total: number;
-  sender: {
-    company: string;
-    vat?: string;
-    address?: string;
-    city?: string;
-    country?: string;
-    iban?: string;
-    bankName?: string;
-    bic?: string;
-  };
-  client: {
-    name: string;
-    vat?: string;
-    address?: string;
-    city?: string;
-    country?: string;
-    email?: string;
-  };
-  invoiceNo: string;
-  invoiceDate: string;
-  invoiceDue: string;
-  notes?: string;
-}
+import { Invoice } from '@/types/invoice';
 
 function money(v: number, currency: string) {
   const abs = Math.abs(v);
@@ -45,31 +13,47 @@ function money(v: number, currency: string) {
   }
 }
 
-export default function InvoiceConsultingA4({
-  currency,
-  zeroNote,
-  logoUrl,
-  items,
-  subtotal,
-  taxTotal,
-  total,
-  sender,
-  client,
-  invoiceNo,
-  invoiceDate,
-  invoiceDue,
-  notes,
-}: InvoiceConsultingA4Props) {
+interface InvoiceConsultingA4Props {
+  invoice: Invoice;
+}
+
+export default function InvoiceConsultingA4({ invoice }: InvoiceConsultingA4Props) {
+  const currency = invoice.currency || 'GBP';
+  const vatMode = invoice.vatMode || 'Domestic';
+  
+  // Calculate line items with VAT
+  const rows = invoice.items.map((item, index) => {
+    const vatPct = vatMode === 'Domestic' ? (item.vatRate || 0) : 0;
+    const qty = item.quantity;
+    const unit = item.unitPrice;
+    const net = qty * unit;
+    const vat = net * (vatPct / 100);
+    const total = net + vat;
+    return { ...item, id: index + 1, vatPct, net, vat, total };
+  });
+
+  const totals = {
+    net: rows.reduce((s, r) => s + r.net, 0),
+    vat: rows.reduce((s, r) => s + r.vat, 0),
+    total: rows.reduce((s, r) => s + r.net + r.vat, 0),
+  };
+
   const vatByRate = useMemo(() => {
     const map = new Map<number, number>();
-    for (const it of items) {
-      const rate = Number(it.tax) || 0;
-      const lineBase = (Number(it.qty) || 0) * (Number(it.rate) || 0);
-      const tax = lineBase * (rate / 100);
-      map.set(rate, (map.get(rate) || 0) + tax);
+    for (const row of rows) {
+      const rate = row.vatPct || 0;
+      map.set(rate, (map.get(rate) || 0) + row.vat);
     }
     return Array.from(map.entries()).sort((a, b) => a[0] - b[0]);
-  }, [items]);
+  }, [rows]);
+
+  // VAT note based on mode
+  let zeroNote = '';
+  if (vatMode === 'Intra‑EU') {
+    zeroNote = 'Intra‑EU supply. VAT 0%. Reverse charge may apply (Art. 196).';
+  } else if (vatMode === 'Export') {
+    zeroNote = 'Export outside EU. VAT 0%. Out of scope.';
+  }
 
   return (
     <div className="w-full">
@@ -98,17 +82,17 @@ export default function InvoiceConsultingA4({
           {/* Top band: logo + meta + currency */}
           <div className="grid grid-cols-[1fr,1fr,1fr] items-start gap-4">
             <div className="flex items-center gap-3">
-              {logoUrl ? (
+              {invoice.company.logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={logoUrl} alt="Logo" className="h-10 w-40 object-contain" />
+                <img src={invoice.company.logoUrl} alt="Logo" className="h-10 w-40 object-contain" />
               ) : (
                 <div className="h-10 w-40 rounded bg-slate-100 border border-dashed border-slate-300" />
               )}
             </div>
             <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
-              <div className="muted">Invoice №</div><div>{invoiceNo || '-'}</div>
-              <div className="muted">Date</div><div>{invoiceDate || '-'}</div>
-              <div className="muted">Due</div><div>{invoiceDue || '-'}</div>
+              <div className="muted">Invoice №</div><div>{invoice.invoiceNumber || '-'}</div>
+              <div className="muted">Date</div><div>{invoice.issueDate || '-'}</div>
+              <div className="muted">Due</div><div>{invoice.dueDate || '-'}</div>
               <div className="muted">PO / Ref</div><div>-</div>
             </div>
             <div className="text-right text-sm">
@@ -122,19 +106,17 @@ export default function InvoiceConsultingA4({
             <div>
               <div className="font-semibold mb-1">From</div>
               <div className="p-3 rounded border border-slate-200 bg-slate-50">
-                <div className="font-semibold">{sender.company}</div>
-                {sender.vat && <div className="muted">VAT / Reg {sender.vat}</div>}
-                {sender.address && <div>{sender.address}</div>}
-                {(sender.city || sender.country) && <div>{sender.city}{sender.city && sender.country ? ', ' : ''}{sender.country}</div>}
+                <div className="font-semibold">{invoice.company.name}</div>
+                {invoice.company.vatNumber && <div className="muted">VAT / Reg {invoice.company.vatNumber}</div>}
+                {invoice.company.address && <div>{invoice.company.address}</div>}
               </div>
             </div>
             <div>
               <div className="font-semibold mb-1">Bill to</div>
               <div className="p-3 rounded border border-slate-200 bg-slate-50">
-                <div className="font-semibold">{client.name}</div>
-                {client.vat && <div className="muted">VAT / Reg {client.vat}</div>}
-                {client.address && <div>{client.address}</div>}
-                {(client.city || client.country) && <div>{client.city}{client.city && client.country ? ', ' : ''}{client.country}</div>}
+                <div className="font-semibold">{invoice.client.name}</div>
+                {invoice.client.vatNumber && <div className="muted">VAT / Reg {invoice.client.vatNumber}</div>}
+                {invoice.client.address && <div>{invoice.client.address}</div>}
               </div>
             </div>
             <div>
@@ -159,27 +141,21 @@ export default function InvoiceConsultingA4({
                 <div className="px-2 py-2 right">Tax amt</div>
                 <div className="px-2 py-2 right">Line total</div>
               </div>
-              {items.map((it, i) => {
-                const qty = Number(it.qty) || 0;
+              {rows.map((it, i) => {
                 const unit = 'pcs';
-                const unitPrice = Number(it.rate) || 0;
                 const discountPct = 0;
-                const base = qty * unitPrice * (1 - discountPct / 100);
-                const taxPct = Number(it.tax) || 0;
-                const taxAmt = base * (taxPct / 100);
-                const lineTotal = base + taxAmt;
                 return (
                   <div key={i} className="grid grid-cols-[50px,120px,1fr,70px,70px,100px,90px,80px,90px,110px] text-[12px] border-t border-slate-100">
-                    <div className="px-2 py-2">{i + 1}</div>
+                    <div className="px-2 py-2">{it.id}</div>
                     <div className="px-2 py-2">SKU-{100 + i}</div>
-                    <div className="px-2 py-2">{it.desc}</div>
+                    <div className="px-2 py-2">{it.description}</div>
                     <div className="px-2 py-2 right">{unit}</div>
-                    <div className="px-2 py-2 right">{qty}</div>
-                    <div className="px-2 py-2 right">{money(unitPrice, currency)}</div>
+                    <div className="px-2 py-2 right">{it.quantity}</div>
+                    <div className="px-2 py-2 right">{money(it.unitPrice, currency)}</div>
                     <div className="px-2 py-2 right">{discountPct}%</div>
-                    <div className="px-2 py-2 right">{taxPct}%</div>
-                    <div className="px-2 py-2 right">{money(taxAmt, currency)}</div>
-                    <div className="px-2 py-2 right">{money(lineTotal, currency)}</div>
+                    <div className="px-2 py-2 right">{it.vatPct}%</div>
+                    <div className="px-2 py-2 right">{money(it.vat, currency)}</div>
+                    <div className="px-2 py-2 right">{money(it.total, currency)}</div>
                   </div>
                 );
               })}
@@ -193,19 +169,19 @@ export default function InvoiceConsultingA4({
               <div>
                 <div className="font-semibold mb-1">Bank & References</div>
                 <div className="p-3 rounded border border-slate-200 bg-slate-50">
-                  {sender.iban && <div><span className="muted">IBAN:</span> {sender.iban}</div>}
-                  {sender.bankName && <div><span className="muted">Bank:</span> {sender.bankName}</div>}
-                  {sender.bic && <div><span className="muted">BIC:</span> {sender.bic}</div>}
+                  {invoice.company.iban && <div><span className="muted">IBAN:</span> {invoice.company.iban}</div>}
+                  {invoice.company.bankName && <div><span className="muted">Bank:</span> {invoice.company.bankName}</div>}
+                  {invoice.company.bic && <div><span className="muted">BIC:</span> {invoice.company.bic}</div>}
                 </div>
               </div>
               <div>
                 <div className="font-semibold mb-1">Notes & Regulatory</div>
-                <div className="p-3 rounded border border-slate-200 bg-slate-50">{zeroNote || notes || '-'}</div>
+                <div className="p-3 rounded border border-slate-200 bg-slate-50">{zeroNote || invoice.notes || '-'}</div>
               </div>
             </div>
             <div className="summary p-4 shadow-sm rounded-xl">
               <div className="grid grid-cols-2 gap-y-2">
-                <div className="muted">Subtotal</div><div className="right">{money(subtotal, currency)}</div>
+                <div className="muted">Subtotal</div><div className="right">{money(totals.net, currency)}</div>
                 <div className="muted">Discount total</div><div className="right">{money(0, currency)}</div>
                 <div className="muted">Shipping</div><div className="right">{money(0, currency)}</div>
               </div>
@@ -225,17 +201,14 @@ export default function InvoiceConsultingA4({
               </div>
               <div className="h-px bg-slate-200 my-3" />
               <div className="grid grid-cols-2 gap-y-2">
-                <div className="font-semibold">Grand total</div><div className="text-right font-semibold">{money(total, currency)}</div>
+                <div className="font-semibold">Grand total</div><div className="text-right font-semibold">{money(totals.total, currency)}</div>
               </div>
             </div>
           </div>
 
-          <div className="mt-auto pt-4 text-[11px] muted">{sender.company} · {client.email || 'info@invoicerly.co.uk'} · Page 1 of 1</div>
+          <div className="mt-auto pt-4 text-[11px] muted">This invoice is generated electronically and is valid without a signature.</div>
         </div>
       </div>
     </div>
   );
 }
-
-
-

@@ -55,7 +55,7 @@ export async function GET(req: Request, { params }: { params: Promise<any> }) {
       const pdfBuffer = await page.pdf({
         format: 'A4',
         printBackground: true,
-        margin: { top: '14mm', right: '14mm', bottom: '16mm', left: '14mm' },
+        margin: { top: '10mm', right: '10mm', bottom: '12mm', left: '10mm' },
         preferCSSPageSize: true,
       });
       

@@ -150,9 +150,8 @@ export default function InvoiceMinimalMonoA4({ invoice }: InvoiceMinimalMonoA4Pr
       </div>
 
       {/* Footer */}
-      <div className="absolute left-14 right-14 bottom-10 flex items-center justify-between text-[11px] text-slate-500 font-mono">
-        <div>{invoice.company.email} • {invoice.company.phone}</div>
-        <div>Page 1 of 1</div>
+      <div className="absolute left-14 right-14 bottom-10 text-center text-[11px] text-slate-500 font-mono">
+        This invoice is generated electronically and is valid without a signature.
       </div>
     </div>
   );

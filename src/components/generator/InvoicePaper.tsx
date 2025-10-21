@@ -138,7 +138,7 @@ export default function InvoicePaper({
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
-          {notes || 'Payment within 14 days.'} {sender.iban ? `IBAN: ${sender.iban}` : ''}
+          {notes || 'Payment within 14 days.'}
         </motion.div>
       </div>
     </motion.div>

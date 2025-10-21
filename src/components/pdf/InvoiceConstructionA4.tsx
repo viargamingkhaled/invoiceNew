@@ -1,39 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Item } from '@/types/invoice';
-
-export interface InvoiceConstructionA4Props {
-  currency: string;
-  zeroNote?: string;
-  logoUrl?: string;
-  items: Item[];
-  subtotal: number;
-  taxTotal: number;
-  total: number;
-  sender: {
-    company: string;
-    vat?: string;
-    address?: string;
-    city?: string;
-    country?: string;
-    iban?: string;
-    bankName?: string;
-    bic?: string;
-  };
-  client: {
-    name: string;
-    vat?: string;
-    address?: string;
-    city?: string;
-    country?: string;
-    email?: string;
-  };
-  invoiceNo: string;
-  invoiceDate: string;
-  invoiceDue: string;
-  notes?: string;
-}
+import { Invoice } from '@/types/invoice';
 
 function money(v: number, currency: string) {
   const abs = Math.abs(v);
@@ -45,21 +13,39 @@ function money(v: number, currency: string) {
   }
 }
 
-export default function InvoiceConstructionA4({
-  currency,
-  zeroNote,
-  logoUrl,
-  items,
-  subtotal,
-  taxTotal,
-  total,
-  sender,
-  client,
-  invoiceNo,
-  invoiceDate,
-  invoiceDue,
-  notes,
-}: InvoiceConstructionA4Props) {
+interface InvoiceConstructionA4Props {
+  invoice: Invoice;
+}
+
+export default function InvoiceConstructionA4({ invoice }: InvoiceConstructionA4Props) {
+  const currency = invoice.currency || 'GBP';
+  const vatMode = invoice.vatMode || 'Domestic';
+  
+  // Calculate line items with VAT
+  const rows = invoice.items.map((item, index) => {
+    const vatPct = vatMode === 'Domestic' ? (item.vatRate || 0) : 0;
+    const qty = item.quantity;
+    const unit = item.unitPrice;
+    const net = qty * unit;
+    const vat = net * (vatPct / 100);
+    const total = net + vat;
+    return { ...item, id: index + 1, vatPct, net, vat, total, lineTotal: total };
+  });
+
+  const totals = {
+    net: rows.reduce((s, r) => s + r.net, 0),
+    vat: rows.reduce((s, r) => s + r.vat, 0),
+    total: rows.reduce((s, r) => s + r.net + r.vat, 0),
+  };
+
+  // VAT note based on mode
+  let zeroNote = '';
+  if (vatMode === 'Intra‑EU') {
+    zeroNote = 'Intra‑EU supply. VAT 0%. Reverse charge may apply (Art. 196).';
+  } else if (vatMode === 'Export') {
+    zeroNote = 'Export outside EU. VAT 0%. Out of scope.';
+  }
+
   return (
     <div className="w-full">
       <style>{`
@@ -90,9 +76,9 @@ export default function InvoiceConstructionA4({
           {/* Header */}
           <div className="mt-4 flex items-start justify-between">
             <div className="flex items-center gap-3">
-              {logoUrl ? (
+              {invoice.company.logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={logoUrl} alt="Logo" className="h-10 w-28 object-contain" />
+                <img src={invoice.company.logoUrl} alt="Logo" className="h-10 w-28 object-contain" />
               ) : (
                 <div className="h-10 w-40 rounded bg-slate-100 border border-dashed border-slate-300" />
               )}
@@ -100,9 +86,9 @@ export default function InvoiceConstructionA4({
             <div className="text-right">
               <div className="text-2xl font-semibold text-slate-800">INVOICE</div>
               <div className="mt-1 grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
-                <div className="text-slate-500">Invoice №</div><div>{invoiceNo || '-'}</div>
-                <div className="text-slate-500">Date</div><div>{invoiceDate || '-'}</div>
-                <div className="text-slate-500">Due</div><div>{invoiceDue || '-'}</div>
+                <div className="text-slate-500">Invoice №</div><div>{invoice.invoiceNumber || '-'}</div>
+                <div className="text-slate-500">Date</div><div>{invoice.issueDate || '-'}</div>
+                <div className="text-slate-500">Due</div><div>{invoice.dueDate || '-'}</div>
                 <div className="text-slate-500">PO / Ref</div><div>-</div>
               </div>
             </div>
@@ -113,19 +99,17 @@ export default function InvoiceConstructionA4({
             <div>
               <div className="font-semibold mb-1">From</div>
               <div className="p-3 rounded border border-dashed border-slate-300 bg-slate-50">
-                <div className="font-semibold">{sender.company}</div>
-                {sender.vat && <div className="muted">VAT / Reg {sender.vat}</div>}
-                {sender.address && <div>{sender.address}</div>}
-                {(sender.city || sender.country) && <div>{sender.city}{sender.city && sender.country ? ', ' : ''}{sender.country}</div>}
+                <div className="font-semibold">{invoice.company.name}</div>
+                {invoice.company.vatNumber && <div className="muted">VAT / Reg {invoice.company.vatNumber}</div>}
+                {invoice.company.address && <div>{invoice.company.address}</div>}
               </div>
             </div>
             <div>
               <div className="font-semibold mb-1">Bill to</div>
               <div className="p-3 rounded border border-dashed border-slate-300 bg-slate-50">
-                <div className="font-semibold">{client.name}</div>
-                {client.vat && <div className="muted">VAT / Reg {client.vat}</div>}
-                {client.address && <div>{client.address}</div>}
-                {(client.city || client.country) && <div>{client.city}{client.city && client.country ? ', ' : ''}{client.country}</div>}
+                <div className="font-semibold">{invoice.client.name}</div>
+                {invoice.client.vatNumber && <div className="muted">VAT / Reg {invoice.client.vatNumber}</div>}
+                {invoice.client.address && <div>{invoice.client.address}</div>}
               </div>
             </div>
           </div>
@@ -141,29 +125,26 @@ export default function InvoiceConstructionA4({
                 <div className="px-3 py-2 text-right">Tax</div>
                 <div className="px-3 py-2 text-right">Line total</div>
               </div>
-              {items.map((it, i) => {
-                const lineTotal = (Number(it.qty) || 0) * (Number(it.rate) || 0) * (1 + (Number(it.tax) || 0)/100);
-                return (
-                  <div key={i} className={`grid grid-cols-[1fr,80px,100px,80px,120px] text-sm ${i%2? 'bg-slate-50':''}`}>
-                    <div className="px-3 py-3">{it.desc}</div>
-                    <div className="px-3 py-3 text-right">{it.qty}</div>
-                    <div className="px-3 py-3 text-right">{money(it.rate, currency)}</div>
-                    <div className="px-3 py-3 text-right">{it.tax}%</div>
-                    <div className="px-3 py-3 text-right">{money(lineTotal, currency)}</div>
-                  </div>
-                );
-              })}
+              {rows.map((it, i) => (
+                <div key={i} className={`grid grid-cols-[1fr,80px,100px,80px,120px] text-sm ${i%2? 'bg-slate-50':''}`}>
+                  <div className="px-3 py-3">{it.description}</div>
+                  <div className="px-3 py-3 text-right">{it.quantity}</div>
+                  <div className="px-3 py-3 text-right">{money(it.unitPrice, currency)}</div>
+                  <div className="px-3 py-3 text-right">{it.vatPct}%</div>
+                  <div className="px-3 py-3 text-right">{money(it.lineTotal, currency)}</div>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* Totals */}
           <div className="mt-8 ml-auto w-[360px] text-sm">
             <div className="grid grid-cols-2 gap-y-2">
-              <div className="text-slate-500">Subtotal</div><div className="text-right">{money(subtotal, currency)}</div>
-              <div className="text-slate-500">Tax</div><div className="text-right">{money(taxTotal, currency)}</div>
+              <div className="text-slate-500">Subtotal</div><div className="text-right">{money(totals.net, currency)}</div>
+              <div className="text-slate-500">Tax</div><div className="text-right">{money(totals.vat, currency)}</div>
               <div className="text-slate-500">Shipping</div><div className="text-right">{money(0, currency)}</div>
               <div className="h-px bg-slate-200 col-span-2 my-1" />
-              <div className="font-semibold">Total</div><div className="text-right font-semibold">{money(total, currency)}</div>
+              <div className="font-semibold">Total</div><div className="text-right font-semibold">{money(totals.total, currency)}</div>
             </div>
           </div>
 
@@ -172,29 +153,26 @@ export default function InvoiceConstructionA4({
             <div>
               <div className="font-semibold mb-1">Payment details</div>
               <div className="p-3 rounded border border-dashed border-slate-300 bg-slate-50">
-                {sender.iban && <div><span className="muted">IBAN:</span> {sender.iban}</div>}
-                {sender.bankName && <div><span className="muted">Bank:</span> {sender.bankName}</div>}
-                {sender.bic && <div><span className="muted">BIC:</span> {sender.bic}</div>}
+                {invoice.company.iban && <div><span className="muted">IBAN:</span> {invoice.company.iban}</div>}
+                {invoice.company.bankName && <div><span className="muted">Bank:</span> {invoice.company.bankName}</div>}
+                {invoice.company.bic && <div><span className="muted">BIC:</span> {invoice.company.bic}</div>}
                 {zeroNote && <div className="mt-2 text-emerald-700 text-xs">{zeroNote}</div>}
               </div>
             </div>
             <div>
               <div className="font-semibold mb-1">Notes</div>
               <div className="p-3 rounded border border-dashed border-slate-300 bg-slate-50">
-                {notes || '-'}
+                {invoice.notes || '-'}
               </div>
             </div>
           </div>
 
           {/* Footer */}
           <div className="mt-6 pt-2 text-[11px] text-slate-500">
-            {sender.company} · {client.email || 'info@invoicerly.co.uk'} · Page 1 of 1
+            This invoice is generated electronically and is valid without a signature.
           </div>
         </div>
       </div>
     </div>
   );
 }
-
-
-

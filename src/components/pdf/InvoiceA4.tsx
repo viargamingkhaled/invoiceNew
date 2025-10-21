@@ -1,39 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Item } from '@/types/invoice';
-
-export interface InvoiceA4Props {
-  currency: string;
-  zeroNote?: string;
-  logoUrl?: string;
-  items: Item[];
-  subtotal: number;
-  taxTotal: number;
-  total: number;
-  sender: {
-    company: string;
-    vat?: string;
-    address?: string;
-    city?: string;
-    country?: string;
-    iban?: string;
-    bankName?: string;
-    bic?: string;
-  };
-  client: {
-    name: string;
-    vat?: string;
-    address?: string;
-    city?: string;
-    country?: string;
-    email?: string;
-  };
-  invoiceNo: string;
-  invoiceDate: string;
-  invoiceDue: string;
-  notes?: string;
-}
+import { Invoice } from '@/types/invoice';
 
 function money(v: number, currency: string) {
   const abs = Math.abs(v);
@@ -45,21 +13,39 @@ function money(v: number, currency: string) {
   }
 }
 
-export default function InvoiceA4({
-  currency,
-  zeroNote,
-  logoUrl,
-  items,
-  subtotal,
-  taxTotal,
-  total,
-  sender,
-  client,
-  invoiceNo,
-  invoiceDate,
-  invoiceDue,
-  notes,
-}: InvoiceA4Props) {
+interface InvoiceA4Props {
+  invoice: Invoice;
+}
+
+export default function InvoiceA4({ invoice }: InvoiceA4Props) {
+  const currency = invoice.currency || 'GBP';
+  const vatMode = invoice.vatMode || 'Domestic';
+  
+  // Calculate line items with VAT
+  const rows = invoice.items.map((item, index) => {
+    const vatPct = vatMode === 'Domestic' ? (item.vatRate || 0) : 0;
+    const qty = item.quantity;
+    const unit = item.unitPrice;
+    const net = qty * unit;
+    const vat = net * (vatPct / 100);
+    const total = net + vat;
+    return { ...item, id: index + 1, vatPct, net, vat, total };
+  });
+
+  const totals = {
+    net: rows.reduce((s, r) => s + r.net, 0),
+    vat: rows.reduce((s, r) => s + r.vat, 0),
+    total: rows.reduce((s, r) => s + r.net + r.vat, 0),
+  };
+
+  // VAT note based on mode
+  let zeroNote = '';
+  if (vatMode === 'Intra‑EU') {
+    zeroNote = 'Intra‑EU supply. VAT 0%. Reverse charge may apply (Art. 196).';
+  } else if (vatMode === 'Export') {
+    zeroNote = 'Export outside EU. VAT 0%. Out of scope.';
+  }
+
   return (
     <div className="w-full">
       <style>{`
@@ -93,9 +79,9 @@ export default function InvoiceA4({
         <div className="a4 p-[10mm]">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
-              {logoUrl ? (
+              {invoice.company.logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={logoUrl} alt="Logo" className="h-10 w-28 object-contain" />
+                <img src={invoice.company.logoUrl} alt="Logo" className="h-10 w-28 object-contain" />
               ) : (
                 <>
                   <div className="h-10 w-10 rounded-lg bg-blue-600" />
@@ -104,9 +90,9 @@ export default function InvoiceA4({
               )}
             </div>
             <div className="text-right text-sm text-slate-600">
-              <div className="font-semibold text-slate-800">Invoice {invoiceNo}</div>
-              <div>Date: {invoiceDate || '-'}</div>
-              <div>Due: {invoiceDue || '-'}</div>
+              <div className="font-semibold text-slate-800">Invoice {invoice.invoiceNumber}</div>
+              <div>Date: {invoice.issueDate || '-'}</div>
+              <div>Due: {invoice.dueDate || '-'}</div>
             </div>
           </div>
 
@@ -116,20 +102,18 @@ export default function InvoiceA4({
             <div className="avoid-break">
               <div className="label">From</div>
               <div className="mt-1 text-sm">
-                <div className="font-semibold">{sender.company}</div>
-                {sender.vat && <div className="muted">VAT {sender.vat}</div>}
-                {sender.address && <div>{sender.address}</div>}
-                {(sender.city || sender.country) && <div>{sender.city}{sender.city && sender.country ? ', ' : ''}{sender.country}</div>}
+                <div className="font-semibold">{invoice.company.name}</div>
+                {invoice.company.vatNumber && <div className="muted">VAT {invoice.company.vatNumber}</div>}
+                {invoice.company.address && <div>{invoice.company.address}</div>}
               </div>
             </div>
             <div className="avoid-break">
               <div className="label">Bill To</div>
               <div className="mt-1 text-sm">
-                <div className="font-semibold">{client.name}</div>
-                {client.email && <div className="muted">{client.email}</div>}
-                {client.vat && <div className="muted">VAT {client.vat}</div>}
-                {client.address && <div>{client.address}</div>}
-                {(client.city || client.country) && <div>{client.city}{client.city && client.country ? ', ' : ''}{client.country}</div>}
+                <div className="font-semibold">{invoice.client.name}</div>
+                {invoice.client.email && <div className="muted">{invoice.client.email}</div>}
+                {invoice.client.vatNumber && <div className="muted">VAT {invoice.client.vatNumber}</div>}
+                {invoice.client.address && <div>{invoice.client.address}</div>}
               </div>
             </div>
           </div>
@@ -146,12 +130,12 @@ export default function InvoiceA4({
               </tr>
             </thead>
             <tbody>
-              {items.map((it, i) => (
+              {rows.map((it, i) => (
                 <tr key={i} className="avoid-break">
-                  <td>{it.desc}</td>
-                  <td className="right">{it.qty}</td>
-                  <td className="right">{money(it.rate, currency)}</td>
-                  <td className="right">{it.tax}%</td>
+                  <td>{it.description}</td>
+                  <td className="right">{it.quantity}</td>
+                  <td className="right">{money(it.unitPrice, currency)}</td>
+                  <td className="right">{it.vatPct}%</td>
                 </tr>
               ))}
             </tbody>
@@ -163,14 +147,14 @@ export default function InvoiceA4({
             <div className="avoid-break">
               <div className="label">Payment details</div>
               <div className="mt-1 text-sm">
-                {sender.iban && (
-                  <div><span className="muted">IBAN:</span> {sender.iban}</div>
+                {invoice.company.iban && (
+                  <div><span className="muted">IBAN:</span> {invoice.company.iban}</div>
                 )}
-                {sender.bankName && (
-                  <div><span className="muted">Bank:</span> {sender.bankName}</div>
+                {invoice.company.bankName && (
+                  <div><span className="muted">Bank:</span> {invoice.company.bankName}</div>
                 )}
-                {sender.bic && (
-                  <div><span className="muted">BIC:</span> {sender.bic}</div>
+                {invoice.company.bic && (
+                  <div><span className="muted">BIC:</span> {invoice.company.bic}</div>
                 )}
                 {zeroNote && <div className="mt-2 text-emerald-700 text-xs">{zeroNote}</div>}
               </div>
@@ -180,31 +164,31 @@ export default function InvoiceA4({
                 <tbody>
                   <tr>
                     <td className="right muted">Subtotal</td>
-                    <td className="right" style={{ width: '40%' }}>{money(subtotal, currency)}</td>
+                    <td className="right" style={{ width: '40%' }}>{money(totals.net, currency)}</td>
                   </tr>
                   <tr>
                     <td className="right muted">Tax</td>
-                    <td className="right">{money(taxTotal, currency)}</td>
+                    <td className="right">{money(totals.vat, currency)}</td>
                   </tr>
                   <tr className="totals">
                     <td className="right">Total</td>
-                    <td className="right">{money(total, currency)}</td>
+                    <td className="right">{money(totals.total, currency)}</td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
 
-          {notes && (
+          {invoice.notes && (
             <div className="avoid-break mt-6">
               <div className="label">Notes</div>
-              <div className="mt-1 text-sm">{notes}</div>
+              <div className="mt-1 text-sm">{invoice.notes}</div>
             </div>
           )}
 
           <div className="cut" />
 
-          <div className="footer">Invoicerly · info@invoicerly.co.uk · This PDF is generated electronically and is valid without a signature.</div>
+          <div className="footer">This invoice is generated electronically and is valid without a signature.</div>
         </div>
       </div>
     </div>
