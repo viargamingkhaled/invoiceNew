@@ -28,7 +28,7 @@ export async function GET(req: Request, { params }: { params: Promise<any> }) {
 
     // Render the /print page via Browserless Cloud (new REST base)
     const token = process.env.BROWSERLESS_TOKEN;
-    const base = process.env.BROWSERLESS_BASE_URL || 'https://api.browserless.io';
+    const base = process.env.BROWSERLESS_BASE_URL || 'https://production-sfo.browserless.io';
     if (!token) return NextResponse.json({ error: 'Missing BROWSERLESS_TOKEN env' }, { status: 500 });
 
     const blRes = await fetch(`${base}/pdf?token=${token}`, {
