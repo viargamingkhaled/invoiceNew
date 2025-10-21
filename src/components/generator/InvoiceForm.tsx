@@ -447,6 +447,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
 
       // Generate PDF using server-side API (professional approach)
       console.log('[PDF_DOWNLOAD] Starting server-side PDF generation...');
+      console.log('[PDF_DOWNLOAD] Selected template:', template);
       
       try {
         // Use new /api/pdf/generate endpoint for direct PDF generation
@@ -456,6 +457,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
           body: JSON.stringify({
             invoice: pdfInvoice,
             template: template,
+            invoiceId: invoice.id, // Pass invoice ID if available
           }),
         });
 
@@ -481,7 +483,12 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
         
         // Fallback: try using the existing /api/pdf/[id] endpoint
         try {
-          const res = await fetch(`/api/pdf/${invoice.id}?due=${encodeURIComponent(invoiceMeta.due || '')}`);
+          const queryParams = new URLSearchParams();
+          if (invoiceMeta.due) queryParams.append('due', invoiceMeta.due);
+          if (template) queryParams.append('template', template);
+          const q = queryParams.toString() ? `?${queryParams.toString()}` : '';
+          
+          const res = await fetch(`/api/pdf/${invoice.id}${q}`);
           if (res.ok) {
             console.log('[PDF_DOWNLOAD] Fallback PDF successful');
             const blob = await res.blob();

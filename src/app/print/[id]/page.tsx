@@ -1,5 +1,12 @@
 import { prisma } from '@/lib/prisma';
 import InvoiceA4 from '@/components/pdf/InvoiceA4';
+import InvoiceConstructionA4 from '@/components/pdf/InvoiceConstructionA4';
+import InvoiceITServicesA4 from '@/components/pdf/InvoiceITServicesA4';
+import InvoiceConsultingA4 from '@/components/pdf/InvoiceConsultingA4';
+import InvoiceNordicGridA4 from '@/components/pdf/InvoiceNordicGridA4';
+import InvoiceBoldHeaderA4 from '@/components/pdf/InvoiceBoldHeaderA4';
+import InvoiceMinimalMonoA4 from '@/components/pdf/InvoiceMinimalMonoA4';
+import InvoiceBusinessPortraitA4 from '@/components/pdf/InvoiceBusinessPortraitA4';
 import { Invoice } from '@/types/invoice';
 
 export const dynamic = 'force-dynamic';
@@ -8,6 +15,7 @@ export default async function PrintInvoicePage({ params, searchParams }: { param
   const resolvedParams = await params;
   const id = resolvedParams.id as string;
   const sp = (await (searchParams || Promise.resolve({}))) as any;
+  const template = (sp?.template as string) || 'CleanA4';
   const invoice = await prisma.invoice.findUnique({ where: { id }, include: { items: true, user: { include: { company: true } } } });
   if (!invoice) return <div className="p-6">Not found.</div>;
   const dueStr = (sp?.due as string) || (invoice.due ? new Date(invoice.due as any).toISOString().slice(0,10) : '');
@@ -46,13 +54,37 @@ export default async function PrintInvoicePage({ params, searchParams }: { param
     dueDate: dueStr,
     currency: invoice.currency,
     vatMode: 'Domestic',
-    notes: '',
+    notes: (invoice as any).notes || '',
+  };
+
+  // Select component based on template
+  const renderTemplate = () => {
+    switch (template) {
+      case 'CleanA4':
+        return <InvoiceA4 invoice={pdfInvoice} />;
+      case 'Pro Ledger':
+        return <InvoiceConstructionA4 invoice={pdfInvoice} />;
+      case 'Compact Fit':
+        return <InvoiceITServicesA4 invoice={pdfInvoice} />;
+      case 'Modern Stripe':
+        return <InvoiceConsultingA4 invoice={pdfInvoice} />;
+      case 'Nordic Grid':
+        return <InvoiceNordicGridA4 invoice={pdfInvoice} />;
+      case 'Bold Header':
+        return <InvoiceBoldHeaderA4 invoice={pdfInvoice} />;
+      case 'Minimal Mono':
+        return <InvoiceMinimalMonoA4 invoice={pdfInvoice} />;
+      case 'Business Portrait':
+        return <InvoiceBusinessPortraitA4 invoice={pdfInvoice} />;
+      default:
+        return <InvoiceA4 invoice={pdfInvoice} />;
+    }
   };
 
   return (
     <div className="bg-white min-h-screen">
       <main className="max-w-none p-0 m-0">
-        <InvoiceA4 invoice={pdfInvoice} />
+        {renderTemplate()}
       </main>
     </div>
   );

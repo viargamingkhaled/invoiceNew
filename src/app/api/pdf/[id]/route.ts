@@ -19,11 +19,16 @@ export async function GET(req: Request, { params }: { params: Promise<any> }) {
     const origin = baseUrl.startsWith('http') ? baseUrl : `https://${baseUrl}`;
     const urlObj = new URL(req.url);
     const due = urlObj.searchParams.get('due');
-    const q = due ? `?due=${encodeURIComponent(due)}` : '';
+    const template = urlObj.searchParams.get('template');
+    const queryParams = new URLSearchParams();
+    if (due) queryParams.append('due', due);
+    if (template) queryParams.append('template', template);
+    const q = queryParams.toString() ? `?${queryParams.toString()}` : '';
     const url = `${origin}/print/${id}${q}`;
     
     console.log(`[PDF_API] Base URL: ${baseUrl}`);
     console.log(`[PDF_API] Origin: ${origin}`);
+    console.log(`[PDF_API] Template: ${template || 'default'}`);
     console.log(`[PDF_API] Print URL: ${url}`);
 
     // Render the /print page via Browserless Cloud (new REST base)

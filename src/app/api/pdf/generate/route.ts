@@ -22,8 +22,46 @@ export async function POST(req: Request) {
 
     // Parse request body
     const body = await req.json();
-    const { invoice, template } = body;
+    const { invoice, template, invoiceId } = body;
     
+    // If we have an invoice ID, use the existing /api/pdf/[id] endpoint
+    if (invoiceId) {
+      console.log(`[PDF_GENERATE] Redirecting to /api/pdf/${invoiceId} with template: ${template}`);
+      const baseUrl = process.env.NEXTAUTH_URL || process.env.VERCEL_URL || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+      const origin = baseUrl.startsWith('http') ? baseUrl : `https://${baseUrl}`;
+      
+      const queryParams = new URLSearchParams();
+      if (invoice.dueDate) queryParams.append('due', invoice.dueDate);
+      if (template) queryParams.append('template', template);
+      const q = queryParams.toString() ? `?${queryParams.toString()}` : '';
+      
+      // Fetch from the existing endpoint
+      const pdfRes = await fetch(`${origin}/api/pdf/${invoiceId}${q}`, {
+        headers: {
+          // Forward auth headers
+          'Cookie': req.headers.get('Cookie') || '',
+        },
+      });
+      
+      if (!pdfRes.ok) {
+        const errorData = await pdfRes.json().catch(() => ({}));
+        return NextResponse.json({ error: errorData.error || 'PDF generation failed' }, { status: pdfRes.status });
+      }
+      
+      const pdfArrayBuffer = await pdfRes.arrayBuffer();
+      const fileName = `invoice-${invoice.invoiceNumber || 'document'}.pdf`;
+      
+      return new Response(pdfArrayBuffer, {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/pdf',
+          'Content-Disposition': `attachment; filename="${fileName}"`,
+          'Cache-Control': 'no-store',
+        },
+      });
+    }
+    
+    // Fallback: generate from invoice data
     if (!invoice) {
       return NextResponse.json({ error: 'Invoice data required' }, { status: 400 });
     }
