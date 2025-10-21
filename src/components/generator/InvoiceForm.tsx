@@ -445,70 +445,37 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
         setInvoiceMeta((prev) => ({ ...prev, number: String(invoice.number || prev.number), date: new Date(invoice.date).toISOString().slice(0, 10) }));
       } catch {}
 
-      // Generate PDF using server-side API (professional approach)
+      // Generate PDF using server-side API via Browserless Cloud
       console.log('[PDF_DOWNLOAD] Starting server-side PDF generation...');
+      console.log('[PDF_DOWNLOAD] Invoice ID:', invoice.id);
       console.log('[PDF_DOWNLOAD] Selected template:', template);
       
-      try {
-        // Use new /api/pdf/generate endpoint for direct PDF generation
-        const pdfRes = await fetch('/api/pdf/generate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            invoice: pdfInvoice,
-            template: template,
-            invoiceId: invoice.id, // Pass invoice ID if available
-          }),
-        });
-
-        if (pdfRes.ok) {
-          console.log('[PDF_DOWNLOAD] PDF generated successfully via API');
-          const blob = await pdfRes.blob();
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `Invoice - ${invoiceMeta.number || 'XXXXXX'}.pdf`;
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          URL.revokeObjectURL(url);
-          setBanner({ type: 'success', msg: 'PDF downloaded.' });
-        } else {
-          const errorData = await pdfRes.json().catch(() => ({}));
-          console.error('[PDF_DOWNLOAD] API error:', errorData);
-          throw new Error(errorData.error || 'Server PDF generation failed');
-        }
-      } catch (pdfError: any) {
-        console.warn('[PDF_DOWNLOAD] Server PDF failed, trying fallback with existing invoice ID:', pdfError.message);
-        
-        // Fallback: try using the existing /api/pdf/[id] endpoint
-        try {
-          const queryParams = new URLSearchParams();
-          if (invoiceMeta.due) queryParams.append('due', invoiceMeta.due);
-          if (template) queryParams.append('template', template);
-          const q = queryParams.toString() ? `?${queryParams.toString()}` : '';
-          
-          const res = await fetch(`/api/pdf/${invoice.id}${q}`);
-          if (res.ok) {
-            console.log('[PDF_DOWNLOAD] Fallback PDF successful');
-            const blob = await res.blob();
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Invoice - ${invoiceMeta.number || 'XXXXXX'}.pdf`;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            URL.revokeObjectURL(url);
-            setBanner({ type: 'success', msg: 'PDF downloaded.' });
-          } else {
-            throw new Error('Both PDF generation methods failed');
-          }
-        } catch (fallbackError) {
-          console.error('[PDF_DOWNLOAD] All PDF generation methods failed:', fallbackError);
-          throw fallbackError;
-        }
+      // Build query parameters
+      const queryParams = new URLSearchParams();
+      if (invoiceMeta.due) queryParams.append('due', invoiceMeta.due);
+      if (template) queryParams.append('template', template);
+      const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
+      
+      // Direct call to /api/pdf/[id] - simpler and more reliable
+      const pdfRes = await fetch(`/api/pdf/${invoice.id}${queryString}`);
+      
+      if (!pdfRes.ok) {
+        const errorData = await pdfRes.json().catch(() => ({}));
+        console.error('[PDF_DOWNLOAD] PDF generation failed:', errorData);
+        throw new Error(errorData.error || 'PDF generation failed');
       }
+      
+      console.log('[PDF_DOWNLOAD] PDF generated successfully');
+      const blob = await pdfRes.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Invoice - ${invoiceMeta.number || 'XXXXXX'}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      setBanner({ type: 'success', msg: 'PDF downloaded.' });
     } catch (e: any) {
       if (createdInvoiceId) {
         try { await fetch(`/api/invoices/${createdInvoiceId}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'Error' }) }); } catch {}
