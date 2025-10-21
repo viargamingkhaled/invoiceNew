@@ -49,9 +49,12 @@ export default function InvoiceA4({ invoice }: InvoiceA4Props) {
   return (
     <div className="w-full">
       <style>{`
-        @page { size: A4; margin: 14mm 14mm 16mm 14mm; }
-        @media print { body { background: white; } }
-        .a4 { width: 210mm; min-height: 297mm; margin: 0 auto; background: white; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+        @page { size: A4; margin: 10mm 10mm 12mm 10mm; }
+        @media print { 
+          body { background: white; margin: 0; padding: 0; }
+          * { box-sizing: border-box; }
+        }
+        .a4 { width: 210mm; max-height: 297mm; margin: 0 auto; background: white; box-shadow: 0 1px 6px rgba(0,0,0,0.06); overflow: hidden; }
         .cut { height: 8mm; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; }
         .muted { color: #64748b; }

@@ -92,17 +92,21 @@ export default function InvoiceBusinessPortraitA4({ invoice }: InvoiceBusinessPo
             <div className="text-[11px] uppercase tracking-wide text-slate-500">From</div>
             <div className="text-[13px] font-medium text-slate-800">{invoice.company.name}</div>
             <div className="text-[12px] text-slate-600">
-              {[
-                invoice.company.vatNumber && `VAT: ${invoice.company.vatNumber}`,
-                invoice.company.registrationNumber && `Reg: ${invoice.company.registrationNumber}`
-              ].filter(Boolean).join(' · ')}
+              {invoice.company.vatNumber && <div>VAT: {invoice.company.vatNumber}</div>}
+              {invoice.company.registrationNumber && <div>Reg: {invoice.company.registrationNumber}</div>}
+              {invoice.company.address && <div>{invoice.company.address}</div>}
+              {invoice.company.city && invoice.company.country && <div>{invoice.company.city}, {invoice.company.country}</div>}
+              {invoice.company.email && <div>{invoice.company.email}</div>}
             </div>
           </div>
           <div className="col-span-6">
             <div className="text-[11px] uppercase tracking-wide text-slate-500">Bill to</div>
             <div className="text-[13px] font-medium text-slate-800">{invoice.client.name}</div>
             <div className="text-[12px] text-slate-600">
-              {invoice.client.vatNumber && `VAT: ${invoice.client.vatNumber}`}
+              {invoice.client.vatNumber && <div>VAT: {invoice.client.vatNumber}</div>}
+              {invoice.client.address && <div>{invoice.client.address}</div>}
+              {invoice.client.city && invoice.client.country && <div>{invoice.client.city}, {invoice.client.country}</div>}
+              {invoice.client.email && <div>{invoice.client.email}</div>}
             </div>
           </div>
         </div>
@@ -143,17 +147,17 @@ export default function InvoiceBusinessPortraitA4({ invoice }: InvoiceBusinessPo
             <div className="text-[11px] uppercase tracking-wide text-slate-500 mb-1">Notes</div>
             <div className="text-[12px] text-slate-600 whitespace-pre-line">{invoice.notes || ''}</div>
 
-            {/* Signature/Stamp lines */}
-            <div className="grid grid-cols-2 gap-6 mt-10">
-              <div>
-                <div className="h-0.5 bg-slate-200" />
-                <div className="text-[11px] text-slate-500 mt-1">Authorized signature</div>
+            {/* Bank Details */}
+            {(invoice.company.iban || invoice.company.bankName || invoice.company.bic) && (
+              <div className="mt-6">
+                <div className="text-[11px] uppercase tracking-wide text-slate-500 mb-1">Payment Details</div>
+                <div className="text-[12px] text-slate-600">
+                  {invoice.company.iban && <div>IBAN: {invoice.company.iban}</div>}
+                  {invoice.company.bankName && <div>Bank: {invoice.company.bankName}</div>}
+                  {invoice.company.bic && <div>BIC: {invoice.company.bic}</div>}
+                </div>
               </div>
-              <div>
-                <div className="h-20 rounded-full border border-dashed" style={{ borderColor: k.line }} />
-                <div className="text-[11px] text-slate-500 mt-1">Company stamp</div>
-              </div>
-            </div>
+            )}
           </div>
           <div className="col-span-5">
             <div className="text-[12px]" style={{ borderTop: `1px solid ${k.line}` }}>

@@ -176,6 +176,30 @@ export default function InvoiceBoldHeaderA4({ invoice }: InvoiceBoldHeaderA4Prop
           {vatMode === 'Intra‑EU' && (<div>Intra‑EU supply. VAT 0%. Reverse charge may apply (Art. 196).</div>)}
           {vatMode === 'Export' && (<div>Export outside EU. VAT 0%. Out of scope.</div>)}
         </div>
+
+        {/* Bank Details */}
+        {(invoice.company.iban || invoice.company.bankName || invoice.company.bic) && (
+          <div className="mt-4 text-[12px] text-slate-600">
+            <div className="font-semibold mb-2" style={{ color: colors.text }}>Payment Details:</div>
+            <div className="grid grid-cols-3 gap-x-4">
+              {invoice.company.iban && (
+                <div>
+                  <span className="text-slate-500">IBAN:</span> {invoice.company.iban}
+                </div>
+              )}
+              {invoice.company.bankName && (
+                <div>
+                  <span className="text-slate-500">Bank:</span> {invoice.company.bankName}
+                </div>
+              )}
+              {invoice.company.bic && (
+                <div>
+                  <span className="text-slate-500">BIC:</span> {invoice.company.bic}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Footer */}

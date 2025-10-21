@@ -149,6 +149,30 @@ export default function InvoiceMinimalMonoA4({ invoice }: InvoiceMinimalMonoA4Pr
         {vatMode === 'Export' && (<div>Export outside EU. VAT 0%. Out of scope.</div>)}
       </div>
 
+      {/* Bank Details */}
+      {(invoice.company.iban || invoice.company.bankName || invoice.company.bic) && (
+        <div className="absolute left-14 right-14 bottom-20 text-[12px] text-slate-600 font-mono">
+          <div className="font-semibold mb-2">PAYMENT_DETAILS:</div>
+          <div className="grid grid-cols-3 gap-x-4">
+            {invoice.company.iban && (
+              <div>
+                <span className="text-slate-500">IBAN:</span> {invoice.company.iban}
+              </div>
+            )}
+            {invoice.company.bankName && (
+              <div>
+                <span className="text-slate-500">BANK:</span> {invoice.company.bankName}
+              </div>
+            )}
+            {invoice.company.bic && (
+              <div>
+                <span className="text-slate-500">BIC:</span> {invoice.company.bic}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Footer */}
       <div className="absolute left-14 right-14 bottom-10 text-center text-[11px] text-slate-500 font-mono">
         This invoice is generated electronically and is valid without a signature.
