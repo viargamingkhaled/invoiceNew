@@ -88,13 +88,14 @@ export async function POST(req: Request) {
       });
       console.log(`[INVOICE_SEND] Page loaded, generating PDF...`);
       
-      pdfBuffer = await page.pdf({
+      const pdfData = await page.pdf({
         format: 'A4',
         printBackground: true,
         margin: { top: '10mm', right: '10mm', bottom: '12mm', left: '10mm' },
         preferCSSPageSize: true,
       });
       
+      pdfBuffer = Buffer.from(pdfData);
       console.log(`[INVOICE_SEND] PDF generated, size: ${pdfBuffer.length} bytes`);
     } catch (pdfError) {
       console.error(`[INVOICE_SEND] PDF generation error:`, pdfError);

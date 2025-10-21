@@ -52,7 +52,6 @@ export async function GET(req: Request, { params }: { params: Promise<any> }) {
       defaultViewport: { width: 1240, height: 1754, deviceScaleFactor: 2 },
       executablePath: execPath,
       headless: chromium.headless || true,
-      ignoreHTTPSErrors: true,
     });
 
     try {
