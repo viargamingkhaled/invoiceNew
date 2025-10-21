@@ -1,17 +1,15 @@
 {
   "functions": {
-    "src/app/api/pdf/**/route.ts": {
-      "includeFiles": [
-        "node_modules/@sparticuz/chromium/**",
-        "node_modules/puppeteer-core/**"
-      ],
+    "src/app/api/pdf/generate/route.ts": {
+      "includeFiles": "node_modules/@sparticuz/chromium/**",
+      "maxDuration": 60
+    },
+    "src/app/api/pdf/[id]/route.ts": {
+      "includeFiles": "node_modules/@sparticuz/chromium/**",
       "maxDuration": 60
     },
     "src/app/api/invoices/send/route.ts": {
-      "includeFiles": [
-        "node_modules/@sparticuz/chromium/**",
-        "node_modules/puppeteer-core/**"
-      ],
+      "includeFiles": "node_modules/@sparticuz/chromium/**",
       "maxDuration": 60
     }
   }
