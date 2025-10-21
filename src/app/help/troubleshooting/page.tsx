@@ -346,7 +346,7 @@ export default function TroubleshootingPage() {
                   Open a ticket
                 </Button>
                 <Button 
-                  href="mailto:info@invoicerly.co.uk" 
+                  href="mailto:info@ventira.co.uk" 
                   variant="outline" 
                   size="lg"
                 >

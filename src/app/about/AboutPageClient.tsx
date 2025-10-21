@@ -18,13 +18,22 @@ export default function AboutPageClient() {
     }
   };
 
-  const handlePressDownload = () => {
+  const handlePressDownload = (filename: string, assetType: string) => {
+    // Track download event
     if (typeof window !== 'undefined' && (window as any).gtag) {
       (window as any).gtag('event', 'about_press_download', {
         event_category: 'engagement',
-        event_label: 'press_kit_download'
+        event_label: `press_kit_${assetType}`
       });
     }
+
+    // Trigger download
+    const link = document.createElement('a');
+    link.href = `/${filename}`;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -364,17 +373,17 @@ export default function AboutPageClient() {
 
           <Card className="p-8 max-w-2xl mx-auto">
             <div className="text-center">
-              <h3 className="font-semibold text-slate-900 mb-4">GET STUFFED LTD</h3>
+              <h3 className="font-semibold text-slate-900 mb-4">VIARGAMING LTD</h3>
               <div className="space-y-2 text-sm text-slate-600">
-                <p>Company number: 15673179</p>
+                <p>Company number: 15847699</p>
                 <p>Registered Address:</p>
                 <p className="font-medium">Flat 21 County Chambers<br />
                 1 Drapery<br />
                 Northampton<br />
                 United Kingdom, NN1 2ET</p>
                 <p className="pt-4">
-                  <a href="mailto:info@invoicerly.co.uk" className="text-blue-600 hover:underline">
-                    info@invoicerly.co.uk
+                  <a href="mailto:info@ventira.co.uk" className="text-blue-600 hover:underline">
+                    info@ventira.co.uk
                   </a>
                 </p>
               </div>
@@ -407,19 +416,31 @@ export default function AboutPageClient() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
                   <span className="text-sm text-slate-600">Logo (SVG)</span>
-                  <Button variant="outline" size="sm" onClick={handlePressDownload}>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => handlePressDownload('logo.svg', 'logo_svg')}
+                  >
                     Download
                   </Button>
                 </div>
                 <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
                   <span className="text-sm text-slate-600">Logo (PNG)</span>
-                  <Button variant="outline" size="sm" onClick={handlePressDownload}>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => handlePressDownload('logo.png', 'logo_png')}
+                  >
                     Download
                   </Button>
                 </div>
                 <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
                   <span className="text-sm text-slate-600">Favicon</span>
-                  <Button variant="outline" size="sm" onClick={handlePressDownload}>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => handlePressDownload('favicon.svg', 'favicon')}
+                  >
                     Download
                   </Button>
                 </div>
@@ -503,7 +524,7 @@ export default function AboutPageClient() {
             Get in touch with our team for support, partnerships, or media inquiries
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button href="mailto:info@invoicerly.co.uk" size="lg">
+            <Button href="mailto:info@ventira.co.uk" size="lg">
               Contact us
             </Button>
             <Button variant="outline" href="/contact" size="lg">

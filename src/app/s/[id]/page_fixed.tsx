@@ -42,7 +42,7 @@ export default async function SharedInvoicePage(props: SharedInvoicePageProps) {
       bankName: invoice.user?.company?.bankName || undefined,
       bic: invoice.user?.company?.bic || undefined,
       logoUrl: invoice.user?.company?.logoUrl || undefined,
-      email: invoice.user?.email || 'info@invoicerly.co.uk',
+      email: invoice.user?.email || 'info@ventira.co.uk',
       phone: undefined,
     },
     client: {

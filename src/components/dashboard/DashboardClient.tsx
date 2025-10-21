@@ -375,7 +375,7 @@ export default function DashboardClient() {
               iban: printing.sender.iban,
               bankName: printing.sender.bankName,
               bic: printing.sender.bic,
-              email: 'info@invoicerly.co.uk',
+              email: 'info@ventira.co.uk',
               phone: undefined,
             },
             client: {
@@ -609,7 +609,7 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onRefresh
                   bankName: invoice.user?.company?.bankName,
                   bic: invoice.user?.company?.bic,
                   logoUrl: invoice.user?.company?.logoUrl,
-                  email: invoice.user?.email || 'info@invoicerly.co.uk',
+                  email: invoice.user?.email || 'info@ventira.co.uk',
                   phone: undefined,
                 },
                 client: {

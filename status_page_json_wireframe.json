@@ -3,12 +3,12 @@
   "route": "/status",
   "language": "en-GB",
   "meta": {
-    "title": "Service Status | Invoicerly",
-    "description": "Live view of Invoicerly availability, uptime, incidents, and maintenance.",
+    "title": "Service Status | Ventira",
+    "description": "Live view of Ventira availability, uptime, incidents, and maintenance.",
     "og": {
-      "title": "Service Status | Invoicerly",
+      "title": "Service Status | Ventira",
       "type": "website",
-      "url": "https://www.invoicerly.co.uk/status",
+      "url": "https://www.ventira.co.uk/status",
       "image": "/assets/og/status.png",
       "description": "Current component status, incident history, and uptime charts."
     },
@@ -16,11 +16,11 @@
       "@context": "https://schema.org",
       "@type": "WebPage",
       "name": "Service Status",
-      "description": "Public status page for Invoicerly services.",
-      "url": "https://www.invoicerly.co.uk/status"
+      "description": "Public status page for Ventira services.",
+      "url": "https://www.ventira.co.uk/status"
     },
     "lastUpdated": "2025-10-08",
-    "canonical": "https://www.invoicerly.co.uk/status",
+    "canonical": "https://www.ventira.co.uk/status",
     "noindex": false
   },
   "layout": {

@@ -4,7 +4,7 @@ import Pill from '@/components/policy/Pill';
 import Card from '@/components/ui/Card';
 
 export const metadata = {
-  title: 'Contact - Invoicerly',
+  title: 'Contact - Ventira',
   description: 'Get in touch with sales, support, or billing.',
 };
 
@@ -31,11 +31,8 @@ export default function ContactPage() {
               <Card className="p-6" padding="md">
                 <h3 className="text-base font-semibold">Contact details</h3>
                 <div className="mt-3 grid gap-3 text-sm text-slate-700">
-                  <div className="flex items-center justify-between"><div>Sales</div><a className="underline" href="mailto:info@invoicerly.co.uk">info@invoicerly.co.uk</a></div>
-                  <div className="flex items-center justify-between"><div>Support</div><a className="underline" href="mailto:info@invoicerly.co.uk">info@invoicerly.co.uk</a></div>
-                  <div className="flex items-center justify-between"><div>Billing</div><a className="underline" href="mailto:info@invoicerly.co.uk">info@invoicerly.co.uk</a></div>
-                  <div className="flex items-center justify-between"><div>Privacy (DPO)</div><a className="underline" href="mailto:info@invoicerly.co.uk">info@invoicerly.co.uk</a></div>
-                  <div className="flex items-center justify-between"><div>Phone</div><a className="underline" href="tel:+447537103023">+44 7537 103023</a></div>
+                  <div className="flex items-center justify-between"><div>Support</div><a className="underline" href="mailto:info@ventira.co.uk">info@ventira.co.uk</a></div>
+                  <div className="flex items-center justify-between"><div>Phone</div><a className="underline" href="tel:+447457423147">+44 7457 423147</a></div>
                 </div>
                 <div className="mt-4 text-xs text-slate-500">Hours: Mon-Fri, 09:00-18:00 (UK). Limited support on EU public holidays.</div>
               </Card>
@@ -45,14 +42,14 @@ export default function ContactPage() {
                 <div className="mt-3 grid gap-4 text-sm text-slate-700">
                   <div>
                     <div className="font-medium">United Kingdom (Primary)</div>
-                    <div>GET STUFFED LTD</div>
-                    <div>Company number 15673179</div>
+                    <div>VIARGAMING LTD</div>
+                    <div>Company number 15847699</div>
                     <div>Flat 21 County Chambers, 1 Drapery,<br/>Northampton, United Kingdom, NN1 2ET</div>
                   </div>
                 </div>
                 <div className="mt-4 h-40 rounded-xl overflow-hidden border border-black/10">
                   <iframe
-                    title="Invoicerly Office Location"
+                    title="Ventira Office Location"
                     width="100%"
                     height="100%"
                     loading="lazy"

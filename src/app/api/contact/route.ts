@@ -35,8 +35,8 @@ export async function POST(req: Request) {
     const resend = getResendClient();
 
     const { data, error } = await resend.emails.send({
-      from: "Invoicerly Contact Form <info@invoicerly.co.uk>", // Замените на ваш верифицированный домен
-      to: ["info@invoicerly.co.uk"], // Укажите здесь ваш email
+      from: "Ventira Contact Form <info@ventira.co.uk>", // Замените на ваш верифицированный домен
+      to: ["info@ventira.co.uk"], // Укажите здесь ваш email
       subject: `New message from ${name}`,
       replyTo: email,
       // Теперь этот компонент будет найден и отрендерен корректно

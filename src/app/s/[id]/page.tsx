@@ -44,7 +44,7 @@ import { notFound } from 'next/navigation';
       bankName: invoice.user?.company?.bankName || undefined,
       bic: invoice.user?.company?.bic || undefined,
       logoUrl: invoice.user?.company?.logoUrl || undefined,
-      email: invoice.user?.email || 'info@invoicerly.co.uk',
+      email: invoice.user?.email || 'info@ventira.co.uk',
       phone: undefined,
     },
     client: {
