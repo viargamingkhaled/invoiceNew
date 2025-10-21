@@ -445,29 +445,23 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
         setInvoiceMeta((prev) => ({ ...prev, number: String(invoice.number || prev.number), date: new Date(invoice.date).toISOString().slice(0, 10) }));
       } catch {}
 
-      // Generate downloadable PDF from the hidden print area
-      const el = document.getElementById('print-area');
-      if (!el) throw new Error('Print area not found');
-      const prevDisplay = el.style.display;
-      const prevPos = (el.style as any).position;
-      const prevLeft = (el.style as any).left;
-      (el.style as any).display = 'block';
-      (el.style as any).position = 'absolute';
-      (el.style as any).left = '-10000px';
-
-      const { jsPDF } = await import('jspdf');
-      const html2canvas = (await import('html2canvas')).default;
-      const canvas = await html2canvas(el as HTMLElement, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
-
-      (el.style as any).display = prevDisplay;
-      (el.style as any).position = prevPos;
-      (el.style as any).left = prevLeft;
-
-      const imgData = canvas.toDataURL('image/png');
+      // Generate PDF using server-side API (professional approach)
+      console.log('[PDF_DOWNLOAD] Starting server-side PDF generation...');
+      
       try {
-        const res = await fetch(`/api/pdf/${invoice.id}?due=${encodeURIComponent(invoiceMeta.due || '')}`);
-        if (res.ok) {
-          const blob = await res.blob();
+        // Use new /api/pdf/generate endpoint for direct PDF generation
+        const pdfRes = await fetch('/api/pdf/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            invoice: pdfInvoice,
+            template: template,
+          }),
+        });
+
+        if (pdfRes.ok) {
+          console.log('[PDF_DOWNLOAD] PDF generated successfully via API');
+          const blob = await pdfRes.blob();
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
@@ -478,16 +472,35 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
           URL.revokeObjectURL(url);
           setBanner({ type: 'success', msg: 'PDF downloaded.' });
         } else {
-          throw new Error('Server PDF failed');
+          const errorData = await pdfRes.json().catch(() => ({}));
+          console.error('[PDF_DOWNLOAD] API error:', errorData);
+          throw new Error(errorData.error || 'Server PDF generation failed');
         }
-      } catch {
-        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = pdf.internal.pageSize.getHeight();
-        pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, pageHeight, undefined, 'FAST');
-        const fname = `Invoice - ${invoiceMeta.number || 'XXXXXX'}.pdf`;
-        pdf.save(fname);
-        setBanner({ type: 'success', msg: 'PDF downloaded.' });
+      } catch (pdfError: any) {
+        console.warn('[PDF_DOWNLOAD] Server PDF failed, trying fallback with existing invoice ID:', pdfError.message);
+        
+        // Fallback: try using the existing /api/pdf/[id] endpoint
+        try {
+          const res = await fetch(`/api/pdf/${invoice.id}?due=${encodeURIComponent(invoiceMeta.due || '')}`);
+          if (res.ok) {
+            console.log('[PDF_DOWNLOAD] Fallback PDF successful');
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Invoice - ${invoiceMeta.number || 'XXXXXX'}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+            setBanner({ type: 'success', msg: 'PDF downloaded.' });
+          } else {
+            throw new Error('Both PDF generation methods failed');
+          }
+        } catch (fallbackError) {
+          console.error('[PDF_DOWNLOAD] All PDF generation methods failed:', fallbackError);
+          throw fallbackError;
+        }
       }
     } catch (e: any) {
       if (createdInvoiceId) {
