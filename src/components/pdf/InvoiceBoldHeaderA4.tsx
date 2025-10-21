@@ -56,7 +56,7 @@ export default function InvoiceBoldHeaderA4({ invoice }: InvoiceBoldHeaderA4Prop
   return (
     <div
       className="relative bg-white mx-auto"
-      style={{ width: 794, height: 1123, padding: 56 }} // A4 @96dpi ~ 794x1123, 15mm ~ 56px
+      style={{ width: 794, maxHeight: 1123, padding: 56, overflow: 'hidden' }} // A4 @96dpi ~ 794x1123, 15mm ~ 56px
     >
       {/* Masthead (45–55mm) */}
       <div className="w-full" style={{ background: colors.brand, color: colors.textOnBrand, padding: 32 }}>

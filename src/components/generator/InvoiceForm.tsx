@@ -498,6 +498,21 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
       a.remove();
       URL.revokeObjectURL(url);
       setBanner({ type: 'success', msg: 'PDF downloaded.' });
+      
+      // Fetch next invoice number for the next generation
+      if (signedIn) {
+        fetch('/api/invoices/next-number')
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.number) {
+              console.log('[PDF_DOWNLOAD] Updated invoice number to:', data.number);
+              setInvoiceMeta((prev) => ({ ...prev, number: data.number }));
+            }
+          })
+          .catch((err) => {
+            console.error('[PDF_DOWNLOAD] Failed to fetch next invoice number:', err);
+          });
+      }
     } catch (e: any) {
       if (createdInvoiceId) {
         try { await fetch(`/api/invoices/${createdInvoiceId}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'Error' }) }); } catch {}
@@ -695,6 +710,21 @@ const sendEmail = async () => {
       }
 
       setBanner({ type: 'success', msg: 'Email sent successfully!' });
+      
+      // Fetch next invoice number for the next generation
+      if (signedIn) {
+        fetch('/api/invoices/next-number')
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.number) {
+              console.log('[EMAIL_SEND] Updated invoice number to:', data.number);
+              setInvoiceMeta((prev) => ({ ...prev, number: data.number }));
+            }
+          })
+          .catch((err) => {
+            console.error('[EMAIL_SEND] Failed to fetch next invoice number:', err);
+          });
+      }
     } catch (e: any) {
       setBanner({ type: 'error', msg: e.message || 'Failed to queue email.' });
     } finally {
@@ -816,7 +846,7 @@ const sendEmail = async () => {
         </div>
       </motion.div>
 
-      <div className="grid lg:grid-cols-[40%_60%] gap-6">
+      <div className="grid lg:grid-cols-[30%_70%] gap-6">
         {/* Form */}
         <div>
           <motion.div className="rounded-2xl bg-white p-5 border border-black/10 shadow-sm" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>

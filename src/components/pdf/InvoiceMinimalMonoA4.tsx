@@ -52,7 +52,7 @@ export default function InvoiceMinimalMonoA4({ invoice }: InvoiceMinimalMonoA4Pr
   return (
     <div
       className="relative bg-white mx-auto"
-      style={{ width: 794, height: 1123, padding: 56 }} // A4 @96dpi ~ 794x1123, 15mm ~ 56px
+      style={{ width: 794, maxHeight: 1123, padding: 56, overflow: 'hidden' }} // A4 @96dpi ~ 794x1123, 15mm ~ 56px
     >
       {/* Top meta line (mono) */}
       <div className="font-mono text-[12px] text-slate-700 border-b pb-2" style={{ borderColor: c.line }}>

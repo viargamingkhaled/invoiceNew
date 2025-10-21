@@ -53,7 +53,7 @@ export default function InvoiceBusinessPortraitA4({ invoice }: InvoiceBusinessPo
   return (
     <div
       className="relative bg-white mx-auto grid"
-      style={{ width: 794, height: 1123, gridTemplateColumns: '160px 1fr' }} // A4 @96dpi ~ 794x1123
+      style={{ width: 794, maxHeight: 1123, gridTemplateColumns: '160px 1fr', overflow: 'hidden' }} // A4 @96dpi ~ 794x1123
     >
       {/* Left vertical band */}
       <div className="h-full flex flex-col items-center" style={{ background: k.surfaceAlt, padding: 20 }}>

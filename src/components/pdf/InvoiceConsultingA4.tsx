@@ -60,7 +60,7 @@ export default function InvoiceConsultingA4({ invoice }: InvoiceConsultingA4Prop
       <style>{`
         @page { size: A4; margin: 12mm 12mm 14mm 12mm; }
         @media print { body { background: white; } }
-        .a4 { width: 210mm; min-height: 297mm; margin: 0 auto; background: white; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+        .a4 { width: 210mm; max-height: 297mm; margin: 0 auto; background: white; box-shadow: 0 1px 6px rgba(0,0,0,0.06); overflow: hidden; }
         .muted { color: #64748b; }
         .label { font-size: 11px; color: #334155; letter-spacing: .02em; }
         .right { text-align: right; }

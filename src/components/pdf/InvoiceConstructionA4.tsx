@@ -51,7 +51,7 @@ export default function InvoiceConstructionA4({ invoice }: InvoiceConstructionA4
       <style>{`
         @page { size: A4; margin: 14mm 14mm 16mm 14mm; }
         @media print { body { background: white; } }
-        .a4 { width: 210mm; min-height: 297mm; margin: 0 auto; background: white; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+        .a4 { width: 210mm; max-height: 297mm; margin: 0 auto; background: white; box-shadow: 0 1px 6px rgba(0,0,0,0.06); overflow: hidden; }
         .muted { color: #64748b; }
         .label { font-size: 11px; color: #334155; letter-spacing: .02em; }
         .table { width: 100%; border-collapse: collapse; }

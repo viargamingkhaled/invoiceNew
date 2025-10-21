@@ -46,7 +46,7 @@ export default function InvoiceNordicGridA4({ invoice }: InvoiceNordicGridA4Prop
   return (
     <div
       className="relative bg-white mx-auto"
-      style={{ width: 794, height: 1123, padding: 56 }} // A4 @96dpi ~ 794x1123, 15mm ~ 56px
+      style={{ width: 794, maxHeight: 1123, padding: 56, overflow: 'hidden' }} // A4 @96dpi ~ 794x1123, 15mm ~ 56px
     >
       {/* grid overlay (very subtle) */}
       <div className="pointer-events-none absolute inset-0 opacity-50" aria-hidden>
