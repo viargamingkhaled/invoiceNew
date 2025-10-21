@@ -70,8 +70,8 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     iban: 'GB00BANK0000000000',
     bankName: '',
     bic: '',
-    email: 'info@invoicerly.co.uk',
-    phone: '+44 20 1234 5678',
+    email: '', // Will be loaded from session
+    phone: '', // Not stored in DB, remove hardcoded value
   });
   const [client, setClient] = useState({
     name: 'Client GmbH',
@@ -85,17 +85,39 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     email: '',
   });
   const [invoiceMeta, setInvoiceMeta] = useState({
-    number: 'INV-2025-000245',
+    number: 'INV-2025-000245', // Will be replaced by API call
     date: new Date().toISOString().slice(0, 10),
     due: '2025-09-16',
   });
+  
+  // Fetch next invoice number and user email on mount (only for signed-in users)
   useEffect(() => {
-    // Set initial date to today if not already set
-    if (!invoiceMeta.date) {
-      const today = new Date().toISOString().slice(0, 10);
-      setInvoiceMeta((m) => ({ ...m, date: today }));
+    if (signedIn) {
+      // Fetch next invoice number
+      fetch('/api/invoices/next-number')
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.number) {
+            setInvoiceMeta((prev) => ({ ...prev, number: data.number }));
+          }
+        })
+        .catch((err) => {
+          console.error('[INVOICE_FORM] Failed to fetch next invoice number:', err);
+        });
+      
+      // Fetch user session for email
+      fetch('/api/auth/session')
+        .then((res) => res.json())
+        .then((session) => {
+          if (session?.user?.email) {
+            setSender((prev) => ({ ...prev, email: session.user.email }));
+          }
+        })
+        .catch((err) => {
+          console.error('[INVOICE_FORM] Failed to fetch user session:', err);
+        });
     }
-  }, []);
+  }, [signedIn]);
   const [paymentTerm, setPaymentTerm] = useState<'pre' | 7 | 14 | 30 | 45 | 60>(14);
   const [notes, setNotes] = useState('Add notes and comments');
   const [logo, setLogo] = useState<string | null>(null);
@@ -803,7 +825,25 @@ const sendEmail = async () => {
               <p className="text-xs text-slate-500 mt-1">Upload your logo to appear on the invoice</p>
             </div>
             <div className="mb-4">
-              <LogoUploader value={logo} onChange={setLogo} />
+              <LogoUploader 
+                value={logo} 
+                onChange={setLogo}
+                onDelete={async () => {
+                  // Update database to remove logo
+                  if (signedIn) {
+                    try {
+                      await fetch('/api/company', {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ logoUrl: null }),
+                      });
+                      console.log('[LOGO] Logo removed from database');
+                    } catch (error) {
+                      console.error('[LOGO] Failed to remove logo from database:', error);
+                    }
+                  }
+                }}
+              />
             </div>
             {/* Invoice metadata directly under Branding */}
             <div className="mb-4">

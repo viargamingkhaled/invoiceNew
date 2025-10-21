@@ -5,9 +5,10 @@ import React, { useRef } from 'react';
 interface LogoUploaderProps {
   value: string | null | undefined;
   onChange: (dataUrl: string | null) => void;
+  onDelete?: () => void; // Optional callback when logo is deleted
 }
 
-export default function LogoUploader({ value, onChange }: LogoUploaderProps) {
+export default function LogoUploader({ value, onChange, onDelete }: LogoUploaderProps) {
   const fileRef = useRef<HTMLInputElement | null>(null);
 
   const onPick = () => fileRef.current?.click();
@@ -24,7 +25,12 @@ export default function LogoUploader({ value, onChange }: LogoUploaderProps) {
     e.target.value = '';
   };
 
-  const clear = () => onChange(null);
+  const clear = () => {
+    onChange(null);
+    if (onDelete) {
+      onDelete(); // Call the delete callback if provided
+    }
+  };
 
   return (
     <div className="flex items-center gap-3">
