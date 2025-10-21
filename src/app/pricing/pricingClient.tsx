@@ -12,7 +12,7 @@ import Pill from '@/components/policy/Pill';
 import { Button } from '@/components/ui/Button';
 import Segmented from '@/components/ui/Segmented';
 import { CC, VAT_RATES } from '@/lib/constants';
-import { Currency, convertFromGBP, convertToGBP, formatCurrency, getCurrencySymbol, getAvailableCurrencies } from '@/lib/currency';
+import { Currency, calculateTokens, convertFromGBP, convertToGBP, formatCurrency, getCurrencySymbol, getAvailableCurrencies } from '@/lib/currency';
 import { pricingPlans, getPlanPrice } from '@/lib/plans';
 
 const COUNTRIES = Object.keys(CC);
@@ -275,12 +275,11 @@ export default function PricingClient() {
 
 function CustomPlanCard({ currency, onPurchase }: { currency: Currency; onPurchase: (amount: number, currency: Currency) => void; }) {
   const [priceInput, setPriceInput] = useState<string>('0.01');
-  const TOKENS_PER_UNIT = 100;
   const TOKENS_PER_INVOICE = 10;
   const min = 0.01;
   const numericPrice = parseFloat(priceInput || '0');
   const validNumber = Number.isFinite(numericPrice);
-  const tokens = Math.max(0, Math.round((validNumber ? numericPrice : 0) * TOKENS_PER_UNIT));
+  const tokens = Math.max(0, calculateTokens(validNumber ? numericPrice : 0, currency));
   const invoices = Math.round(tokens / TOKENS_PER_INVOICE);
 
   const onChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {

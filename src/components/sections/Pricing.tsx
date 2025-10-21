@@ -7,7 +7,7 @@ import Card from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { PRICING_PLANS } from '@/lib/data';
 import { THEME } from '@/lib/theme';
-import { Currency, convertFromGBP, convertToGBP, formatCurrency, getCurrencySymbol, getAvailableCurrencies } from '@/lib/currency';
+import { Currency, calculateTokens, convertFromGBP, convertToGBP, formatCurrency, getCurrencySymbol, getAvailableCurrencies } from '@/lib/currency';
 
 export default function Pricing() {
   const bcRef = useRef<BroadcastChannel | null>(null);
@@ -185,9 +185,8 @@ function CustomHomeCard({ currency }: { currency: Currency }) {
   const [price, setPrice] = useState<number>(0.01);
   const [isLoading, setIsLoading] = useState(false);
   const min = 0.01;
-  const TOKENS_PER_UNIT = 100;
   const TOKENS_PER_INVOICE = 10;
-  const tokens = Math.max(0, Math.round(price * TOKENS_PER_UNIT));
+  const tokens = Math.max(0, calculateTokens(price, currency));
   const invoices = Math.round(tokens / TOKENS_PER_INVOICE);
 
   const onChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
