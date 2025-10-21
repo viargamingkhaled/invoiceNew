@@ -816,7 +816,7 @@ const sendEmail = async () => {
         </div>
       </motion.div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-[40%_60%] gap-6">
         {/* Form */}
         <div>
           <motion.div className="rounded-2xl bg-white p-5 border border-black/10 shadow-sm" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>

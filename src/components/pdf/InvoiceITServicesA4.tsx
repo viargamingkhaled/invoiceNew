@@ -152,21 +152,20 @@ export default function InvoiceITServicesA4({ invoice }: InvoiceITServicesA4Prop
               </div>
             </div>
 
-            <div className="mt-auto text-[11px] text-slate-500">This invoice is generated electronically and is valid without a signature.</div>
-          </div>
-
-          {/* Right column (summary + payment) */}
-          <div className="flex flex-col">
-            <div className="summary rounded-xl p-4 shadow-sm">
-              <div className="text-sm font-semibold">Invoice summary</div>
-              <div className="mt-2 grid grid-cols-2 gap-y-2 text-sm">
-                <div className="muted">Subtotal</div><div className="right">{money(totals.net, currency)}</div>
-                <div className="muted">Tax</div><div className="right">{money(totals.vat, currency)}</div>
-                <div className="h-px bg-slate-200 col-span-2 my-1" />
-                <div className="font-semibold">Total</div><div className="text-right font-semibold">{money(totals.total, currency)}</div>
+            {/* Invoice summary (moved from right column) */}
+            <div className="mt-6">
+              <div className="summary rounded-xl p-4 shadow-sm">
+                <div className="text-sm font-semibold">Invoice summary</div>
+                <div className="mt-2 grid grid-cols-2 gap-y-2 text-sm">
+                  <div className="muted">Subtotal</div><div className="right">{money(totals.net, currency)}</div>
+                  <div className="muted">Tax</div><div className="right">{money(totals.vat, currency)}</div>
+                  <div className="h-px bg-slate-200 col-span-2 my-1" />
+                  <div className="font-semibold">Total</div><div className="text-right font-semibold">{money(totals.total, currency)}</div>
+                </div>
               </div>
             </div>
 
+            {/* Payment info (moved from right column) */}
             <div className="mt-4 rounded-xl border border-slate-200 p-4">
               <div className="text-sm font-semibold">Payment</div>
               <div className="text-sm mt-2">
@@ -175,6 +174,13 @@ export default function InvoiceITServicesA4({ invoice }: InvoiceITServicesA4Prop
                 {invoice.company.bic && <div><span className="muted">BIC:</span> {invoice.company.bic}</div>}
               </div>
             </div>
+
+            <div className="mt-auto text-[11px] text-slate-500">This invoice is generated electronically and is valid without a signature.</div>
+          </div>
+
+          {/* Right column (now empty, can be removed or used for other content) */}
+          <div className="flex flex-col">
+            {/* Moved sections to left column */}
           </div>
         </div>
       </div>
