@@ -1,18 +1,22 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
+import { Currency, getAvailableCurrencies, convertFromGBP, formatCurrency } from '@/lib/currency';
 
-const TOKEN_PACKAGES = [
-  { amount: 10, currency: 'GBP', tokens: 1000, invoices: 100, costPerInvoice: 0.10 },
-  { amount: 50, currency: 'GBP', tokens: 5000, invoices: 500, costPerInvoice: 0.10 },
-  { amount: 100, currency: 'GBP', tokens: 10000, invoices: 1000, costPerInvoice: 0.10 },
-  { amount: 10, currency: 'EUR', tokens: 1000, invoices: 100, costPerInvoice: 0.10 },
-  { amount: 50, currency: 'EUR', tokens: 5000, invoices: 500, costPerInvoice: 0.10 },
-  { amount: 100, currency: 'EUR', tokens: 10000, invoices: 1000, costPerInvoice: 0.10 },
-];
+// Generate dynamic token packages based on selected currency
+const getTokenPackages = (currency: Currency) => {
+  const basePackagesGBP = [10, 50, 100]; // Base packages in GBP
+  return basePackagesGBP.map(amountGBP => {
+    const amount = convertFromGBP(amountGBP, currency);
+    const tokens = Math.round(amountGBP * 100);
+    const invoices = Math.round(tokens / 10);
+    const costPerInvoice = amount / invoices;
+    return { amount, currency, tokens, invoices, costPerInvoice };
+  });
+};
 
 const LEDGER_SAMPLE = [
   { date: '2024-01-15', type: 'Top-up', delta: 1000, balance: 1000, currency: 'GBP', amount: 10, receiptUrl: '#' },
@@ -24,9 +28,12 @@ const LEDGER_SAMPLE = [
 ];
 
 export default function BillingTokensPage() {
-  const [selectedCurrency, setSelectedCurrency] = useState<'GBP' | 'EUR' | 'AUD'>('GBP');
+  const [selectedCurrency, setSelectedCurrency] = useState<Currency>('GBP');
   const [customAmount, setCustomAmount] = useState<number>(10);
+  const [mounted, setMounted] = useState(false);
+  const bcRef = useRef<BroadcastChannel | null>(null);
 
+  // Track page view
   useEffect(() => {
     if (typeof window !== 'undefined') {
       // @ts-ignore
@@ -35,6 +42,38 @@ export default function BillingTokensPage() {
       });
     }
   }, []);
+
+  // Load currency from localStorage on mount
+  useEffect(() => {
+    setMounted(true);
+    try {
+      const savedCurrency = localStorage.getItem('currency') as Currency;
+      if (savedCurrency && getAvailableCurrencies().includes(savedCurrency)) {
+        setSelectedCurrency(savedCurrency);
+      }
+    } catch {}
+  }, []);
+
+  // Sync with header via BroadcastChannel
+  useEffect(() => {
+    try {
+      bcRef.current = new BroadcastChannel('app-events');
+      bcRef.current.onmessage = (ev: MessageEvent) => {
+        const data: any = ev?.data || {};
+        if (data.type === 'currency-updated' && getAvailableCurrencies().includes(data.currency)) {
+          setSelectedCurrency(data.currency);
+        }
+      };
+    } catch {}
+    return () => { try { bcRef.current?.close(); } catch {} };
+  }, []);
+
+  // Handle currency change and sync with header
+  const onCurrencyChange = (nextCurrency: Currency) => {
+    setSelectedCurrency(nextCurrency);
+    try { localStorage.setItem('currency', nextCurrency); } catch {}
+    try { bcRef.current?.postMessage({ type: 'currency-updated', currency: nextCurrency }); } catch {}
+  };
 
   const handleTopUpClick = (amount?: number) => {
     if (typeof window !== 'undefined') {
@@ -50,7 +89,8 @@ export default function BillingTokensPage() {
   const calculateInvoices = (tokens: number) => Math.round(tokens / 10);
   const calculateCostPerInvoice = (amount: number) => (amount / calculateInvoices(calculateTokens(amount))).toFixed(2);
 
-  const filteredPackages = TOKEN_PACKAGES.filter(pkg => pkg.currency === selectedCurrency);
+  // Get dynamic packages for selected currency
+  const packages = getTokenPackages(selectedCurrency);
 
   return (
     <main className="bg-slate-50 min-h-screen">
@@ -118,11 +158,12 @@ export default function BillingTokensPage() {
                       />
                       <select
                         value={selectedCurrency}
-                        onChange={(e) => setSelectedCurrency(e.target.value as 'GBP' | 'EUR')}
+                        onChange={(e) => onCurrencyChange(e.target.value as Currency)}
                         className="px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                       >
-                        <option value="GBP">GBP</option>
-                        <option value="EUR">EUR</option>
+                        {getAvailableCurrencies().map(curr => (
+                          <option key={curr} value={curr}>{curr}</option>
+                        ))}
                       </select>
                     </div>
                   </div>
@@ -148,11 +189,11 @@ export default function BillingTokensPage() {
               <div className="p-8">
                 <h2 className="text-2xl font-bold text-slate-900 mb-6">How to top up</h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                  {filteredPackages.map((pkg, index) => (
+                  {packages.map((pkg, index) => (
                     <div key={index} className="border border-slate-200 rounded-lg p-4 hover:border-emerald-300 transition-colors">
                       <div className="text-center">
                         <div className="text-2xl font-bold text-slate-900 mb-1">
-                          {pkg.currency} {pkg.amount}
+                          {formatCurrency(pkg.amount, selectedCurrency)}
                         </div>
                         <div className="text-sm text-slate-600 mb-2">
                           {pkg.tokens.toLocaleString('en-US')} tokens
@@ -168,7 +209,7 @@ export default function BillingTokensPage() {
                   <div className="flex items-start gap-3">
                     <div className="text-blue-600 font-semibold text-sm">💡 Custom amounts</div>
                     <p className="text-blue-800 text-sm">
-                      You can top up any amount from {selectedCurrency}5 to {selectedCurrency}10,000.
+                      You can top up any amount from {formatCurrency(5, selectedCurrency)} to {formatCurrency(10000, selectedCurrency)}.
                     </p>
                   </div>
                 </div>
@@ -275,20 +316,30 @@ export default function BillingTokensPage() {
                 <h2 className="text-2xl font-bold text-slate-900 mb-6">Payment Methods & Limits</h2>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <h3 className="font-semibold text-slate-900 mb-3">Accepted Methods</h3>
-                    <ul className="text-sm text-slate-600 space-y-2">
-                      <li>• Credit/Debit cards (Visa, Mastercard, Amex)</li>
-                      <li>• Apple Pay</li>
-                      <li>• Google Pay</li>
-                      <li>• Bank transfer (for large amounts)</li>
-                    </ul>
+                    <h3 className="font-semibold text-slate-900 mb-4">Accepted Payment Methods</h3>
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
+                        <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <div className="font-medium text-slate-900">Credit/Debit Cards</div>
+                          <div className="text-sm text-slate-600">Visa, Mastercard</div>
+                        </div>
+                      </div>
+                      <p className="text-xs text-slate-500 px-3">
+                        All payments are processed securely through Stripe. Card details are encrypted and never stored on our servers.
+                      </p>
+                    </div>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-slate-900 mb-3">Limits</h3>
+                    <h3 className="font-semibold text-slate-900 mb-3">Transaction Limits</h3>
                     <ul className="text-sm text-slate-600 space-y-2">
-                      <li>• Minimum: {selectedCurrency}5 per transaction</li>
-                      <li>• Maximum: {selectedCurrency}10,000 per transaction</li>
-                      <li>• Daily limit: {selectedCurrency}25,000</li>
+                      <li>• Minimum: {formatCurrency(5, selectedCurrency)} per transaction</li>
+                      <li>• Maximum: {formatCurrency(10000, selectedCurrency)} per transaction</li>
+                      <li>• Daily limit: {formatCurrency(25000, selectedCurrency)}</li>
                       <li>• Fraud protection: Automatic monitoring</li>
                     </ul>
                   </div>
@@ -297,8 +348,8 @@ export default function BillingTokensPage() {
                   <div className="flex items-start gap-3">
                     <div className="text-amber-600 font-semibold text-sm">⚠️ Payment Issues</div>
                     <p className="text-amber-800 text-sm">
-                      If your payment is declined, check your card details and billing address. 
-                      For large amounts, contact support for bank transfer options.
+                      If your payment is declined, please verify your card details and billing address. 
+                      For assistance, contact our support team.
                     </p>
                   </div>
                 </div>
@@ -334,13 +385,13 @@ export default function BillingTokensPage() {
                 <div className="p-6">
                   <h3 className="font-semibold text-slate-900 mb-4">Examples</h3>
                   <div className="space-y-3">
-                    {filteredPackages.slice(0, 3).map((pkg, index) => (
+                    {packages.slice(0, 3).map((pkg, index) => (
                       <div key={index} className="text-sm">
                         <div className="font-medium text-slate-900">
-                          {pkg.currency} {pkg.amount} → {pkg.tokens.toLocaleString('en-US')} tokens
+                          {formatCurrency(pkg.amount, selectedCurrency)} → {pkg.tokens.toLocaleString('en-US')} tokens
                         </div>
                         <div className="text-slate-600">
-                          ≈{pkg.invoices} invoices → ≈{pkg.currency} {pkg.costPerInvoice.toFixed(2)} per invoice
+                          ≈{pkg.invoices} invoices → ≈{formatCurrency(pkg.costPerInvoice, selectedCurrency)} per invoice
                         </div>
                       </div>
                     ))}
