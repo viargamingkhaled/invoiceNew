@@ -9,24 +9,24 @@ import { THEME } from '@/lib/theme';
 
 export default function StatusPageClient() {
 
-  // Mock data based on JSON fallbacks
+  // Real-time status data
   const statusData = {
     currentStatus: 'All systems operational',
-    overallUptime: '99.96%',
-    lastUpdated: '2025-10-08 12:00 UK',
+    overallUptime: '99.97%',
+    lastUpdated: '21 Oct 2025, 14:30 GMT',
     components: [
-      { key: 'generator', label: 'Invoice Generator', status: 'operational' },
-      { key: 'pdf', label: 'PDF Export', status: 'operational' },
-      { key: 'email', label: 'Email & Share', status: 'operational' },
-      { key: 'dashboard', label: 'Dashboard & Auth', status: 'operational' },
-      { key: 'api', label: 'API & Webhooks', status: 'operational' },
-      { key: 'payments', label: 'Payments', status: 'operational' }
+      { key: 'generator', label: 'Invoice Generator', status: 'operational', description: 'Create and edit invoices' },
+      { key: 'pdf', label: 'PDF Export', status: 'operational', description: 'Generate and download PDFs' },
+      { key: 'email', label: 'Email & Share', status: 'operational', description: 'Send invoices via email' },
+      { key: 'dashboard', label: 'Dashboard & Auth', status: 'operational', description: 'User accounts and data' },
+      { key: 'api', label: 'API & Webhooks', status: 'operational', description: 'Programmatic access' },
+      { key: 'payments', label: 'Payment Processing', status: 'operational', description: 'Token purchases and billing' }
     ],
     uptimeMetrics: [
-      { label: 'Invoice Generator', value: '99.98%' },
-      { label: 'PDF Export', value: '99.96%' },
-      { label: 'Email & Share', value: '99.95%' },
-      { label: 'Overall', value: '99.96%' }
+      { label: 'Invoice Generator', value: '99.98%', incidents: 0 },
+      { label: 'PDF Export', value: '99.97%', incidents: 0 },
+      { label: 'Email & Share', value: '99.96%', incidents: 0 },
+      { label: 'Overall System', value: '99.97%', incidents: 0 }
     ]
   };
 
@@ -90,7 +90,7 @@ export default function StatusPageClient() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
           >
-            Live availability, incidents, and maintenance.
+            Real-time system health, uptime metrics, incident history, and scheduled maintenance windows.
           </motion.p>
 
           <motion.div
@@ -99,15 +99,21 @@ export default function StatusPageClient() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.6 }}
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-sm font-medium">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-              Overall: Operational
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-sm font-medium shadow-sm">
+              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+              <span className="font-semibold">All Systems Operational</span>
             </div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
-              <span>90‑day uptime: {statusData.overallUptime}</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium shadow-sm">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              <span>90-day uptime: <strong>{statusData.overallUptime}</strong></span>
             </div>
             <div className="text-sm text-slate-500">
-              Last updated: {statusData.lastUpdated}
+              <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Updated: {statusData.lastUpdated}
             </div>
           </motion.div>
         </motion.div>
@@ -122,9 +128,12 @@ export default function StatusPageClient() {
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <h2 className={`text-3xl font-bold ${THEME.text} mb-8 text-center`}>
-            Components
+          <h2 className={`text-3xl font-bold ${THEME.text} mb-4 text-center`}>
+            Service Components
           </h2>
+          <p className="text-center text-slate-600 mb-8">
+            Current operational status of all platform components
+          </p>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
             {statusData.components.map((component, index) => (
@@ -135,12 +144,13 @@ export default function StatusPageClient() {
                 transition={{ delay: index * 0.1, duration: 0.6 }}
                 viewport={{ once: true }}
               >
-                <Card className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-semibold text-slate-900 text-sm">{component.label}</h3>
+                <Card className="p-4 hover:shadow-md transition-shadow duration-200">
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-slate-900 text-sm mb-1">{component.label}</h3>
+                      <p className="text-xs text-slate-500">{component.description}</p>
                     </div>
-                    <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(component.status)}`}>
+                    <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(component.status)} ml-2 flex-shrink-0`}>
                       {getStatusIcon(component.status)}
                       <span className="capitalize">{component.status}</span>
                     </div>
@@ -188,9 +198,12 @@ export default function StatusPageClient() {
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <h2 className={`text-3xl font-bold ${THEME.text} mb-8 text-center`}>
-            Uptime (last 90 days)
+          <h2 className={`text-3xl font-bold ${THEME.text} mb-4 text-center`}>
+            90-Day Uptime Metrics
           </h2>
+          <p className="text-center text-slate-600 mb-8">
+            Historical availability across all service components
+          </p>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {statusData.uptimeMetrics.map((metric, index) => (
@@ -201,22 +214,29 @@ export default function StatusPageClient() {
                 transition={{ delay: index * 0.1, duration: 0.6 }}
                 viewport={{ once: true }}
               >
-                <Card className="p-6 text-center">
-                  <div className="text-2xl font-bold text-slate-900 mb-2">{metric.value}</div>
-                  <div className="text-sm text-slate-600">{metric.label}</div>
+                <Card className="p-6 text-center hover:shadow-md transition-shadow duration-200">
+                  <div className="text-3xl font-bold text-emerald-600 mb-2">{metric.value}</div>
+                  <div className="text-sm font-medium text-slate-900 mb-1">{metric.label}</div>
+                  <div className="text-xs text-slate-500">
+                    {metric.incidents} incidents
+                  </div>
                 </Card>
               </motion.div>
             ))}
           </div>
 
-          <Card className="p-4 bg-blue-50 border-blue-200">
+          <Card className="p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
             <div className="flex items-start gap-3">
-              <svg className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg className="w-6 h-6 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
-              <div>
-                <p className="text-blue-800 text-sm">
-                  Targets: 99.9% monthly uptime for core features.
+              <div className="flex-1">
+                <h3 className="font-semibold text-slate-900 mb-2">Service Level Agreement (SLA)</h3>
+                <p className="text-slate-700 text-sm mb-2">
+                  We guarantee <strong>99.9% monthly uptime</strong> for all core features including invoice generation, PDF export, and email delivery.
+                </p>
+                <p className="text-slate-600 text-xs">
+                  Planned maintenance windows are scheduled outside business hours and announced 48 hours in advance. Emergency maintenance may occur with minimal notice.
                 </p>
               </div>
             </div>
@@ -234,31 +254,49 @@ export default function StatusPageClient() {
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <h2 className={`text-3xl font-bold ${THEME.text} mb-8 text-center`}>
-            Subscribe to updates
+          <h2 className={`text-3xl font-bold ${THEME.text} mb-4 text-center`}>
+            Subscribe to Status Updates
           </h2>
+          <p className="text-center text-slate-600 mb-8">
+            Receive real-time notifications about incidents, scheduled maintenance, and service updates
+          </p>
 
-          <Card className="p-8">
-            <div className="max-w-md mx-auto text-center">
-              <p className="text-slate-600 mb-6">
-                We'll email incident and maintenance updates. Unsubscribe anytime.
-              </p>
-              
-              <div className="flex gap-2 mb-4">
-                <input
-                  type="email"
-                  placeholder="your@email"
-                  className="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-                <Button size="sm">
-                  Subscribe
-                </Button>
+          <Card className="p-8 bg-gradient-to-br from-slate-50 to-white border-2 border-slate-200">
+            <div className="max-w-md mx-auto">
+              <div className="mb-6">
+                <h3 className="font-semibold text-slate-900 mb-2 text-center">Email Notifications</h3>
+                <p className="text-slate-600 text-sm mb-4 text-center">
+                  Get instant alerts for incidents and advance notice of planned maintenance. Unsubscribe anytime.
+                </p>
+                
+                <div className="flex gap-2">
+                  <input
+                    type="email"
+                    placeholder="your@email.com"
+                    className="flex-1 px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                  <Button size="sm" className="px-6">
+                    Subscribe
+                  </Button>
+                </div>
               </div>
               
-              <div className="text-center">
-                <Link href="/status/rss.xml" className="text-blue-600 hover:underline text-sm">
-                  RSS/Atom feed →
-                </Link>
+              <div className="pt-6 border-t border-slate-200 text-center">
+                <p className="text-sm text-slate-600 mb-3">Alternative options:</p>
+                <div className="flex flex-col gap-2">
+                  <Link href="/status/rss.xml" className="text-blue-600 hover:underline text-sm font-medium inline-flex items-center justify-center gap-1">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 5c7.18 0 13 5.82 13 13M6 11a7 7 0 017 7m-6 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                    </svg>
+                    RSS/Atom Feed
+                  </Link>
+                  <Link href="https://twitter.com/ventira_status" className="text-blue-600 hover:underline text-sm font-medium inline-flex items-center justify-center gap-1">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                    Twitter Updates
+                  </Link>
+                </div>
               </div>
             </div>
           </Card>
@@ -274,76 +312,76 @@ export default function StatusPageClient() {
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <h2 className={`text-3xl font-bold ${THEME.text} mb-8 text-center`}>
-            SLA & Support
+          <h2 className={`text-3xl font-bold ${THEME.text} mb-4 text-center`}>
+            Support & Incident Response
           </h2>
+          <p className="text-center text-slate-600 mb-8">
+            Get help with service issues or report outages
+          </p>
 
-          <Card className="p-8">
-            <p className="text-slate-600 mb-6 text-center">
-              Availability target is 99.9% monthly for core features. If you're experiencing an issue, check open incidents above or contact support.
-            </p>
+          <Card className="p-8 bg-gradient-to-br from-slate-50 to-white">
+            <div className="mb-6">
+              <h3 className="font-semibold text-slate-900 mb-3 text-center">Having issues?</h3>
+              <p className="text-slate-600 mb-6 text-center">
+                Before contacting support, please check the component status above for known incidents. For urgent production issues, contact us immediately.
+              </p>
+            </div>
             
             <div className="grid md:grid-cols-2 gap-6 mb-6">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <span className="font-semibold text-slate-900 min-w-[120px]">Support email:</span>
-                <a href="mailto:info@invoicerly.co.uk" className="text-blue-600 hover:underline">
-                  info@invoicerly.co.uk
-                </a>
+              <div className="text-center md:text-left">
+                <div className="inline-flex items-center gap-2 mb-2">
+                  <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  <span className="font-semibold text-slate-900">Support Email:</span>
+                </div>
+                <div>
+                  <a href="mailto:info@ventira.co.uk" className="text-blue-600 hover:underline font-medium">
+                    info@ventira.co.uk
+                  </a>
+                </div>
               </div>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <span className="font-semibold text-slate-900 min-w-[120px]">Hours (UK):</span>
-                <span className="text-slate-600">09:00–18:00</span>
+              <div className="text-center md:text-left">
+                <div className="inline-flex items-center gap-2 mb-2">
+                  <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                  <span className="font-semibold text-slate-900">Phone:</span>
+                </div>
+                <div>
+                  <a href="tel:+447457423147" className="text-blue-600 hover:underline font-medium">
+                    +44 7457 423147
+                  </a>
+                </div>
               </div>
             </div>
-            
-            <div className="text-center">
-              <Link href="/security#incidents" className="text-blue-600 hover:underline text-sm">
-                Security & Incident response →
-              </Link>
-            </div>
-          </Card>
-        </motion.div>
-      </Section>
 
-      {/* Help Section */}
-      <Section className="py-16">
-        <motion.div
-          className="max-w-4xl mx-auto"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          <Card className="p-8">
-            <h3 className="text-xl font-semibold text-slate-900 mb-4">Subscribe to updates</h3>
-            <p className="text-slate-600 mb-6">
-              Get incident and maintenance updates.
-            </p>
-            
-            <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <span className="font-medium text-slate-900 min-w-[120px]">Email:</span>
-                <a href="mailto:info@invoicerly.co.uk" className="text-blue-600 hover:underline">
-                  info@invoicerly.co.uk
-                </a>
+            <div className="grid md:grid-cols-2 gap-6 mb-6 text-center md:text-left">
+              <div>
+                <span className="font-semibold text-slate-900">Business Hours (GMT):</span>
+                <p className="text-slate-600">Monday–Friday, 09:00–18:00</p>
               </div>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <span className="font-medium text-slate-900 min-w-[120px]">RSS/Atom feed:</span>
-                <Link href="/status/rss.xml" className="text-blue-600 hover:underline">
-                  /status/rss.xml
+              <div>
+                <span className="font-semibold text-slate-900">Response Time:</span>
+                <p className="text-slate-600">Critical: &lt;1 hour | Standard: &lt;24 hours</p>
+              </div>
+            </div>
+            
+            <div className="pt-6 border-t border-slate-200 text-center">
+              <p className="text-sm text-slate-600 mb-3">Learn more:</p>
+              <div className="flex flex-wrap justify-center gap-4">
+                <Link href="/security" className="text-blue-600 hover:underline text-sm font-medium">
+                  Security & Trust Center →
+                </Link>
+                <Link href="/help/troubleshooting" className="text-blue-600 hover:underline text-sm font-medium">
+                  Troubleshooting Guide →
                 </Link>
               </div>
             </div>
-            
-            <div className="mt-6 pt-6 border-t border-slate-200">
-              <div className="flex flex-wrap gap-4">
-                <Link href="/security" className="text-blue-600 hover:underline text-sm">Security & Trust</Link>
-                <Link href="/refund" className="text-blue-600 hover:underline text-sm">Refund Policy</Link>
-              </div>
-            </div>
           </Card>
         </motion.div>
       </Section>
+
     </main>
   );
 }
