@@ -44,7 +44,7 @@ export default function ContactPage() {
                     <div className="font-medium">United Kingdom (Primary)</div>
                     <div>VIARGAMING LTD</div>
                     <div>Company number 15847699</div>
-                    <div>Flat 21 County Chambers, 1 Drapery,<br/>Northampton, United Kingdom, NN1 2ET</div>
+                    <div>43 Victoria Rd,<br/>Northampton, United Kingdom, NN1 5ED</div>
                   </div>
                 </div>
                 <div className="mt-4 h-40 rounded-xl overflow-hidden border border-black/10">
@@ -54,7 +54,7 @@ export default function ContactPage() {
                     height="100%"
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
-                    src="https://www.google.com/maps?q=Flat%2021%20County%20Chambers%2C%201%20Drapery%2C%20Northampton%2C%20United%20Kingdom%2C%20NN1%202ET&output=embed"
+                    src="https://www.google.com/maps?q=43%20Victoria%20Rd%2C%20Northampton%2C%20United%20Kingdom%2C%20NN1%205ED&output=embed"
                   />
                 </div>
               </Card>

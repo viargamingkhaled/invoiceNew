@@ -34,9 +34,9 @@ export default function AboutPage() {
             "foundingDate": "2024",
             "address": {
               "@type": "PostalAddress",
-              "streetAddress": "Flat 21 County Chambers, 1 Drapery",
+              "streetAddress": "43 Victoria Rd",
               "addressLocality": "Northampton",
-              "postalCode": "NN1 2ET",
+              "postalCode": "NN1 5ED",
               "addressCountry": "GB"
             },
             "contactPoint": {

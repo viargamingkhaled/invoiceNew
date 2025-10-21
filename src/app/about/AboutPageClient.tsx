@@ -377,10 +377,9 @@ export default function AboutPageClient() {
               <div className="space-y-2 text-sm text-slate-600">
                 <p>Company number: 15847699</p>
                 <p>Registered Address:</p>
-                <p className="font-medium">Flat 21 County Chambers<br />
-                1 Drapery<br />
+                <p className="font-medium">43 Victoria Rd<br />
                 Northampton<br />
-                United Kingdom, NN1 2ET</p>
+                United Kingdom, NN1 5ED</p>
                 <p className="pt-4">
                   <a href="mailto:info@ventira.co.uk" className="text-blue-600 hover:underline">
                     info@ventira.co.uk
