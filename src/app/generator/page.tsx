@@ -42,9 +42,9 @@ export default function GeneratorPage() {
           </motion.div>
         )}
 
-        <Section className="py-6">
+        <div className="py-6">
           <InvoiceFormWithSuspense signedIn={signedIn} />
-        </Section>
+        </div>
     </main>
   </motion.div>
 );
