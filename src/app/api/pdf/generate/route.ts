@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import chromium from "@sparticuz/chromium";
-import puppeteer from "puppeteer-core";
+// Switched to Browserless Cloud to avoid Chromium issues on Vercel
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -32,75 +31,42 @@ export async function POST(req: Request) {
     console.log(`[PDF_GENERATE] Template: ${template || 'default'}`);
     console.log(`[PDF_GENERATE] Invoice number: ${invoice.invoiceNumber}`);
 
-    // Create HTML content for Puppeteer
-    const htmlContent = generateInvoiceHTML(invoice, template);
-    
-    const isLocal = process.env.NODE_ENV === 'development';
-    console.log(`[PDF_GENERATE] Environment: ${process.env.NODE_ENV}`);
-    
-    const execPath = isLocal 
-      ? process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/google-chrome'
-      : await chromium.executablePath();
-    console.log(`[PDF_GENERATE] Exec path: ${execPath}`);
+    // Build HTML and send to Browserless Cloud
+    const html = generateInvoiceHTML(invoice, template);
+    const token = process.env.BROWSERLESS_TOKEN;
+    if (!token) {
+      return NextResponse.json({ error: 'Missing BROWSERLESS_TOKEN env' }, { status: 500 });
+    }
 
-    const browser = await puppeteer.launch({
-      args: isLocal 
-        ? ['--no-sandbox', '--disable-setuid-sandbox']
-        : [
-            ...chromium.args,
-            '--disable-gpu',
-            '--disable-dev-shm-usage',
-            '--disable-setuid-sandbox',
-            '--no-first-run',
-            '--no-sandbox',
-            '--no-zygote',
-            '--single-process',
-          ],
-      defaultViewport: { width: 1240, height: 1754, deviceScaleFactor: 2 },
-      executablePath: execPath,
-      headless: chromium.headless || true,
+    const url = `https://chrome.browserless.io/pdf?token=${token}`;
+    const blRes = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        html,
+        options: {
+          printBackground: true,
+          format: 'A4',
+          margin: { top: '10mm', right: '10mm', bottom: '12mm', left: '10mm' },
+        },
+      }),
     });
 
-    try {
-      const page = await browser.newPage();
-      console.log(`[PDF_GENERATE] Setting HTML content...`);
-      
-      // Set HTML content directly (no network request needed)
-      await page.setContent(htmlContent, {
-        waitUntil: ['domcontentloaded', 'networkidle0'],
-        timeout: 30000
-      });
-      
-      console.log(`[PDF_GENERATE] HTML loaded, generating PDF...`);
-      
-      const pdfBuffer = await page.pdf({
-        format: 'A4',
-        printBackground: true,
-        margin: { top: '10mm', right: '10mm', bottom: '12mm', left: '10mm' },
-        preferCSSPageSize: true,
-      });
-      
-      console.log(`[PDF_GENERATE] PDF generated, size: ${pdfBuffer.length} bytes`);
-
-      const body = new Uint8Array(pdfBuffer);
-      const fileName = `invoice-${invoice.invoiceNumber || 'document'}.pdf`;
-      
-      return new Response(body, {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/pdf',
-          'Content-Disposition': `attachment; filename="${fileName}"`,
-          'Cache-Control': 'no-store',
-        },
-      });
-    } finally {
-      try { 
-        await browser.close(); 
-        console.log(`[PDF_GENERATE] Browser closed`);
-      } catch (e) {
-        console.error(`[PDF_GENERATE] Error closing browser:`, e);
-      }
+    if (!blRes.ok) {
+      const msg = await blRes.text().catch(()=> '');
+      return NextResponse.json({ error: 'Browserless PDF failed', details: msg }, { status: 500 });
     }
+
+    const pdfArrayBuffer = await blRes.arrayBuffer();
+    const fileName = `invoice-${invoice.invoiceNumber || 'document'}.pdf`;
+    return new Response(pdfArrayBuffer, {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="${fileName}"`,
+        'Cache-Control': 'no-store',
+      },
+    });
   } catch (e: any) {
     console.error(`[PDF_GENERATE] Error:`, e);
     return NextResponse.json({ 

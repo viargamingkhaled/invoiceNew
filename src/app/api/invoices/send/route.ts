@@ -3,8 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
-import chromium from "@sparticuz/chromium";
-import puppeteer from "puppeteer-core";
+// Switched to Browserless Cloud to avoid Chromium issues on Vercel
 
 let resendClient: Resend | null = null;
 
@@ -68,41 +67,34 @@ export async function POST(req: Request) {
     
     console.log(`[INVOICE_SEND] Print URL: ${printUrl}`);
     
-    const isLocal = process.env.NODE_ENV === 'development';
-    const execPath = isLocal ? undefined : await chromium.executablePath();
-    
-    const browser = await puppeteer.launch({
-      args: isLocal ? [] : chromium.args,
-      defaultViewport: { width: 1240, height: 1754, deviceScaleFactor: 2 },
-      executablePath: execPath,
-      headless: chromium.headless,
+    // Generate PDF via Browserless Cloud
+    const token = process.env.BROWSERLESS_TOKEN;
+    if (!token) throw new Error('Missing BROWSERLESS_TOKEN env');
+
+    const blUrl = `https://chrome.browserless.io/pdf?token=${token}`;
+    const blRes = await fetch(blUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        url: printUrl,
+        options: {
+          printBackground: true,
+          format: 'A4',
+          margin: { top: '10mm', right: '10mm', bottom: '12mm', left: '10mm' },
+          waitUntil: ['domcontentloaded', 'networkidle0'],
+          timeout: 30000,
+        },
+      }),
     });
-    
-    let pdfBuffer: Buffer;
-    try {
-      const page = await browser.newPage();
-      console.log(`[INVOICE_SEND] Navigating to: ${printUrl}`);
-      await page.goto(printUrl, { 
-        waitUntil: ['domcontentloaded', 'networkidle0'],
-        timeout: 30000
-      });
-      console.log(`[INVOICE_SEND] Page loaded, generating PDF...`);
-      
-      const pdfData = await page.pdf({
-        format: 'A4',
-        printBackground: true,
-        margin: { top: '10mm', right: '10mm', bottom: '12mm', left: '10mm' },
-        preferCSSPageSize: true,
-      });
-      
-      pdfBuffer = Buffer.from(pdfData);
-      console.log(`[INVOICE_SEND] PDF generated, size: ${pdfBuffer.length} bytes`);
-    } catch (pdfError) {
-      console.error(`[INVOICE_SEND] PDF generation error:`, pdfError);
-      throw new Error(`Failed to generate PDF: ${pdfError instanceof Error ? pdfError.message : 'Unknown error'}`);
-    } finally {
-      try { await browser.close(); } catch {}
+
+    if (!blRes.ok) {
+      const msg = await blRes.text().catch(()=> '');
+      throw new Error(`Browserless PDF failed: ${msg}`);
     }
+
+    const pdfArrayBuffer = await blRes.arrayBuffer();
+    const pdfBuffer = Buffer.from(pdfArrayBuffer);
+    console.log(`[INVOICE_SEND] PDF generated via Browserless, size: ${pdfBuffer.length} bytes`);
 
     const resend = getResendClient();
     await resend.emails.send({

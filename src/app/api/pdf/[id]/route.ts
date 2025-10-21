@@ -1,8 +1,7 @@
 ﻿import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import chromium from "@sparticuz/chromium";
-import puppeteer from "puppeteer-core";
+// Switched to Browserless Cloud to avoid Chromium issues on Vercel
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -27,66 +26,41 @@ export async function GET(req: Request, { params }: { params: Promise<any> }) {
     console.log(`[PDF_API] Origin: ${origin}`);
     console.log(`[PDF_API] Print URL: ${url}`);
 
-    const isLocal = process.env.NODE_ENV === 'development';
-    console.log(`[PDF_API] Environment: ${process.env.NODE_ENV}`);
-    console.log(`[PDF_API] Is local: ${isLocal}`);
-    
-    const execPath = isLocal 
-      ? process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/google-chrome'
-      : await chromium.executablePath();
-    console.log(`[PDF_API] Exec path: ${execPath}`);
+    // Render the /print page via Browserless Cloud
+    const token = process.env.BROWSERLESS_TOKEN;
+    if (!token) return NextResponse.json({ error: 'Missing BROWSERLESS_TOKEN env' }, { status: 500 });
 
-    const browser = await puppeteer.launch({
-      args: isLocal 
-        ? ['--no-sandbox', '--disable-setuid-sandbox']
-        : [
-            ...chromium.args,
-            '--disable-gpu',
-            '--disable-dev-shm-usage',
-            '--disable-setuid-sandbox',
-            '--no-first-run',
-            '--no-sandbox',
-            '--no-zygote',
-            '--single-process',
-          ],
-      defaultViewport: { width: 1240, height: 1754, deviceScaleFactor: 2 },
-      executablePath: execPath,
-      headless: chromium.headless || true,
+    const blUrl = `https://chrome.browserless.io/pdf?token=${token}`;
+    const blRes = await fetch(blUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        url,
+        options: {
+          printBackground: true,
+          format: 'A4',
+          margin: { top: '10mm', right: '10mm', bottom: '12mm', left: '10mm' },
+          waitUntil: ['domcontentloaded', 'networkidle0'],
+          timeout: 30000,
+        },
+      }),
     });
 
-    try {
-      const page = await browser.newPage();
-      console.log(`[PDF_API] Navigating to: ${url}`);
-      
-      // Set timeout for page load
-      await page.goto(url, { 
-        waitUntil: ['domcontentloaded', 'networkidle0'],
-        timeout: 30000 // 30 seconds timeout
-      });
-      console.log(`[PDF_API] Page loaded, generating PDF...`);
-      
-      const pdfBuffer = await page.pdf({
-        format: 'A4',
-        printBackground: true,
-        margin: { top: '10mm', right: '10mm', bottom: '12mm', left: '10mm' },
-        preferCSSPageSize: true,
-      });
-      
-      console.log(`[PDF_API] PDF generated, size: ${pdfBuffer.length} bytes`);
-
-      const body = new Uint8Array(pdfBuffer);
-      const fileName = `invoice-${id || 'document'}.pdf`;
-      return new Response(body, {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/pdf',
-          'Content-Disposition': `attachment; filename="${fileName}"`,
-          'Cache-Control': 'no-store',
-        },
-      });
-    } finally {
-      try { await browser.close(); } catch {}
+    if (!blRes.ok) {
+      const msg = await blRes.text().catch(()=> '');
+      return NextResponse.json({ error: 'Browserless PDF failed', details: msg }, { status: 500 });
     }
+
+    const pdfArrayBuffer = await blRes.arrayBuffer();
+    const fileName = `invoice-${id || 'document'}.pdf`;
+    return new Response(pdfArrayBuffer, {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="${fileName}"`,
+        'Cache-Control': 'no-store',
+      },
+    });
   } catch (e: any) {
     console.error(`[PDF_API] Error:`, e);
     return NextResponse.json({ 
