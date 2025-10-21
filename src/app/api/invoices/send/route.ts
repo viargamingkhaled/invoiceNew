@@ -77,12 +77,14 @@ export async function POST(req: Request) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         url: printUrl,
+        gotoOptions: {
+          waitUntil: 'networkidle0',
+          timeout: 30000,
+        },
         options: {
           printBackground: true,
           format: 'A4',
           margin: { top: '10mm', right: '10mm', bottom: '12mm', left: '10mm' },
-          waitUntil: ['domcontentloaded', 'networkidle0'],
-          timeout: 30000,
         },
       }),
     });
