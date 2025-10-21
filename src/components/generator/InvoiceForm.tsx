@@ -701,7 +701,11 @@ const sendEmail = async () => {
       const emailRes = await fetch(`/api/invoices/send`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: recipientEmail, invoiceId: savedInvoice.id }),
+        body: JSON.stringify({ 
+          email: recipientEmail, 
+          invoiceId: savedInvoice.id,
+          template: template  // Pass selected template
+        }),
       });
 
       if (!emailRes.ok) {
