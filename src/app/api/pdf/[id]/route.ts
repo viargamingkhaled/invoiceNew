@@ -26,12 +26,12 @@ export async function GET(req: Request, { params }: { params: Promise<any> }) {
     console.log(`[PDF_API] Origin: ${origin}`);
     console.log(`[PDF_API] Print URL: ${url}`);
 
-    // Render the /print page via Browserless Cloud
+    // Render the /print page via Browserless Cloud (new REST base)
     const token = process.env.BROWSERLESS_TOKEN;
+    const base = process.env.BROWSERLESS_BASE_URL || 'https://api.browserless.io';
     if (!token) return NextResponse.json({ error: 'Missing BROWSERLESS_TOKEN env' }, { status: 500 });
 
-    const blUrl = `https://chrome.browserless.io/pdf?token=${token}`;
-    const blRes = await fetch(blUrl, {
+    const blRes = await fetch(`${base}/pdf?token=${token}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

@@ -31,15 +31,15 @@ export async function POST(req: Request) {
     console.log(`[PDF_GENERATE] Template: ${template || 'default'}`);
     console.log(`[PDF_GENERATE] Invoice number: ${invoice.invoiceNumber}`);
 
-    // Build HTML and send to Browserless Cloud
+    // Build HTML and send to Browserless Cloud (new REST base)
     const html = generateInvoiceHTML(invoice, template);
     const token = process.env.BROWSERLESS_TOKEN;
+    const base = process.env.BROWSERLESS_BASE_URL || 'https://api.browserless.io';
     if (!token) {
       return NextResponse.json({ error: 'Missing BROWSERLESS_TOKEN env' }, { status: 500 });
     }
 
-    const url = `https://chrome.browserless.io/pdf?token=${token}`;
-    const blRes = await fetch(url, {
+    const blRes = await fetch(`${base}/pdf?token=${token}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

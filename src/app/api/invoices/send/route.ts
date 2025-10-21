@@ -69,10 +69,10 @@ export async function POST(req: Request) {
     
     // Generate PDF via Browserless Cloud
     const token = process.env.BROWSERLESS_TOKEN;
+    const base = process.env.BROWSERLESS_BASE_URL || 'https://api.browserless.io';
     if (!token) throw new Error('Missing BROWSERLESS_TOKEN env');
 
-    const blUrl = `https://chrome.browserless.io/pdf?token=${token}`;
-    const blRes = await fetch(blUrl, {
+    const blRes = await fetch(`${base}/pdf?token=${token}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
