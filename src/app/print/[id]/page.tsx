@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import InvoiceA4 from '@/components/pdf/InvoiceA4';
+import { Invoice } from '@/types/invoice';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,40 +12,48 @@ export default async function PrintInvoicePage({ params, searchParams }: { param
   if (!invoice) return <div className="p-6">Not found.</div>;
   const dueStr = (sp?.due as string) || (invoice.due ? new Date(invoice.due as any).toISOString().slice(0,10) : '');
 
+  // Create Invoice object
+  const pdfInvoice: Invoice = {
+    company: {
+      name: invoice.user.company?.name || '',
+      vatNumber: invoice.user.company?.vat || undefined,
+      address: invoice.user.company?.address1 || undefined,
+      city: invoice.user.company?.city || undefined,
+      country: invoice.user.company?.country || undefined,
+      iban: invoice.user.company?.iban || undefined,
+      bankName: (invoice.user.company as any)?.bankName || undefined,
+      bic: invoice.user.company?.bic || undefined,
+      logoUrl: (invoice.user.company as any)?.logoUrl || undefined,
+      email: invoice.user.email || 'info@invoicerly.co.uk',
+      phone: (invoice.user.company as any)?.phone || undefined,
+    },
+    client: {
+      name: invoice.client,
+      vatNumber: (invoice as any).clientMeta?.vat || undefined,
+      address: (invoice as any).clientMeta?.address || undefined,
+      city: (invoice as any).clientMeta?.city || undefined,
+      country: (invoice as any).clientMeta?.country || undefined,
+      email: (invoice as any).clientMeta?.email || undefined,
+    },
+    items: invoice.items.map(it => ({
+      description: it.description,
+      quantity: it.quantity,
+      unitPrice: Number(it.rate),
+      vatRate: it.tax,
+    })),
+    invoiceNumber: invoice.number,
+    issueDate: new Date(invoice.date).toISOString().slice(0, 10),
+    dueDate: dueStr,
+    currency: invoice.currency,
+    vatMode: 'Domestic',
+    notes: '',
+  };
+
   return (
     <div className="bg-white min-h-screen">
       <main className="max-w-none p-0 m-0">
-        <InvoiceA4
-          currency={invoice.currency}
-          items={invoice.items.map(it => ({ desc: it.description, qty: it.quantity, rate: Number(it.rate), tax: it.tax })) as any}
-          subtotal={Number(invoice.subtotal)}
-          taxTotal={Number(invoice.tax)}
-          total={Number(invoice.total)}
-          sender={{
-            company: invoice.user.company?.name || '',
-            vat: invoice.user.company?.vat || '',
-            address: invoice.user.company?.address1 || '',
-            city: invoice.user.company?.city || '',
-            country: invoice.user.company?.country || '',
-            iban: invoice.user.company?.iban || '',
-            bankName: (invoice.user.company as any)?.bankName || undefined,
-            bic: invoice.user.company?.bic || undefined,
-          }}
-          logoUrl={(invoice.user.company as any)?.logoUrl || undefined}
-          client={{
-            name: invoice.client,
-            vat: (invoice as any).clientMeta?.vat || '',
-            address: (invoice as any).clientMeta?.address || '',
-            city: (invoice as any).clientMeta?.city || '',
-            country: (invoice as any).clientMeta?.country || '',
-          }}
-          invoiceNo={invoice.number}
-          invoiceDate={new Date(invoice.date).toISOString().slice(0, 10)}
-          invoiceDue={dueStr}
-          notes={''}
-        />
+        <InvoiceA4 invoice={pdfInvoice} />
       </main>
     </div>
   );
 }
-

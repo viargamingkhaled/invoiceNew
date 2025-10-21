@@ -3,6 +3,7 @@
 import { Button, Card, Input } from '@/components';
 import Section from '@/components/layout/Section';
 import InvoiceA4 from '@/components/pdf/InvoiceA4';
+import { Invoice as InvoiceType } from '@/types/invoice';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 // ТИПЫ И ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
@@ -364,17 +365,35 @@ export default function DashboardClient() {
     {printing && (
       <div id="dash-print-area" style={{ position:'absolute', left: '-10000px', top: 0, width: '100%' }}>
         <InvoiceA4
-          currency={printing.currency}
-          items={printing.items as any}
-          subtotal={printing.subtotal}
-          taxTotal={printing.tax}
-          total={printing.total}
-          sender={printing.sender}
-          client={printing.client}
-          invoiceNo={printing.invoiceNo}
-          invoiceDate={printing.invoiceDate}
-          invoiceDue={printing.invoiceDue}
-          notes={printing.notes}
+          invoice={{
+            company: {
+              name: printing.sender.company,
+              vatNumber: printing.sender.vat,
+              address: printing.sender.address,
+              city: printing.sender.city,
+              country: printing.sender.country,
+              iban: printing.sender.iban,
+              bankName: printing.sender.bankName,
+              bic: printing.sender.bic,
+              email: 'info@invoicerly.co.uk',
+              phone: undefined,
+            },
+            client: {
+              name: printing.client.name,
+              vatNumber: printing.client.vat,
+              address: printing.client.address,
+              city: printing.client.city,
+              country: printing.client.country,
+              email: printing.client.email,
+            },
+            items: printing.items,
+            invoiceNumber: printing.invoiceNo,
+            issueDate: printing.invoiceDate,
+            dueDate: printing.invoiceDue,
+            currency: printing.currency,
+            vatMode: 'Domestic',
+            notes: printing.notes,
+          } as InvoiceType}
         />
       </div>
     )}
@@ -579,17 +598,41 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onRefresh
         {!editing ? (
           <div className="max-w-[800px] mx-auto">
             <InvoiceA4
-              currency={invoice.currency}
-              items={(invoice.items||[]).map((it:any)=>({ desc: it.description, qty: it.quantity, rate: it.rate, tax: it.tax }))}
-              subtotal={invoice.subtotal}
-              taxTotal={invoice.tax}
-              total={invoice.total}
-              sender={{ company: invoice.user?.company?.name || 'Company', vat: invoice.user?.company?.vat, address: invoice.user?.company?.address1, city: invoice.user?.company?.city, country: invoice.user?.company?.country, iban: invoice.user?.company?.iban, bankName: invoice.user?.company?.bankName, bic: invoice.user?.company?.bic }}
-              client={{ name: invoice.client, vat: (invoice.clientMeta?.vat as string) || undefined, address: (invoice.clientMeta?.address as string) || undefined, city: (invoice.clientMeta?.city as string) || undefined, country: (invoice.clientMeta?.country as string) || undefined }}
-              invoiceNo={invoice.number}
-              invoiceDate={new Date(invoice.date).toISOString().slice(0,10)}
-              invoiceDue={''}
-              notes={''}
+              invoice={{
+                company: {
+                  name: invoice.user?.company?.name || 'Company',
+                  vatNumber: invoice.user?.company?.vat,
+                  address: invoice.user?.company?.address1,
+                  city: invoice.user?.company?.city,
+                  country: invoice.user?.company?.country,
+                  iban: invoice.user?.company?.iban,
+                  bankName: invoice.user?.company?.bankName,
+                  bic: invoice.user?.company?.bic,
+                  logoUrl: invoice.user?.company?.logoUrl,
+                  email: invoice.user?.email || 'info@invoicerly.co.uk',
+                  phone: undefined,
+                },
+                client: {
+                  name: invoice.client,
+                  vatNumber: (invoice.clientMeta?.vat as string) || undefined,
+                  address: (invoice.clientMeta?.address as string) || undefined,
+                  city: (invoice.clientMeta?.city as string) || undefined,
+                  country: (invoice.clientMeta?.country as string) || undefined,
+                  email: (invoice.clientMeta?.email as string) || undefined,
+                },
+                items: (invoice.items||[]).map((it:any)=>({
+                  description: it.description,
+                  quantity: it.quantity,
+                  unitPrice: it.rate,
+                  vatRate: it.tax
+                })),
+                invoiceNumber: invoice.number,
+                issueDate: new Date(invoice.date).toISOString().slice(0,10),
+                dueDate: undefined,
+                currency: invoice.currency,
+                vatMode: 'Domestic',
+                notes: '',
+              } as InvoiceType}
             />
           </div>
         ) : (
