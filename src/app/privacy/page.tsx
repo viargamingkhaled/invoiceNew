@@ -2,106 +2,176 @@ import PolicyPage from '@/components/policy/PolicyPage';
 import { PolicySection } from '@/types/policy';
 
 export const metadata = {
-  title: 'Privacy Policy - Invoicerly',
-  description: 'How we collect, use, and protect personal data.',
+  title: 'Privacy Policy - Ventira',
+  description: 'How Ventira collects, uses, and protects your personal data.',
 };
 
 const sections: PolicySection[] = [
-  { id: 'intro', title: 'Introduction', body: `This policy explains how we collect, use, and protect personal data when you use Invoicerly (the “Service”). We built the product for UK & EU invoicing and keep data handling simple and transparent.
+  { 
+    id: 'introduction', 
+    title: 'Introduction', 
+    body: `We value your privacy and are committed to handling personal data responsibly. This Privacy Policy explains what data we collect, why we process it, how long we retain it, who we share it with, and how you can exercise your rights in connection with the services provided at ventira.co.uk operated by VIARGAMING LTD, Company No. 15847699, registered office: 43 Victoria Rd, Northampton, United Kingdom, NN1 5ED ("Ventira," "we," "us," "our").
 
-We do not sell personal data. We only process it to provide and improve the Service.` },
-  { id: 'scope', title: 'Scope & Region', body: `This policy applies to users in the UK and EU/EEA.
-Where we transfer data between the UK and EEA or to other countries, we use appropriate safeguards (e.g., Standard Contractual Clauses and the UK Addendum).
+For questions or data requests, contact: info@ventira.co.uk or +44 7457 423147.
 
-The Service is not intended for children under 16.` },
-  { id: 'data', title: 'Data We Collect', body: `Account data: name, email, password hash, country, preferences.
+Who is the controller?
 
-Company (seller) data: company name, VAT/registration numbers, address, IBAN/BIC, invoice numbering settings.
+• We act as controller for account, billing, support, website and app usage data.
 
-Customer (buyer) data you enter: client names, VAT/registration numbers, addresses, line items, notes, and PDFs you generate (“Customer Content”).
+• We act as processor for Customer Content you input into the Service (e.g., invoice line items, your clients' names/addresses/emails, recipients) and process it on your documented instructions. A Data Processing Addendum (DPA) is available on request.` 
+  },
+  { 
+    id: 'data-collection', 
+    title: 'What Personal Data We Collect', 
+    body: `We collect only what is necessary to operate and improve the Service:
 
-Billing & tokens: top-up amounts, currency (GBP/EUR), token balance and ledger (no card numbers on our servers).
+• Account & Identity — name, email address, password hash, role/team, company profile, billing/postal address.
 
-Usage & device data: pages/actions, app settings, approximate location (from IP), device/browser info, crash/error logs.
+• Transactions — token top-ups, order references, invoice/receipt records, payment identifiers (we do not store full card details; payments are handled by our processors).
 
-Support data: messages you send to info@invoicerly.co.uk, attachments you choose to share.
+• Service Usage & Technical — IP address, device/browser type, access and event logs, timestamps, cookie IDs, error telemetry, security signals.
 
-Cookies & similar tech: see Cookies below and our Cookie Policy.
+• Customer Content — invoice data you provide (your business details, recipients' names/emails/addresses, line items, taxes, numbers), file metadata and generated PDFs based on templates (CleanA4, Pro Ledger, Compact Fit, Modern Stripe, Nordic Grid, Bold Header, Minimal Mono, Business Portrait).
 
-You can choose not to provide some data, but the Service may not work as expected.` },
-  { id: 'use', title: 'How We Use Data', body: `We process data to:
+• Email Delivery Metadata — recipient addresses you choose to send to, message IDs, delivery status (sent/bounced/open where available), timestamps.
 
-• Provide the Service: create invoices/PDFs, store drafts, manage token balance, email/share invoices on your request.
-• Operate & secure: authentication, fraud/abuse prevention, rate limiting, backups, incident response.
-• Billing & compliance: process payments, keep accounting/tax records.
-• Improve the product: analytics, troubleshooting, feature development.
-• Communicate: service messages (e.g., receipts, invoice delivery status), product updates.
-• Legal reasons: handle claims, requests from authorities when lawfully required.
+• Support & Correspondence — messages, attachments, case history.
 
-We don’t use Customer Content for advertising or model training.` },
-  { id: 'legal', title: 'Legal Bases (EU/UK)', body: `We rely on:
+• Marketing Preferences — opt-in/opt-out status, communication history.
 
-• Contract – to provide the Service you requested.
-• Legitimate interests – to run, secure, and improve the Service (balanced against your rights).
-• Consent – for non-essential cookies/analytics and optional marketing (you can withdraw anytime).
-• Legal obligation – tax, accounting, and compliance record-keeping.
-• Vital interests – only in rare, safety-related situations.
+We do not collect more information than required for the purposes below.` 
+  },
+  { 
+    id: 'legal-bases', 
+    title: 'Why We Process Your Data and Legal Bases', 
+    body: `• Provide the Service (contract performance): create drafts, generate/store PDFs, send invoices by email, manage tokens and accounts, and communicate about service delivery.
 
-We do not perform automated decision-making that produces legal or similarly significant effects.` },
-  { id: 'rights', title: 'Your Rights', body: `Subject to regional laws, you can:
+• Payments & fraud prevention (legal obligation / legitimate interests): verify purchases, detect misuse, maintain accounting and tax records.
 
-• Access your data and get a copy.
-• Rectify inaccurate data.
-• Erase data (“right to be forgotten”) where applicable.
-• Object to or restrict certain processing.
-• Port data you provided to us.
-• Withdraw consent (for things based on consent).
-• Complain to a supervisory authority: in the UK, the ICO; in the EEA, your local DPA.
+• Support, refunds, disputes (contract / legitimate interests).
 
-To exercise rights, email info@invoicerly.co.uk from your account email. We’ll respond within one month.` },
-  { id: 'security', title: 'Security', body: `We use technical and organizational measures including:
+• Improvements & security (legitimate interests): monitoring, debugging, aggregated/anonymous analytics, load balancing, access controls, abuse prevention.
 
-• Encryption in transit (TLS) and at rest for core data.
-• Strict access controls, least-privilege, and audit logs.
-• Regular backups and disaster-recovery procedures.
-• Vulnerability management and incident response.
+• Marketing (consent): we send marketing messages only if you have opted in; you may withdraw consent at any time.
 
-No method is 100% secure, but we work to keep risk low and respond quickly to issues.` },
-  { id: 'retention', title: 'Retention', body: `We keep data only as long as needed for the purposes above:
+• Legal compliance (legal obligation): record-keeping, responding to lawful requests from authorities.
 
-• Account & company settings: for your account lifetime; delete when you close your account.
-• Customer Content (invoices, clients, PDFs): until you delete it or your account is closed; some metadata may remain in backups for a limited time.
-• Billing & token ledger: retained to meet tax/accounting laws (typically 6 years in the UK; EU periods may vary).
-• Support emails/logs: for troubleshooting and audit, then deleted or anonymized.
+Where we rely on legitimate interests, we assess and balance them against your rights and reasonable expectations.` 
+  },
+  { 
+    id: 'sharing', 
+    title: 'Sharing and International Transfers', 
+    body: `We share personal data with trusted service providers where necessary to operate the Service, for example:
 
-When retention ends, we delete or anonymize data.` },
-  { id: 'sharing', title: 'Sharing & Processors', body: `We share data only with:
+• Payment processors and banks (billing, fraud checks).
+• Hosting/cloud platforms (application hosting, storage, backups, CDN).
+• Email delivery and communications tools (sending invoices/notifications, logging delivery).
+• Analytics/monitoring/error-tracking tools.
+• Professional advisers (legal/accounting) where needed.
+• Regulators, courts or law enforcement where required by law.
 
-• Service providers (processors): cloud hosting & storage, email delivery, analytics, logging/monitoring, customer support, and PDF generation.
-• Payment processors: secure payment processing services—payment details are processed by the provider and never stored on our servers.
-• Professional advisors (legal/accounting) and authorities when required by law.
-• Business transfers: if we undergo a merger, acquisition, or asset sale, we’ll notify you and continue to protect your data.
+Some providers may be located outside the UK/EEA. We rely on UK adequacy regulations, the UK International Data Transfer Addendum (IDTA) and/or Standard Contractual Clauses (SCCs), alongside appropriate supplementary measures. We do not transfer data in a way that reduces protections under applicable law.` 
+  },
+  { 
+    id: 'cookies', 
+    title: 'Cookies and Similar Technologies', 
+    body: `We use cookies and similar technologies for essential operations, security, analytics and (with your consent) marketing. Essential cookies are required for the platform to function.
 
-We require processors to protect data, act only on our instructions, and sign appropriate data protection terms.` },
-  { id: 'cookies', title: 'Cookies', body: `We use:
+See our Cookies Policy for details and controls.` 
+  },
+  { 
+    id: 'retention', 
+    title: 'Data Retention', 
+    body: `We retain data only as long as necessary for the stated purposes and legal obligations:
 
-• Strictly necessary cookies – sign-in, security, load balancing.
-• Preferences – your language/region, UI settings.
-• Analytics – understand usage and improve (consent-based in the EU/UK).
-• Marketing – only if you opt in.
+• Orders, invoices and payment logs: minimum 24 months, up to 6 years for tax, accounting or disputes.
 
-You can manage preferences in the app and via browser settings. For details, see our Cookie Policy.` },
-  { id: 'contact', title: 'Contact', body: `Data controller: GET STUFFED LTD
-Company number: 15673179
-Email: info@invoicerly.co.uk
+• Account & support records: while your account is active and for a reasonable period thereafter for security, fraud prevention and record-keeping.
 
-Postal: Flat 21 County Chambers, 1 Drapery, Northampton, United Kingdom, NN1 2ET
+• Customer Content (drafts/PDFs): stored while you keep them in your workspace; temporary files created during generation may be deleted automatically after processing.
 
-If you have questions or want to exercise your rights, email us. We reply within one business day.` },
+• Email delivery metadata: retained for a limited period to evidence delivery and troubleshoot deliverability.
+
+• Marketing data: until you withdraw consent or we no longer have a lawful basis.
+
+When data is no longer required, we securely delete or anonymise it.` 
+  },
+  { 
+    id: 'responsibilities', 
+    title: 'Your Responsibilities (Recipients\' Data)', 
+    body: `You are responsible for ensuring you have a lawful basis (e.g., contract or legitimate interests) to use and send personal data of your invoice recipients through the Service and for providing any required privacy information to those recipients.` 
+  },
+  { 
+    id: 'your-rights', 
+    title: 'Your Rights', 
+    body: `Under UK data-protection law, you may:
+
+• Access your personal data;
+• Rectify inaccurate data;
+• Erase data in certain cases;
+• Restrict processing;
+• Object to processing based on legitimate interests or to direct marketing;
+• Port data you provided in a structured, commonly used format;
+• Withdraw consent where processing relies on consent.
+
+To exercise your rights, email info@ventira.co.uk. We may need to verify your identity. We respond within statutory time limits (normally one month) unless an extension or lawful refusal applies.` 
+  },
+  { 
+    id: 'security', 
+    title: 'Security Measures', 
+    body: `We implement appropriate technical and organisational measures, including encryption in transit, hardened infrastructure, access controls and least-privilege permissions, secure backups, audit logging and staff awareness.
+
+No system is completely secure; if a breach occurs likely to affect your rights, we will notify you and the relevant regulator in accordance with law.` 
+  },
+  { 
+    id: 'children', 
+    title: 'Children', 
+    body: `The Service is intended for users 18+. We do not knowingly collect personal data from children.` 
+  },
+  { 
+    id: 'automated-decisions', 
+    title: 'Automated Decision-Making and Profiling', 
+    body: `We do not conduct automated decision-making that produces legal or similarly significant effects.
+
+Limited automation (e.g., analytics, spam/abuse detection) may be used to protect and improve the Service and does not override your rights.` 
+  },
+  { 
+    id: 'changes', 
+    title: 'Changes to this Policy', 
+    body: `We may revise this Privacy Policy from time to time. Material changes will be communicated via email or a prominent notice on our website.
+
+The updated Policy will display a new effective date.` 
+  },
+  { 
+    id: 'contact', 
+    title: 'Contact & Complaints', 
+    body: `Controller: VIARGAMING LTD
+Email: info@ventira.co.uk | Tel: +44 7457 423147
+Address: 43 Victoria Rd, Northampton, United Kingdom, NN1 5ED
+
+If you are not satisfied with how we handle your request, you can lodge a complaint with the Information Commissioner's Office (ICO): ico.org.uk | Tel: 0303 123 1113.
+
+Nothing in this Policy affects your statutory rights.` 
+  },
+  { 
+    id: 'company-details', 
+    title: 'Company Details', 
+    body: `VIARGAMING LTD
+Company number: 15847699
+Registered office: 43 Victoria Rd, Northampton, United Kingdom, NN1 5ED
+Email: info@ventira.co.uk | Tel: +44 7457 423147` 
+  },
 ];
 
 export default function PrivacyPage() {
   return (
-    <PolicyPage title="Privacy Policy" sections={sections} />
+    <PolicyPage 
+      title="Privacy Policy" 
+      sections={sections}
+      effectiveDate="21 Oct 2025"
+      lastUpdated="21 Oct 2025"
+      version="v1.0.0"
+      showRegionToggle={false}
+    />
   );
 }
