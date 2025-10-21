@@ -1,0 +1,20 @@
+{
+  "functions": {
+    "app/**/route.js": {
+      "includeFiles": [
+        "node_modules/@sparticuz/chromium/**",
+        "node_modules/puppeteer-core/**"
+      ],
+      "maxDuration": 60
+    },
+    "app/**/route.mjs": {
+      "includeFiles": [
+        "node_modules/@sparticuz/chromium/**",
+        "node_modules/puppeteer-core/**"
+      ],
+      "maxDuration": 60
+    }
+  }
+}
+
+
