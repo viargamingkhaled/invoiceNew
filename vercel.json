@@ -1,13 +1,13 @@
 {
   "functions": {
-    "app/**/route.js": {
+    "src/app/api/pdf/**/route.ts": {
       "includeFiles": [
         "node_modules/@sparticuz/chromium/**",
         "node_modules/puppeteer-core/**"
       ],
       "maxDuration": 60
     },
-    "app/**/route.mjs": {
+    "src/app/api/invoices/send/route.ts": {
       "includeFiles": [
         "node_modules/@sparticuz/chromium/**",
         "node_modules/puppeteer-core/**"
