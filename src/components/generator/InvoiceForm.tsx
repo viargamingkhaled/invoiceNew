@@ -852,7 +852,7 @@ const sendEmail = async () => {
 
       {/* Wide container for Branding + Preview */}
       <div className="w-full max-w-[95vw] xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-[30%_70%] gap-6">
+        <div className="grid lg:grid-cols-[40%_60%] gap-6">
         {/* Form */}
         <div>
           <motion.div className="rounded-2xl bg-white p-5 border border-black/10 shadow-sm" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
