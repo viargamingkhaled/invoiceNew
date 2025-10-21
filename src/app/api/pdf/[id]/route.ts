@@ -31,14 +31,28 @@ export async function GET(req: Request, { params }: { params: Promise<any> }) {
     console.log(`[PDF_API] Environment: ${process.env.NODE_ENV}`);
     console.log(`[PDF_API] Is local: ${isLocal}`);
     
-    const execPath = isLocal ? undefined : await chromium.executablePath();
+    const execPath = isLocal 
+      ? process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/google-chrome'
+      : await chromium.executablePath();
     console.log(`[PDF_API] Exec path: ${execPath}`);
 
     const browser = await puppeteer.launch({
-      args: isLocal ? [] : chromium.args,
+      args: isLocal 
+        ? ['--no-sandbox', '--disable-setuid-sandbox']
+        : [
+            ...chromium.args,
+            '--disable-gpu',
+            '--disable-dev-shm-usage',
+            '--disable-setuid-sandbox',
+            '--no-first-run',
+            '--no-sandbox',
+            '--no-zygote',
+            '--single-process',
+          ],
       defaultViewport: { width: 1240, height: 1754, deviceScaleFactor: 2 },
       executablePath: execPath,
-      headless: chromium.headless,
+      headless: chromium.headless || true,
+      ignoreHTTPSErrors: true,
     });
 
     try {
