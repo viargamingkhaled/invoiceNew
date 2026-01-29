@@ -15,9 +15,9 @@ export type Currency = keyof typeof CURRENCY_RATES;
 // Currency symbols and formatting
 export const CURRENCY_INFO = {
   EUR: { symbol: '\u20AC', name: 'Euro', locale: 'de-DE' },
-  AUD: { symbol: 'A$', name: 'Australian Dollar', locale: 'en-AU' },
-  CAD: { symbol: 'C$', name: 'Canadian Dollar', locale: 'en-CA' },
-  NZD: { symbol: 'NZ$', name: 'New Zealand Dollar', locale: 'en-NZ' },
+  AUD: { symbol: '$', name: 'Australian Dollar', locale: 'en-AU' },
+  CAD: { symbol: '$', name: 'Canadian Dollar', locale: 'en-CA' },
+  NZD: { symbol: '$', name: 'New Zealand Dollar', locale: 'en-NZ' },
   NOK: { symbol: 'kr', name: 'Norwegian Krone', locale: 'nb-NO' },
 } as const;
 
