@@ -60,9 +60,10 @@ export default function CurrencyDropdown({ value, onChange, className = '' }: Cu
           className="flex items-center gap-2 px-3 py-2 text-sm rounded-xl border border-black/10 bg-white hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20"
           aria-haspopup="listbox"
           aria-expanded={false}
+          aria-label={`Currency: ${value}`}
+          title={getCurrencyName(value)}
         >
           <span className="font-medium">{getCurrencySymbol(value)}</span>
-          <span className="text-slate-600">{value}</span>
           <svg
             className="h-4 w-4 text-slate-500 transition-transform"
             viewBox="0 0 24 24"
@@ -88,9 +89,10 @@ export default function CurrencyDropdown({ value, onChange, className = '' }: Cu
         className="flex items-center gap-2 px-3 py-2 text-sm rounded-xl border border-black/10 bg-white hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20"
         aria-haspopup="listbox"
         aria-expanded={isOpen}
+        aria-label={`Currency: ${value}`}
+        title={getCurrencyName(value)}
       >
         <span className="font-medium">{getCurrencySymbol(value)}</span>
-        <span className="text-slate-600">{value}</span>
         <svg
           className={`h-4 w-4 text-slate-500 transition-transform ${isOpen ? 'rotate-180' : ''}`}
           viewBox="0 0 24 24"
@@ -121,19 +123,16 @@ export default function CurrencyDropdown({ value, onChange, className = '' }: Cu
                   key={currency}
                   type="button"
                   onClick={() => handleSelect(currency)}
-                  className={`w-full px-3 py-2 text-sm text-left hover:bg-slate-50 transition-colors flex items-center gap-3 ${
+                  className={`w-full px-3 py-2 text-sm text-left hover:bg-slate-50 transition-colors flex items-center justify-between ${
                     currency === value ? 'bg-blue-50 text-blue-700' : 'text-slate-700'
                   }`}
                   role="option"
                   aria-selected={currency === value}
+                  title={`${currency} – ${getCurrencyName(currency)}`}
                 >
                   <span className="font-medium text-base">{getCurrencySymbol(currency)}</span>
-                  <div className="flex flex-col">
-                    <span className="font-medium">{currency}</span>
-                    <span className="text-xs text-slate-500">{getCurrencyName(currency)}</span>
-                  </div>
                   {currency === value && (
-                    <svg className="h-4 w-4 text-blue-600 ml-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg className="h-4 w-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
                   )}
