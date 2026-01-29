@@ -21,7 +21,7 @@ export interface WhyUsItem {
 }
 
 export interface PlanTopUp {
-  amountGBP: number | 'custom';
+  amountEUR: number | 'custom';
   approxInvoices: number | 'user-defined';
   features: string[];
   popular?: boolean;
@@ -127,10 +127,10 @@ export const HOME_V2_DATA: HomeV2Data = {
     { title: "Enterprise‑friendly", desc: "Numbering, branding, send via email" }
   ],
   plansTopUp: [
-    { amountGBP: 10, approxInvoices: 100, features: ["All 8 templates", "PDF export", "Email send", "Custom numbering mask"] },
-    { amountGBP: 25, approxInvoices: 250, features: ["All 8 templates", "PDF export", "Email send", "Custom numbering mask"] },
-    { amountGBP: 50, approxInvoices: 500, features: ["All 8 templates", "PDF export", "Email send", "Custom numbering mask"], popular: true },
-    { amountGBP: "custom", approxInvoices: "user-defined", features: ["All 8 templates", "PDF export", "Email send", "Custom numbering mask"] }
+    { amountEUR: 10, approxInvoices: 100, features: ["All 8 templates", "PDF export", "Email send", "Custom numbering mask"] },
+    { amountEUR: 25, approxInvoices: 250, features: ["All 8 templates", "PDF export", "Email send", "Custom numbering mask"] },
+    { amountEUR: 50, approxInvoices: 500, features: ["All 8 templates", "PDF export", "Email send", "Custom numbering mask"], popular: true },
+    { amountEUR: "custom", approxInvoices: "user-defined", features: ["All 8 templates", "PDF export", "Email send", "Custom numbering mask"] }
   ],
   trustedBy: ["Northwick Labs Ltd", "Wrenfield Supply Co.", "Elm & Pine Studio", "Kleinwerk GmbH", "Fernstadt Digital GmbH", "Deltawave BV"],
   reviews: [
@@ -151,16 +151,16 @@ export const HOME_V2_DATA: HomeV2Data = {
 };
 
 // Helper functions
-export const getTokensFromGBP = (amountGBP: number): number => {
-  return amountGBP * 100; // 1 GBP = 100 tokens
+export const getTokensFromEUR = (amountEUR: number): number => {
+  return amountEUR * 100; // 1 EUR = 100 tokens
 };
 
 export const getInvoicesFromTokens = (tokens: number): number => {
   return Math.floor(tokens / 10); // 1 invoice = 10 tokens
 };
 
-export const getInvoicesFromGBP = (amountGBP: number): number => {
-  return getInvoicesFromTokens(getTokensFromGBP(amountGBP));
+export const getInvoicesFromEUR = (amountEUR: number): number => {
+  return getInvoicesFromTokens(getTokensFromEUR(amountEUR));
 };
 
 

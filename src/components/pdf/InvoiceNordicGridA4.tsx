@@ -27,7 +27,7 @@ interface InvoiceNordicGridA4Props {
 
 export default function InvoiceNordicGridA4({ invoice }: InvoiceNordicGridA4Props) {
   const vatMode = invoice.vatMode || "Domestic";
-  const currency = invoice.currency || "GBP";
+  const currency = invoice.currency || "EUR";
 
   const rows = invoice.items.map((item, index) => {
     const vatPct = vatMode === "Domestic" ? (item.vatRate || 0) : 0;

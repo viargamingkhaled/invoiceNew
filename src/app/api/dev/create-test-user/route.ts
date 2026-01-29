@@ -35,7 +35,7 @@ export async function POST(req: Request) {
         password: hashedPassword,
         name: "Test User",
         tokenBalance: 1000,
-        currency: "GBP",
+        currency: "EUR",
       },
     });
 
@@ -69,7 +69,7 @@ export async function POST(req: Request) {
           address: "Na Príkope 14, Praha 1, Czechia",
           email: "finance@testclient.cz",
         },
-        currency: "GBP",
+        currency: "EUR",
         subtotal: 1200.00,
         tax: 240.00,
         total: 1440.00,
@@ -132,7 +132,7 @@ export async function POST(req: Request) {
           type: "Top-up",
           delta: 1000,
           balanceAfter: 1000,
-          currency: "GBP",
+          currency: "EUR",
           amount: 10,
         },
         {

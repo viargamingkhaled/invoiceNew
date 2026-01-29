@@ -1,32 +1,26 @@
-﻿'use client';
+'use client';
 
 import { Button, Card, Input } from '@/components';
 import Section from '@/components/layout/Section';
 import InvoiceA4 from '@/components/pdf/InvoiceA4';
+import type { Currency } from '@/lib/currency';
+import { formatCurrency } from '@/lib/currency';
 import { Invoice as InvoiceType } from '@/types/invoice';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 // ТИПЫ И ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-type Currency = 'GBP' | 'EUR' | 'AUD';
 type InvoiceStatus = 'Draft' | 'Ready' | 'Error' | 'Sent' | 'Paid' | 'Overdue';
 type Invoice = { id: string; number: string; date: string; client: string; currency: Currency; subtotal: number; tax: number; total: number; status: InvoiceStatus };
 type LedgerRow = { id: string; ts: string; type: 'Top-up' | 'Invoice' | 'Adjust'; delta: number; balanceAfter: number; currency?: Currency; amount?: number; receiptUrl?: string; invoiceNumber?: string };
 type Company = { name: string; vat?: string; reg?: string; address1?: string; city?: string; country?: string; iban?: string; bankName?: string; bic?: string };
 type Me = { id: string; name: string | null; email: string | null; tokenBalance: number; currency: Currency; company: Company | null };
 
-const currencySym = (c: Currency) => (c === 'GBP' ? 'GBP ' : c === 'EUR' ? 'EUR ' : 'AUD ');
 const fmtMoney = (n: number, c: Currency) => {
-  const sym = currencySym(c);
-  const abs = Math.abs(n);
-  const opts: Intl.NumberFormatOptions = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
-  try { return `${n < 0 ? '-' : ''}${sym}${new Intl.NumberFormat(undefined, opts).format(abs)}`; } catch { return `${sym}${abs.toFixed(2)}`; }
+  const formatted = formatCurrency(Math.abs(n), c);
+  return n < 0 ? `-${formatted}` : formatted;
 };
-
 function money(n: number, c: Currency) {
-  const sym = c === 'GBP' ? '£' : '€';
-  const abs = Math.abs(n);
-  const opts: Intl.NumberFormatOptions = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
-  try { return `${n < 0 ? '-' : ''}${sym}${new Intl.NumberFormat(undefined, opts).format(abs)}`; } catch { return `${sym}${abs.toFixed(2)}`; }
+  return fmtMoney(n, c);
 }
 function int(n: number) { try { return new Intl.NumberFormat().format(Math.round(n)); } catch { return String(Math.round(n)); } }
 
@@ -202,7 +196,7 @@ export default function DashboardClient() {
   };
 
   const userName = me?.name || 'User';
-  const currency = (me?.currency || 'GBP') as Currency;
+  const currency = (me?.currency || 'EUR') as Currency;
   const tokenBalance = me?.tokenBalance ?? 0;
   const invView = invoices.slice(invRange[0], invRange[1]);
   const ledgerView = ledger.slice(ledRange[0], ledRange[1]);
@@ -309,6 +303,7 @@ export default function DashboardClient() {
                       <th className="text-left px-3 py-2">Date</th>
                       <th className="text-left px-3 py-2">Type</th>
                       <th className="text-left px-3 py-2">Number</th>
+                      <th className="text-right px-3 py-2">Amount</th>
                       <th className="text-right px-3 py-2">Delta</th>
                       <th className="text-right px-3 py-2">Balance</th>
                       <th className="text-right px-3 py-2">Receipt</th>
@@ -320,6 +315,7 @@ export default function DashboardClient() {
                         <td className="px-3 py-2 whitespace-nowrap">{new Date(row.ts).toLocaleString('en-US')}</td>
                         <td className="px-3 py-2">{row.type}</td>
                         <td className="px-3 py-2">{row.invoiceNumber || '-'}</td>
+                        <td className="px-3 py-2 text-right">{row.type === 'Top-up' && row.amount != null && row.currency ? fmtMoney(Number(row.amount), row.currency) : '-'}</td>
                         <td className={`px-3 py-2 text-right ${row.delta>0?'text-emerald-700':'text-slate-900'}`}>{row.delta>0? `+${int(row.delta)}` : `-${int(Math.abs(row.delta))}`} tokens</td>
                         <td className="px-3 py-2 text-right">{int(row.balanceAfter)}</td>
                         <td className="px-3 py-2 text-right">{row.type==='Top-up' ? <a className="underline text-sm" href={row.receiptUrl||'#'} target="_blank" rel="noopener noreferrer">Receipt</a> : '-'}</td>
@@ -350,7 +346,7 @@ export default function DashboardClient() {
                   <Input label="Country" value={form.country||''} onChange={(e)=>setForm({...form, country:e.target.value})} />
                 </div>
                 <div className="grid grid-cols-3 gap-3">
-                  <Input label="IBAN" value={form.iban||''} onChange={(e)=>setForm({...form, iban:e.target.value})} placeholder={currency==='GBP'? 'GB00 BANK 0000 0000 0000 00' : 'DE00 BANK 0000 0000 0000 00'} />
+                  <Input label="IBAN" value={form.iban||''} onChange={(e)=>setForm({...form, iban:e.target.value})} placeholder={currency==='EUR' ? 'DE00 BANK 0000 0000 0000 00' : 'GB00 BANK 0000 0000 0000 00'} />
                   <Input label="Bank name" value={(form as any).bankName||''} onChange={(e)=>setForm({...form, bankName:e.target.value} as any)} placeholder="Your Bank" />
                   <Input label="SWIFT / BIC" value={form.bic||''} onChange={(e)=>setForm({...form, bic:e.target.value})} placeholder="BANKGB2L" />
                 </div>

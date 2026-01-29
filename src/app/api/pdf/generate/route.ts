@@ -247,7 +247,7 @@ function generateInvoiceHTML(invoice: any, template?: string): string {
   });
 
   const total = subtotal + taxTotal;
-  const currency = invoice.currency || 'GBP';
+  const currency = invoice.currency || 'EUR';
 
   // Format currency
   const formatMoney = (amount: number) => {

@@ -6,7 +6,7 @@ import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Segmented from '@/components/ui/Segmented';
-import { Currency, convertFromGBP, convertToGBP, formatCurrency, getCurrencySymbol, getAvailableCurrencies, calculateTokens, calculateAmountFromTokens } from '@/lib/currency';
+import { Currency, convertFromEUR, convertToEUR, formatCurrency, getCurrencySymbol, getAvailableCurrencies, calculateTokens, calculateAmountFromTokens } from '@/lib/currency';
 
 const MIN_AMOUNT = 5;
 const MAX_AMOUNT = 500;
@@ -27,7 +27,7 @@ const FAQ_ITEMS = [
 ];
 
 export default function TokenCalculatorPage() {
-  const [currency, setCurrency] = useState<Currency>('GBP');
+  const [currency, setCurrency] = useState<Currency>('EUR');
   const [amount, setAmount] = useState(50);
   const [invoicesNeeded, setInvoicesNeeded] = useState(5);
   const [isUpdatingFromAmount, setIsUpdatingFromAmount] = useState(false);
@@ -89,8 +89,8 @@ export default function TokenCalculatorPage() {
     setIsUpdatingFromAmount(true);
     setAmount(clampedValue);
     
-    // Update invoices after amount change
-    const newInvoices = Math.floor(clampedValue * 100 / 10);
+    // Update invoices after amount change (amount is in selected currency)
+    const newInvoices = Math.floor(calculateTokens(clampedValue, currency) / 10);
     setInvoicesNeeded(newInvoices);
     
     setTimeout(() => {
@@ -115,7 +115,6 @@ export default function TokenCalculatorPage() {
     
     // Update amount after invoices change
     const tokensNeeded = newInvoices * 10;
-    const amountGBP = tokensNeeded / 100; // Convert tokens to GBP
     const newAmount = calculateAmountFromTokens(tokensNeeded, currency);
     setAmount(Math.max(MIN_AMOUNT, Math.min(MAX_AMOUNT, newAmount)));
     
@@ -313,35 +312,35 @@ export default function TokenCalculatorPage() {
           </h3>
           <div className="grid md:grid-cols-2 gap-6">
             <ExampleCard
-              currency="GBP"
+              currency="EUR"
               amount={10}
               onSelect={() => {
-                setCurrency('GBP');
+                setCurrency('EUR');
                 setAmount(10);
               }}
             />
             <ExampleCard
-              currency="EUR"
-              amount={12}
+              currency="AUD"
+              amount={16}
               onSelect={() => {
-                setCurrency('EUR');
-                setAmount(12);
+                setCurrency('AUD');
+                setAmount(16);
               }}
             />
             <ExampleCard
-              currency="USD"
-              amount={13}
+              currency="CAD"
+              amount={15}
               onSelect={() => {
-                setCurrency('USD');
-                setAmount(13);
+                setCurrency('CAD');
+                setAmount(15);
               }}
             />
             <ExampleCard
-              currency="PLN"
-              amount={50}
+              currency="NOK"
+              amount={116}
               onSelect={() => {
-                setCurrency('PLN');
-                setAmount(50);
+                setCurrency('NOK');
+                setAmount(116);
               }}
             />
           </div>

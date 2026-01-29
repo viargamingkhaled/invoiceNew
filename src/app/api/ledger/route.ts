@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { convertToEUR, TOKENS_PER_EUR, isValidCurrency } from '@/lib/currency';
+import type { Currency } from '@/lib/currency';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -11,7 +13,11 @@ export async function GET() {
   if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const userId = (session.user as any).id as string;
   const ledger = await prisma.ledgerEntry.findMany({ where: { userId }, orderBy: { ts: 'desc' } });
-  return NextResponse.json({ ledger });
+  const normalized = ledger.map((entry) => ({
+    ...entry,
+    amount: entry.amount != null ? Number(entry.amount) : null,
+  }));
+  return NextResponse.json({ ledger: normalized });
 }
 
 // POST supports Top-up and Adjust
@@ -22,7 +28,8 @@ export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}));
   const type = (body.type as string) || 'Top-up';
   const amount = Number(body.amount ?? 0);
-  const currency = (body.currency as 'GBP' | 'EUR') || ((session.user as any).currency ?? 'GBP');
+  const rawCurrency = (body.currency as string) || ((session.user as any).currency as string) || 'EUR';
+  const currency: Currency = isValidCurrency(rawCurrency) ? rawCurrency : 'EUR';
 
   if (type === 'Top-up' && !amount) return NextResponse.json({ error: 'Amount required' }, { status: 400 });
 
@@ -30,7 +37,9 @@ export async function POST(req: Request) {
     const user = await tx.user.findUnique({ where: { id: userId }, select: { tokenBalance: true } });
     if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
 
-    const delta = type === 'Top-up' ? amount * 100 : Number(body.delta ?? 0);
+    const delta = type === 'Top-up'
+      ? Math.round(convertToEUR(amount, currency) * TOKENS_PER_EUR)
+      : Number(body.delta ?? 0);
     const newBalance = user.tokenBalance + delta;
     await tx.user.update({ where: { id: userId }, data: { tokenBalance: newBalance } });
     const entry = await tx.ledgerEntry.create({

@@ -1,12 +1,12 @@
-import { Currency, convertFromGBP } from './currency';
+import { Currency, convertFromEUR } from './currency';
 
 export type { Currency };
 
 export const pricingPlans = [
   {
-    id: "price_starter_10", // Уникальный ID для планов
+    id: "price_starter_10",
     name: "Beginner",
-    baseGBP: 10,
+    baseEUR: 10,
     tokens: 1000,
     popular: false,
     cta: "Buy tokens",
@@ -19,7 +19,7 @@ export const pricingPlans = [
   {
     id: "price_pro_50",
     name: "Pro",
-    baseGBP: 50,
+    baseEUR: 50,
     tokens: 5000,
     popular: true,
     cta: "Buy tokens",
@@ -33,7 +33,7 @@ export const pricingPlans = [
   {
     id: "price_business_100",
     name: "Business",
-    baseGBP: 100,
+    baseEUR: 100,
     tokens: 10000,
     popular: false,
     cta: "Buy tokens",
@@ -50,5 +50,5 @@ export type Plan = (typeof pricingPlans)[0];
 
 // Helper function to get price in specific currency
 export function getPlanPrice(plan: Plan, currency: Currency): number {
-  return convertFromGBP(plan.baseGBP, currency);
+  return convertFromEUR(plan.baseEUR, currency);
 }

@@ -12,7 +12,7 @@ import Pill from '@/components/policy/Pill';
 import { Button } from '@/components/ui/Button';
 import Segmented from '@/components/ui/Segmented';
 import { CC, VAT_RATES } from '@/lib/constants';
-import { Currency, calculateTokens, convertFromGBP, convertToGBP, formatCurrency, getCurrencySymbol, getAvailableCurrencies } from '@/lib/currency';
+import { Currency, calculateTokens, convertFromEUR, convertToEUR, formatCurrency, getCurrencySymbol, getAvailableCurrencies } from '@/lib/currency';
 import { pricingPlans, getPlanPrice } from '@/lib/plans';
 
 const COUNTRIES = Object.keys(CC);
@@ -53,7 +53,7 @@ function Price({ amount, currency, vatRate }: { amount: number; currency: Curren
 
 export default function PricingClient() {
   const bcRef = useRef<BroadcastChannel | null>(null);
-  const [currency, setCurrency] = useState<Currency>('GBP');
+  const [currency, setCurrency] = useState<Currency>('EUR');
   const [country, setCountry] = useState<string>('United Kingdom');
   const [isLoading, setIsLoading] = useState<string | null>(null);
   const { status } = useSession();
@@ -99,16 +99,16 @@ export default function PricingClient() {
     try {
       // Определяем количество токенов для пополнения
       let tokensToAdd = 0;
-      let amountGBP = 0;
+      let amountToSend = 0;
       
       if (customAmount) {
-        amountGBP = convertToGBP(customAmount, currency);
-        tokensToAdd = Math.round(amountGBP * 100); // 100 токенов за 1 GBP
+        amountToSend = customAmount;
+        tokensToAdd = calculateTokens(customAmount, currency);
       } else if (planId) {
         const plan = pricingPlans.find(p => p.id === planId);
         if (plan) {
           tokensToAdd = plan.tokens;
-          amountGBP = plan.baseGBP;
+          amountToSend = convertFromEUR(plan.baseEUR, currency);
         }
       }
 
@@ -121,8 +121,8 @@ export default function PricingClient() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           type: 'Top-up', 
-          amount: amountGBP, // Always store in GBP
-          currency: 'GBP' // Always store in GBP
+          amount: amountToSend,
+          currency,
         }),
       });
 
@@ -307,7 +307,7 @@ function CustomPlanCard({ currency, onPurchase }: { currency: Currency; onPurcha
       <ul className="mt-4 space-y-2 text-sm text-slate-700 list-disc pl-5">
         <li>Top up your account</li>
         <li>No subscription — pay what you need</li>
-        <li>Min {currency === 'GBP' ? '£0.01' : '€0.01'}</li>
+        <li>Min {getCurrencySymbol(currency)}0.01</li>
       </ul>
       <div className="mt-6">
         <Button className="w-full" size="lg" onClick={() => onPurchase(numericPrice, currency)} disabled={!validNumber || numericPrice < min}>

@@ -3,7 +3,7 @@ import { PricingPlan, Testimonial, Feature, TemplateInfo } from '@/types';
 export const PRICING_PLANS: PricingPlan[] = [
   {
     name: 'Starter',
-    baseGBP: 10,
+    baseEUR: 10,
     tokens: 1000,
     points: ['All 8 templates', 'PDF export', 'Email send', 'Custom numbering mask'],
     cta: 'Buy tokens',
@@ -11,7 +11,7 @@ export const PRICING_PLANS: PricingPlan[] = [
   },
   {
     name: 'Professional',
-    baseGBP: 25,
+    baseEUR: 25,
     tokens: 2500,
     points: ['All 8 templates', 'PDF export', 'Email send', 'Custom numbering mask'],
     cta: 'Buy tokens',
@@ -19,7 +19,7 @@ export const PRICING_PLANS: PricingPlan[] = [
   },
   {
     name: 'Team',
-    baseGBP: 50,
+    baseEUR: 50,
     tokens: 5000,
     points: ['All 8 templates', 'PDF export', 'Email send', 'Custom numbering mask'],
     cta: 'Buy tokens',
@@ -27,7 +27,7 @@ export const PRICING_PLANS: PricingPlan[] = [
   },
   {
     name: 'Custom',
-    baseGBP: 0, // Will be handled specially
+    baseEUR: 0, // Will be handled specially
     tokens: 0, // Will be calculated based on user input
     points: ['All 8 templates', 'PDF export', 'Email send', 'Custom numbering mask'],
     cta: 'Buy tokens',

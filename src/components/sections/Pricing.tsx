@@ -7,11 +7,11 @@ import Card from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { PRICING_PLANS } from '@/lib/data';
 import { THEME } from '@/lib/theme';
-import { Currency, calculateTokens, convertFromGBP, convertToGBP, formatCurrency, getCurrencySymbol, getAvailableCurrencies } from '@/lib/currency';
+import { Currency, calculateTokens, convertFromEUR, convertToEUR, formatCurrency, getCurrencySymbol, getAvailableCurrencies } from '@/lib/currency';
 
 export default function Pricing() {
   const bcRef = useRef<BroadcastChannel | null>(null);
-  const [currency, setCurrency] = useState<Currency>('GBP');
+  const [currency, setCurrency] = useState<Currency>('EUR');
   const [isLoading, setIsLoading] = useState<string | null>(null);
 
   useEffect(()=>{
@@ -38,8 +38,8 @@ export default function Pricing() {
     } catch {}
   }, []);
 
-  const formatPrice = (baseGBP: number) => {
-    const convertedAmount = convertFromGBP(baseGBP, currency);
+  const formatPrice = (baseEUR: number) => {
+    const convertedAmount = convertFromEUR(baseEUR, currency);
     return formatCurrency(convertedAmount, currency);
   };
 
@@ -48,20 +48,20 @@ export default function Pricing() {
     try {
       // Определяем количество токенов для пополнения
       let tokensToAdd = 0;
-      let amountGBP = 0;
+      let amountEUR = 0;
       
       switch (planName) {
         case 'Starter':
           tokensToAdd = 1000;
-          amountGBP = 10;
+          amountEUR = 10;
           break;
         case 'Professional':
           tokensToAdd = 2500;
-          amountGBP = 25;
+          amountEUR = 25;
           break;
         case 'Team':
           tokensToAdd = 5000;
-          amountGBP = 50;
+          amountEUR = 50;
           break;
         case 'Custom':
           // Custom plan handled separately
@@ -75,8 +75,8 @@ export default function Pricing() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           type: 'Top-up', 
-          amount: amountGBP, // Always store in GBP
-          currency: 'GBP' // Always store in GBP
+          amount: amountEUR,
+          currency,
         }),
       });
 
@@ -143,7 +143,7 @@ export default function Pricing() {
                     )}
                   </div>
                   <div className="mt-3 text-3xl font-bold">
-                    {formatPrice(plan.baseGBP)}
+                    {formatPrice(plan.baseEUR)}
                     <span className="text-base font-normal text-slate-500">/one-time</span>
                   </div>
                   <div className="mt-1 text-xs text-slate-600">
@@ -198,16 +198,13 @@ function CustomHomeCard({ currency }: { currency: Currency }) {
   const handleCustomTopUp = async () => {
     setIsLoading(true);
     try {
-      // Convert to GBP for storage
-      const priceGBP = convertToGBP(price, currency);
-      
       const response = await fetch('/api/ledger', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           type: 'Top-up', 
-          amount: priceGBP, // Store in GBP
-          currency: 'GBP' // Always store in GBP
+          amount: price,
+          currency,
         }),
       });
 

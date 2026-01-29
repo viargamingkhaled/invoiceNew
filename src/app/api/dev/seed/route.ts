@@ -19,7 +19,7 @@ export async function GET(req: Request) {
     const user = await prisma.user.upsert({
       where: { email: u.email },
       update: { tokenBalance: u.tokenBalance },
-      create: { email: u.email, name: u.name, tokenBalance: u.tokenBalance, currency: 'GBP' as any },
+      create: { email: u.email, name: u.name, tokenBalance: u.tokenBalance, currency: 'EUR' as any },
     });
     results.push({ id: user.id, email: user.email, tokenBalance: user.tokenBalance });
   }

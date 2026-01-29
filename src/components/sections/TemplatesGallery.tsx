@@ -66,7 +66,7 @@ export default function TemplatesGallery() {
     invoiceNumber: "VI-2025-001",
     issueDate: "2025-01-15",
     dueDate: "2025-01-29",
-    currency: "GBP",
+    currency: "EUR",
     vatMode: "Domestic",
     notes: "Payment within 14 days"
   };

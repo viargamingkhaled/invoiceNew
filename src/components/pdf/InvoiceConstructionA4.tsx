@@ -18,7 +18,7 @@ interface InvoiceConstructionA4Props {
 }
 
 export default function InvoiceConstructionA4({ invoice }: InvoiceConstructionA4Props) {
-  const currency = invoice.currency || 'GBP';
+  const currency = invoice.currency || 'EUR';
   const vatMode = invoice.vatMode || 'Domestic';
   
   // Calculate line items with VAT

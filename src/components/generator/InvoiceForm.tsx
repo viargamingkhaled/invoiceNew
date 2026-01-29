@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/Input';
 import LogoUploader from '@/components/ui/LogoUploader';
 import Textarea from '@/components/ui/Textarea';
 import { CC, CURRENCY_BY_COUNTRY, VAT_RATES } from '@/lib/constants';
+import { getAvailableCurrencies } from '@/lib/currency';
 import { Item, TaxMode, Invoice as PdfInvoice } from '@/types/invoice';
 import { motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
@@ -44,7 +45,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
   // Region/country/currency/tax
   const [region, setRegion] = useState('UK');
   const [country, setCountry] = useState('United Kingdom');
-  const [currency, setCurrency] = useState(CURRENCY_BY_COUNTRY['United Kingdom'] || 'GBP');
+  const [currency, setCurrency] = useState(CURRENCY_BY_COUNTRY['United Kingdom'] || 'EUR');
   const [taxMode, setTaxMode] = useState<TaxMode>('domestic');
 
   const countryCode = CC[country] || 'UK';
@@ -134,7 +135,7 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
   const onRegionChange = (r: string) => {
     setRegion(r);
     const nextCountry = r === 'UK' ? 'United Kingdom' : 'Germany';
-    const nextCurrency = CURRENCY_BY_COUNTRY[nextCountry] || (r === 'UK' ? 'GBP' : 'EUR');
+    const nextCurrency = CURRENCY_BY_COUNTRY[nextCountry] || 'EUR';
     const nextCode = CC[nextCountry] || (r === 'UK' ? 'UK' : 'DE');
     const nextRates = VAT_RATES[nextCode] || [0, 20];
     const nextStandard = nextRates[nextRates.length - 1] || 20;
@@ -256,7 +257,15 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
     } catch {}
   }, [invoiceMeta.date, paymentTerm]);
 
-  // Initialize from /api/me
+  // Sync currency with header: read from localStorage on mount so generator shows header-selected currency
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('currency');
+      if (saved && getAvailableCurrencies().includes(saved as any)) setCurrency(saved as any);
+    } catch {}
+  }, []);
+
+  // Initialize from /api/me (company, tokens; currency only if not already set from header/localStorage)
   useEffect(() => {
     (async () => {
       try {
@@ -280,7 +289,8 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
           }));
           if (company.country && CURRENCY_BY_COUNTRY[company.country]) setCountry(company.country);
         }
-        if ((user as any)?.currency) setCurrency((user as any).currency);
+        const savedCurrency = typeof window !== 'undefined' ? localStorage.getItem('currency') : null;
+        if (!savedCurrency && (user as any)?.currency) setCurrency((user as any).currency);
         if (typeof (user as any)?.tokenBalance === 'number') setTokenBalance((user as any).tokenBalance);
       } catch {
         // ignore
@@ -338,6 +348,10 @@ export default function InvoiceForm({ signedIn }: InvoiceFormProps) {
             iban: c.iban ?? prev.iban,
           }));
           if (c.country && CURRENCY_BY_COUNTRY[c.country]) setCountry(c.country);
+        }
+        if (data.type === 'currency-updated' && data.currency && getAvailableCurrencies().includes(data.currency)) {
+          setCurrency(data.currency);
+          try { localStorage.setItem('currency', data.currency); } catch {}
         }
         if (data.type === 'tokens-updated' && typeof data.tokenBalance === 'number') {
           setTokenBalance(data.tokenBalance);

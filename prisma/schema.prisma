@@ -9,11 +9,11 @@ datasource db {
 }
 
 enum Currency {
-  GBP
   EUR
-  USD
-  PLN
-  CZK
+  AUD
+  CAD
+  NZD
+  NOK
 }
 
 enum InvoiceStatus {
@@ -36,7 +36,7 @@ model User {
 
   // App-specific fields
   tokenBalance Int       @default(0)
-  currency     Currency  @default(GBP)
+  currency     Currency  @default(EUR)
 
   company  Company?
   invoices Invoice[]
@@ -139,7 +139,7 @@ model LedgerEntry {
   delta        Int       // tokens +/-
   balanceAfter Int
   currency     Currency?
-  amount       Int?
+  amount       Decimal?  @db.Decimal(12, 2)
   receiptUrl   String?
   invoiceNumber String?  // Invoice number for Invoice type entries
 }

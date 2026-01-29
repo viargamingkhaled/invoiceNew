@@ -1,7 +1,8 @@
 import { CurrencyData, CountryCode, VatRates } from '@/types/invoice';
 
+// Only countries mapping to supported currencies: EUR, AUD, CAD, NZD, NOK
 export const CURRENCY_BY_COUNTRY: CurrencyData = {
-  "United Kingdom": "GBP",
+  "United Kingdom": "EUR",
   "Ireland": "EUR",
   "Germany": "EUR",
   "France": "EUR",
@@ -22,32 +23,34 @@ export const CURRENCY_BY_COUNTRY: CurrencyData = {
   "Slovakia": "EUR",
   "Slovenia": "EUR",
   "Croatia": "EUR",
-  "Czechia": "CZK",
-  "Poland": "PLN",
-  "Hungary": "HUF",
-  "Romania": "RON",
-  "Bulgaria": "BGN",
-  "Denmark": "DKK",
-  "Sweden": "SEK",
+  "Czechia": "EUR",
+  "Poland": "EUR",
+  "Hungary": "EUR",
+  "Romania": "EUR",
+  "Bulgaria": "EUR",
+  "Denmark": "EUR",
+  "Sweden": "EUR",
   "Norway": "NOK",
-  "Switzerland": "CHF",
-  "Iceland": "ISK",
-  "Serbia": "RSD",
-  "Bosnia and Herzegovina": "BAM",
-  "North Macedonia": "MKD",
-  "Albania": "ALL",
+  "Switzerland": "EUR",
+  "Iceland": "EUR",
+  "Serbia": "EUR",
+  "Bosnia and Herzegovina": "EUR",
+  "North Macedonia": "EUR",
+  "Albania": "EUR",
   "Montenegro": "EUR",
   "Kosovo": "EUR",
-  "Moldova": "MDL",
-  "Ukraine": "UAH",
-  "Georgia": "GEL",
-  "Turkey": "TRY",
+  "Moldova": "EUR",
+  "Ukraine": "EUR",
+  "Georgia": "EUR",
+  "Turkey": "EUR",
   "Andorra": "EUR",
   "Monaco": "EUR",
   "San Marino": "EUR",
-  "Liechtenstein": "CHF",
+  "Liechtenstein": "EUR",
   "Vatican City": "EUR",
-  "Australia": "AUD"
+  "Australia": "AUD",
+  "Canada": "CAD",
+  "New Zealand": "NZD",
 };
 
 export const CC: CountryCode = {
@@ -82,7 +85,9 @@ export const CC: CountryCode = {
   "Norway": "NO",
   "Switzerland": "CH",
   "Iceland": "IS",
-  "Australia": "AU"
+  "Australia": "AU",
+  "Canada": "CA",
+  "New Zealand": "NZ",
 };
 
 export const VAT_RATES: VatRates = {
@@ -117,8 +122,7 @@ export const VAT_RATES: VatRates = {
   NO: [0, 12, 25],
   CH: [0, 2.6, 3.8, 8.1],
   IS: [0, 11, 24],
-  AU: [0, 10]
+  AU: [0, 10],
+  CA: [0, 5, 13, 15],
+  NZ: [0, 15],
 };
-
-
-
