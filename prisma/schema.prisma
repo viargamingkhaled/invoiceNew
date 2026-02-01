@@ -41,6 +41,7 @@ model User {
   company  Company?
   invoices Invoice[]
   ledger   LedgerEntry[]
+  payments Payment[]
 
   accounts Account[]
   sessions Session[]
@@ -142,4 +143,20 @@ model LedgerEntry {
   amount       Decimal?  @db.Decimal(12, 2)
   receiptUrl   String?
   invoiceNumber String?  // Invoice number for Invoice type entries
+}
+
+// Payment records for Spoynt integration
+model Payment {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  referenceId     String    @unique  // Unique reference for Spoynt
+  spoyntPaymentId String?   // Payment ID from Spoynt (cpi_xxx)
+  amount          Decimal   @db.Decimal(12, 2)
+  currency        Currency
+  status          String    @default("pending") // pending, processing, completed, failed
+  provider        String    @default("spoynt")
+  errorMessage    String?
+  createdAt       DateTime  @default(now())
+  completedAt     DateTime?
 }

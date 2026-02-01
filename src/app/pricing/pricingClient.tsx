@@ -95,32 +95,29 @@ export default function PricingClient() {
       return router.push('/auth/signin?mode=login');
     }
 
-    setIsLoading(planId);
+    setIsLoading(planId || 'custom');
     try {
-      // Определяем количество токенов для пополнения
-      let tokensToAdd = 0;
+      // Calculate amount to send
       let amountToSend = 0;
       
       if (customAmount) {
         amountToSend = customAmount;
-        tokensToAdd = calculateTokens(customAmount, currency);
       } else if (planId) {
         const plan = pricingPlans.find(p => p.id === planId);
         if (plan) {
-          tokensToAdd = plan.tokens;
           amountToSend = convertFromEUR(plan.baseEUR, currency);
         }
       }
 
-      if (tokensToAdd <= 0) {
+      if (amountToSend <= 0) {
         throw new Error('Invalid amount');
       }
 
-      const response = await fetch('/api/ledger', {
+      // Create Spoynt payment session
+      const response = await fetch('/api/payments/spoynt', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          type: 'Top-up', 
           amount: amountToSend,
           currency,
         }),
@@ -132,19 +129,16 @@ export default function PricingClient() {
         throw new Error(data.error || 'Something went wrong.');
       }
 
-      toast.success(`Successfully added ${tokensToAdd} tokens to your account!`);
-      setIsLoading(null);
-
-      // Обновляем BroadcastChannel для синхронизации с другими компонентами
-      try {
-        const bc = new BroadcastChannel('app-events');
-        bc.postMessage({ type: 'tokens-updated', tokenBalance: data.tokenBalance });
-        bc.close();
-      } catch {}
+      // Redirect to Spoynt payment page
+      if (data.redirectUrl) {
+        window.location.href = data.redirectUrl;
+      } else {
+        throw new Error('No redirect URL received');
+      }
 
     } catch (error) {
-      console.error("Top-up error:", error);
-      toast.error('Could not add tokens. Please try again.');
+      console.error("Payment error:", error);
+      toast.error(error instanceof Error ? error.message : 'Could not initiate payment. Please try again.');
       setIsLoading(null);
     }
   };
