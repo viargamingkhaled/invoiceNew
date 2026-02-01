@@ -4,6 +4,9 @@ import { verifyCallbackSignature, isPaymentSuccessful, isPaymentFailed, isPaymen
 import { convertToEUR, TOKENS_PER_EUR, isValidCurrency } from '@/lib/currency';
 import type { Currency } from '@/lib/currency';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type TxClient = Parameters<Parameters<typeof prisma.$transaction>[0]>[0];
+
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -78,7 +81,7 @@ export async function POST(req: Request) {
     // Process based on payment status
     if (isPaymentSuccessful(status)) {
       // Payment successful - add tokens to user balance
-      await prisma.$transaction(async (tx) => {
+      await prisma.$transaction(async (tx: TxClient) => {
         // Update payment status
         await tx.payment.update({
           where: { id: payment.id },
