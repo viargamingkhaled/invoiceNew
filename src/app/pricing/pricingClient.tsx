@@ -350,11 +350,13 @@ export default function PricingClient() {
 }
 
 function CustomPlanCard({ currency, onPurchase }: { currency: Currency; onPurchase: (amount: number, currency: Currency) => void; }) {
-  const [priceInput, setPriceInput] = useState<string>('0.01');
+  const [priceInput, setPriceInput] = useState<string>('5');
   const TOKENS_PER_INVOICE = 10;
-  const min = 0.01;
+  const min = 5;
+  const max = 10000;
   const numericPrice = parseFloat(priceInput || '0');
   const validNumber = Number.isFinite(numericPrice);
+  const isValidAmount = validNumber && numericPrice >= min && numericPrice <= max;
   const tokens = Math.max(0, calculateTokens(validNumber ? numericPrice : 0, currency));
   const invoices = Math.round(tokens / TOKENS_PER_INVOICE);
 
@@ -371,22 +373,22 @@ function CustomPlanCard({ currency, onPurchase }: { currency: Currency; onPurcha
       </div>
       <div className="mt-3 flex items-center gap-2">
         <span className="text-3xl font-bold">{getCurrencySymbol(currency)}</span>
-        <input type="number" step="any" value={priceInput}
+        <input type="number" step="any" min={min} max={max} value={priceInput}
           onChange={onChange}
           className="w-24 text-3xl font-bold bg-transparent border-b border-black/10 focus:outline-none focus:ring-0" aria-label="Custom price" />
         <span className="text-base font-normal text-slate-500">/one-time</span>
       </div>
-      {(!validNumber || numericPrice < min) && (
-        <div className="mt-1 text-[11px] text-red-600">Minimum amount is {getCurrencySymbol(currency)}0.01</div>
+      {!isValidAmount && (
+        <div className="mt-1 text-[11px] text-red-600">Amount must be between {getCurrencySymbol(currency)}{min} and {getCurrencySymbol(currency)}{max.toLocaleString()}</div>
       )}
       <div className="mt-1 text-xs text-slate-600">= {tokens} tokens (~{invoices} invoices)</div>
       <ul className="mt-4 space-y-2 text-sm text-slate-700 list-disc pl-5">
         <li>Top up your account</li>
         <li>No subscription — pay what you need</li>
-        <li>Min {getCurrencySymbol(currency)}0.01</li>
+        <li>Min {getCurrencySymbol(currency)}{min} · Max {getCurrencySymbol(currency)}{max.toLocaleString()}</li>
       </ul>
       <div className="mt-6">
-        <Button className="w-full" size="lg" onClick={() => onPurchase(numericPrice, currency)} disabled={!validNumber || numericPrice < min}>
+        <Button className="w-full" size="lg" onClick={() => onPurchase(numericPrice, currency)} disabled={!isValidAmount}>
           Buy tokens
         </Button>
       </div>
