@@ -171,7 +171,53 @@ src/
     └── schema.prisma            # Payment model
 ```
 
-## Troubleshooting
+## Debugging & Logs
+
+### Frontend Logs (Browser Console)
+Откройте консоль браузера (F12) перед покупкой токенов. Вы увидите логи:
+- 🔵 Frontend steps (1-6) - показывают процесс до редиректа на Spoynt
+- Логи сохраняются в localStorage и остаются доступны после возврата
+
+**После возврата со страницы Spoynt:**
+```javascript
+// Логи автоматически отображаются в консоли при загрузке страницы pricing
+// Или вручную:
+JSON.parse(localStorage.getItem('payment_logs'))
+localStorage.getItem('payment_reference') // Reference ID платежа
+```
+
+### Backend Logs (Vercel Dashboard)
+Все backend логи автоматически отправляются в Vercel:
+
+**Где смотреть:**
+1. Vercel Dashboard → Your Project → Logs
+2. Или через CLI: `vercel logs [deployment-url]`
+3. Для runtime logs: `vercel logs --follow`
+
+**Типы событий в Vercel:**
+- 🟢 API Route steps (1-9) - процесс создания платежа
+- 🟡 REDIRECT_TO_HPP - успешный редирект на Spoynt
+- 🟡 PAYMENT_API_ERROR - ошибка при создании платежа
+- 🟣 CALLBACK events - webhook от Spoynt
+
+**Пример поиска в Vercel Logs:**
+```bash
+# Найти все события платежа
+vercel logs --filter="PAYMENT"
+
+# Найти конкретный Reference ID
+vercel logs --filter="VNT_1770037108569"
+
+# Следить за логами в реальном времени
+vercel logs --follow
+```
+
+### Local Development Logs
+При локальной разработке (`npm run dev`):
+- Frontend логи → Browser Console (F12)
+- Backend логи → Terminal где запущен dev server
+
+### Troubleshooting with Logs
 
 ### Payment not completing
 

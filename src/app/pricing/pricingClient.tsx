@@ -87,14 +87,40 @@ export default function PricingClient() {
       if (savedCurrency && getAvailableCurrencies().includes(savedCurrency)) {
         setCurrency(savedCurrency);
       }
+      
+      // Проверяем и показываем сохраненные логи при возврате со страницы оплаты
+      const savedLogs = localStorage.getItem('payment_logs');
+      if (savedLogs) {
+        console.group('📋 [SAVED LOGS] Payment logs from previous session');
+        const logs = JSON.parse(savedLogs);
+        logs.forEach((log: string) => console.log(log));
+        console.groupEnd();
+        
+        const reference = localStorage.getItem('payment_reference');
+        if (reference) {
+          console.log('🔑 Payment Reference ID:', reference);
+          console.log('💡 To view full backend logs:');
+          console.log('   1. Vercel Dashboard → Your Project → Logs');
+          console.log('   2. Search for:', reference);
+          console.log('   3. Or use CLI: vercel logs --filter="' + reference + '"');
+        }
+      }
     } catch {}
   }, []);
 
   const handlePurchase = async (planId: string | null, customAmount?: number) => {
-    console.log('🔵 [PAYMENT] Step 1: Starting payment process', { planId, customAmount, currency });
+    // Массив для сохранения всех логов
+    const paymentLog: string[] = [];
+    const logToAll = (message: string, data?: any) => {
+      const logEntry = `[${new Date().toISOString()}] ${message}${data ? ' | ' + JSON.stringify(data) : ''}`;
+      console.log(message, data || '');
+      paymentLog.push(logEntry);
+    };
+
+    logToAll('🔵 [PAYMENT] Step 1: Starting payment process', { planId, customAmount, currency });
     
     if (!signedIn) {
-      console.log('❌ [PAYMENT] User not signed in, redirecting to login');
+      logToAll('❌ [PAYMENT] User not signed in, redirecting to login');
       return router.push('/auth/signin?mode=login');
     }
 
@@ -112,14 +138,14 @@ export default function PricingClient() {
         }
       }
 
-      console.log('🔵 [PAYMENT] Step 2: Amount calculated', { amountToSend, currency });
+      logToAll('🔵 [PAYMENT] Step 2: Amount calculated', { amountToSend, currency });
 
       if (amountToSend <= 0) {
-        console.log('❌ [PAYMENT] Invalid amount');
+        logToAll('❌ [PAYMENT] Invalid amount');
         throw new Error('Invalid amount');
       }
 
-      console.log('🔵 [PAYMENT] Step 3: Calling API to create payment session');
+      logToAll('🔵 [PAYMENT] Step 3: Calling API to create payment session');
       
       // Create Spoynt payment session
       const response = await fetch('/api/payments/spoynt', {
@@ -131,27 +157,69 @@ export default function PricingClient() {
         }),
       });
 
-      console.log('🔵 [PAYMENT] Step 4: API response received', { status: response.status, ok: response.ok });
+      logToAll('🔵 [PAYMENT] Step 4: API response received', { status: response.status, ok: response.ok });
 
       const data = await response.json();
-      console.log('🔵 [PAYMENT] Step 5: Response data', data);
+      logToAll('🔵 [PAYMENT] Step 5: Response data', data);
 
       if (!response.ok) {
-        console.log('❌ [PAYMENT] API error', { error: data.error });
+        logToAll('❌ [PAYMENT] API error', { error: data.error });
+        
+        // Сохраняем логи в localStorage и отправляем на сервер
+        localStorage.setItem('payment_logs', JSON.stringify(paymentLog));
+        fetch('/api/payments/spoynt/log', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            event: 'PAYMENT_API_ERROR',
+            referenceId: data.referenceId || 'unknown',
+            amount: amountToSend,
+            timestamp: new Date().toISOString(),
+            logs: paymentLog,
+            error: data.error
+          })
+        }).catch(e => console.error('Failed to send error log:', e));
+        
         throw new Error(data.error || 'Something went wrong.');
       }
 
       // Redirect to Spoynt payment page
       if (data.redirectUrl) {
-        console.log('✅ [PAYMENT] Step 6: Redirecting to Spoynt HPP', { redirectUrl: data.redirectUrl });
+        logToAll('✅ [PAYMENT] Step 6: Redirecting to Spoynt HPP', { redirectUrl: data.redirectUrl });
+        
+        // Сохраняем логи перед редиректом
+        localStorage.setItem('payment_logs', JSON.stringify(paymentLog));
+        localStorage.setItem('payment_reference', data.referenceId);
+        
+        // Отправляем событие на сервер для логирования в Vercel
+        fetch('/api/payments/spoynt/log', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            event: 'REDIRECT_TO_HPP',
+            referenceId: data.referenceId,
+            amount: amountToSend,
+            timestamp: new Date().toISOString(),
+            logs: paymentLog
+          })
+        }).catch(e => console.error('Failed to send log to server:', e));
+        
+        // Небольшая задержка для гарантии отправки лога
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
         window.location.href = data.redirectUrl;
       } else {
-        console.log('❌ [PAYMENT] No redirect URL in response');
+        logToAll('❌ [PAYMENT] No redirect URL in response');
+        localStorage.setItem('payment_logs', JSON.stringify(paymentLog));
         throw new Error('No redirect URL received');
       }
 
     } catch (error) {
-      console.error('❌ [PAYMENT] Payment error:', error);
+      logToAll('❌ [PAYMENT] Payment error:', error);
+      
+      // Сохраняем логи при ошибке
+      localStorage.setItem('payment_logs', JSON.stringify(paymentLog));
+      
       toast.error(error instanceof Error ? error.message : 'Could not initiate payment. Please try again.');
       setIsLoading(null);
     }
