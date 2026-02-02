@@ -15,22 +15,28 @@ export const dynamic = 'force-dynamic';
  */
 export async function POST(req: Request) {
   try {
+    console.log('🟢 [API] Step 1: Payment session request received');
+    
     const session = await getServerSession(authOptions);
     if (!session?.user) {
+      console.log('❌ [API] Unauthorized request');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const userId = (session.user as any).id as string;
     const userEmail = session.user.email!;
     const userName = session.user.name || undefined;
+    console.log('🟢 [API] Step 2: User authenticated', { userId, userEmail });
 
     const body = await req.json().catch(() => ({}));
     const amount = Number(body.amount);
     const rawCurrency = (body.currency as string) || 'EUR';
     const currency: Currency = isValidCurrency(rawCurrency) ? rawCurrency : 'EUR';
+    console.log('🟢 [API] Step 3: Request parsed', { amount, currency });
 
     // Validation
     if (!amount || amount < 5 || amount > 10000) {
+      console.log('❌ [API] Invalid amount', { amount });
       return NextResponse.json(
         { error: 'Amount must be between 5 and 10,000' },
         { status: 400 }
@@ -38,6 +44,7 @@ export async function POST(req: Request) {
     }
 
     if (!CURRENCY_TO_SERVICE[currency]) {
+      console.log('❌ [API] Unsupported currency', { currency });
       return NextResponse.json(
         { error: `Unsupported currency: ${currency}` },
         { status: 400 }
@@ -46,9 +53,11 @@ export async function POST(req: Request) {
 
     // Generate unique reference ID
     const referenceId = `VNT_${Date.now()}_${randomUUID().slice(0, 8)}`;
+    console.log('🟢 [API] Step 4: Reference ID generated', { referenceId });
 
     // Base URL for redirects
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || 'https://ventira.co.uk';
+    console.log('🟢 [API] Step 5: Base URL', { baseUrl });
 
     // Create payment record in database
     const payment = await prisma.payment.create({
@@ -61,8 +70,12 @@ export async function POST(req: Request) {
         provider: 'spoynt',
       },
     });
+    console.log('🟢 [API] Step 6: Payment record created in DB', { paymentId: payment.id });
 
     // Create Spoynt payment invoice
+    const testMode = process.env.NODE_ENV !== 'production';
+    console.log('🟢 [API] Step 7: Calling Spoynt API', { testMode, service: CURRENCY_TO_SERVICE[currency] });
+    
     const result = await createPaymentInvoice({
       referenceId,
       amount,
@@ -76,10 +89,14 @@ export async function POST(req: Request) {
         userId,
         paymentId: payment.id,
       },
-      testMode: process.env.NODE_ENV !== 'production',
+      testMode,
     });
 
+    console.log('🟢 [API] Step 8: Spoynt API response', { success: result.success, paymentId: result.paymentId });
+
     if (!result.success || !result.hppUrl) {
+      console.log('❌ [API] Spoynt API error', { error: result.error });
+      
       // Update payment status to failed
       await prisma.payment.update({
         where: { id: payment.id },
@@ -99,6 +116,12 @@ export async function POST(req: Request) {
         spoyntPaymentId: result.paymentId,
         status: 'processing',
       },
+    });
+
+    console.log('✅ [API] Step 9: Payment session created successfully', { 
+      paymentId: payment.id, 
+      spoyntPaymentId: result.paymentId,
+      hppUrl: result.hppUrl 
     });
 
     return NextResponse.json({

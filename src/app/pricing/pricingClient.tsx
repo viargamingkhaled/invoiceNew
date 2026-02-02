@@ -91,7 +91,10 @@ export default function PricingClient() {
   }, []);
 
   const handlePurchase = async (planId: string | null, customAmount?: number) => {
+    console.log('🔵 [PAYMENT] Step 1: Starting payment process', { planId, customAmount, currency });
+    
     if (!signedIn) {
+      console.log('❌ [PAYMENT] User not signed in, redirecting to login');
       return router.push('/auth/signin?mode=login');
     }
 
@@ -109,10 +112,15 @@ export default function PricingClient() {
         }
       }
 
+      console.log('🔵 [PAYMENT] Step 2: Amount calculated', { amountToSend, currency });
+
       if (amountToSend <= 0) {
+        console.log('❌ [PAYMENT] Invalid amount');
         throw new Error('Invalid amount');
       }
 
+      console.log('🔵 [PAYMENT] Step 3: Calling API to create payment session');
+      
       // Create Spoynt payment session
       const response = await fetch('/api/payments/spoynt', {
         method: 'POST',
@@ -123,21 +131,27 @@ export default function PricingClient() {
         }),
       });
 
+      console.log('🔵 [PAYMENT] Step 4: API response received', { status: response.status, ok: response.ok });
+
       const data = await response.json();
+      console.log('🔵 [PAYMENT] Step 5: Response data', data);
 
       if (!response.ok) {
+        console.log('❌ [PAYMENT] API error', { error: data.error });
         throw new Error(data.error || 'Something went wrong.');
       }
 
       // Redirect to Spoynt payment page
       if (data.redirectUrl) {
+        console.log('✅ [PAYMENT] Step 6: Redirecting to Spoynt HPP', { redirectUrl: data.redirectUrl });
         window.location.href = data.redirectUrl;
       } else {
+        console.log('❌ [PAYMENT] No redirect URL in response');
         throw new Error('No redirect URL received');
       }
 
     } catch (error) {
-      console.error("Payment error:", error);
+      console.error('❌ [PAYMENT] Payment error:', error);
       toast.error(error instanceof Error ? error.message : 'Could not initiate payment. Please try again.');
       setIsLoading(null);
     }
