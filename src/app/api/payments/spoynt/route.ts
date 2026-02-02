@@ -73,8 +73,14 @@ export async function POST(req: Request) {
     console.log('🟢 [API] Step 6: Payment record created in DB', { paymentId: payment.id });
 
     // Create Spoynt payment invoice
-    const testMode = process.env.NODE_ENV !== 'production';
-    console.log('🟢 [API] Step 7: Calling Spoynt API', { testMode, service: CURRENCY_TO_SERVICE[currency] });
+    // Use SPOYNT_USE_TEST_MODE env var or fallback to NODE_ENV check
+    const testMode = process.env.SPOYNT_USE_TEST_MODE === 'true' || process.env.NODE_ENV !== 'production';
+    console.log('🟢 [API] Step 7: Calling Spoynt API', { 
+      testMode, 
+      service: CURRENCY_TO_SERVICE[currency],
+      env: process.env.NODE_ENV,
+      forceTestMode: process.env.SPOYNT_USE_TEST_MODE
+    });
     
     const result = await createPaymentInvoice({
       referenceId,
