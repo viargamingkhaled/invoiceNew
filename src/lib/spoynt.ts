@@ -23,15 +23,15 @@ export const CURRENCY_TO_SERVICE: Record<Currency, string> = {
 };
 // Amount limits per currency (from Spoynt)
 export const CURRENCY_LIMITS: Record<string, { min: number; max: number }> = {
-  EUR: { min: 10, max: 5000 },
-  AUD: { min: 5, max: 10000 },  // AUD has different limits
-  CAD: { min: 10, max: 5000 },
-  NZD: { min: 10, max: 5000 },
-  NOK: { min: 100, max: 50000 }, // NOK in local currency
+  EUR: { min: 5, max: 100000 },
+  AUD: { min: 5, max: 100000 },
+  CAD: { min: 5, max: 100000 },
+  NZD: { min: 5, max: 100000 },
+  NOK: { min: 5, max: 1000000 },
 };
 
 // Default limits if currency not found
-export const DEFAULT_LIMITS = { min: 10, max: 5000 };
+export const DEFAULT_LIMITS = { min: 5, max: 100000 };
 // Get Basic Auth header
 function getBasicAuthHeader(): string {
   const credentials = Buffer.from(`${SPOYNT_ACCOUNT_ID}:${SPOYNT_API_KEY}`).toString('base64');

@@ -19,13 +19,13 @@ const COUNTRIES = Object.keys(CC);
 
 // Amount limits per currency (synced with Spoynt)
 const CURRENCY_LIMITS: Record<string, { min: number; max: number }> = {
-  EUR: { min: 10, max: 5000 },
-  AUD: { min: 5, max: 10000 },
-  CAD: { min: 10, max: 5000 },
-  NZD: { min: 10, max: 5000 },
-  NOK: { min: 100, max: 50000 },
+  EUR: { min: 5, max: 100000 },
+  AUD: { min: 5, max: 100000 },
+  CAD: { min: 5, max: 100000 },
+  NZD: { min: 5, max: 100000 },
+  NOK: { min: 5, max: 1000000 },
 };
-const DEFAULT_LIMITS = { min: 10, max: 5000 };
+const DEFAULT_LIMITS = { min: 5, max: 100000 };
 
 function money(n: number, currency: Currency) {
   return formatCurrency(n, currency);
@@ -394,13 +394,13 @@ function CustomPlanCard({ currency, onPurchase }: { currency: Currency; onPurcha
         <span className="text-base font-normal text-slate-500">/one-time</span>
       </div>
       {!isValidAmount && (
-        <div className="mt-1 text-[11px] text-red-600">Amount must be between {getCurrencySymbol(currency)}{limits.min} and {getCurrencySymbol(currency)}{limits.max.toLocaleString()}</div>
+        <div className="mt-1 text-[11px] text-red-600">Minimum amount is {getCurrencySymbol(currency)}{limits.min}</div>
       )}
       <div className="mt-1 text-xs text-slate-600">= {tokens} tokens (~{invoices} invoices)</div>
       <ul className="mt-4 space-y-2 text-sm text-slate-700 list-disc pl-5">
         <li>Top up your account</li>
         <li>No subscription — pay what you need</li>
-        <li>Min {getCurrencySymbol(currency)}{limits.min} · Max {getCurrencySymbol(currency)}{limits.max.toLocaleString()}</li>
+        <li>Min {getCurrencySymbol(currency)}{limits.min}</li>
       </ul>
       <div className="mt-6">
         <Button className="w-full" size="lg" onClick={() => onPurchase(numericPrice, currency)} disabled={!isValidAmount}>
