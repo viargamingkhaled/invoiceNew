@@ -118,6 +118,10 @@ export async function createPaymentInvoice(params: CreatePaymentParams): Promise
   };
 
   try {
+    console.log('🔵 [SPOYNT LIB] Calling Spoynt API...');
+    console.log('🔵 Request URL:', `${SPOYNT_API_URL}/payment-invoices`);
+    console.log('🔵 Request body:', JSON.stringify(requestBody, null, 2));
+    
     const response = await fetch(`${SPOYNT_API_URL}/payment-invoices`, {
       method: 'POST',
       headers: {
@@ -128,9 +132,11 @@ export async function createPaymentInvoice(params: CreatePaymentParams): Promise
       body: JSON.stringify(requestBody),
     });
 
+    console.log('🔵 [SPOYNT LIB] Response status:', response.status);
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      console.error('Spoynt API Error:', response.status, errorData);
+      console.error('❌ [SPOYNT LIB] API Error:', response.status, JSON.stringify(errorData, null, 2));
       return {
         success: false,
         error: errorData.errors?.[0]?.detail || `API error: ${response.status}`,
@@ -138,11 +144,16 @@ export async function createPaymentInvoice(params: CreatePaymentParams): Promise
     }
 
     const data = await response.json();
+    console.log('✅ [SPOYNT LIB] API Success. Full response:', JSON.stringify(data, null, 2));
+    
     const attributes = data.data?.attributes;
 
     if (!attributes) {
+      console.error('❌ [SPOYNT LIB] No attributes in response');
       return { success: false, error: 'Invalid API response' };
     }
+    
+    console.log('✅ [SPOYNT LIB] HPP URL:', attributes.hpp_url || attributes.flow_data?.action);
 
     return {
       success: true,

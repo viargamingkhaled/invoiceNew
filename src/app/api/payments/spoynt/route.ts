@@ -73,14 +73,8 @@ export async function POST(req: Request) {
     console.log('🟢 [API] Step 6: Payment record created in DB', { paymentId: payment.id });
 
     // Create Spoynt payment invoice
-    // Use SPOYNT_USE_TEST_MODE env var or fallback to NODE_ENV check
-    const testMode = process.env.SPOYNT_USE_TEST_MODE === 'true' || process.env.NODE_ENV !== 'production';
-    console.log('🟢 [API] Step 7: Calling Spoynt API', { 
-      testMode, 
-      service: CURRENCY_TO_SERVICE[currency],
-      env: process.env.NODE_ENV,
-      forceTestMode: process.env.SPOYNT_USE_TEST_MODE
-    });
+    const testMode = process.env.NODE_ENV !== 'production';
+    console.log('🟢 [API] Step 7: Calling Spoynt API', { testMode, service: CURRENCY_TO_SERVICE[currency] });
     
     const result = await createPaymentInvoice({
       referenceId,
@@ -98,10 +92,15 @@ export async function POST(req: Request) {
       testMode,
     });
 
-    console.log('🟢 [API] Step 8: Spoynt API response', { success: result.success, paymentId: result.paymentId });
+    console.log('🟢 [API] Step 8: Spoynt API response', { 
+      success: result.success, 
+      paymentId: result.paymentId,
+      hppUrl: result.hppUrl,
+      fullResponse: JSON.stringify(result, null, 2)
+    });
 
     if (!result.success || !result.hppUrl) {
-      console.log('❌ [API] Spoynt API error', { error: result.error });
+      console.log('❌ [API] Spoynt API error', { error: result.error, fullResult: result });
       
       // Update payment status to failed
       await prisma.payment.update({

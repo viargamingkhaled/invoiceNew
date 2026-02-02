@@ -18,33 +18,54 @@ export const dynamic = 'force-dynamic';
  * Signature verification ensures requests are authentic
  */
 export async function POST(req: Request) {
+  console.log('═══════════════════════════════════════════════════════');
+  console.log('🟣 [CALLBACK] Spoynt webhook received');
+  console.log('Time:', new Date().toISOString());
+  console.log('───────────────────────────────────────────────────────');
+  
   try {
     const rawBody = await req.text();
     const signature = req.headers.get('x-signature') || '';
+    
+    console.log('📦 Body length:', rawBody.length, 'bytes');
+    console.log('🔐 Signature present:', signature ? 'Yes' : 'No');
 
     // Parse callback data
     let callbackData: any;
     try {
       callbackData = JSON.parse(rawBody);
+      console.log('✅ JSON parsed successfully');
     } catch {
-      console.error('Invalid callback JSON');
+      console.error('❌ Invalid callback JSON');
       return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
     }
 
     const attributes = callbackData.data?.attributes;
     if (!attributes) {
-      console.error('Invalid callback structure');
+      console.error('❌ Invalid callback structure - no attributes');
       return NextResponse.json({ error: 'Invalid callback structure' }, { status: 400 });
     }
 
     const isTestMode = attributes.test_mode === true;
 
+    console.log('📋 Callback data:', {
+      spoyntPaymentId: callbackData.data?.id,
+      referenceId: attributes.reference_id,
+      status: attributes.status,
+      resolution: attributes.resolution,
+      amount: attributes.amount,
+      currency: attributes.currency,
+      testMode: isTestMode
+    });
+
     // Verify signature in production
     if (process.env.NODE_ENV === 'production' || process.env.VERIFY_SPOYNT_SIGNATURE === 'true') {
+      console.log('🔐 Verifying signature...');
       if (!verifyCallbackSignature(rawBody, signature, isTestMode)) {
-        console.error('Invalid callback signature');
+        console.error('❌ Invalid callback signature');
         return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
       }
+      console.log('✅ Signature verified');
     }
 
     const spoyntPaymentId = callbackData.data?.id;
@@ -54,7 +75,7 @@ export async function POST(req: Request) {
     const amount = attributes.amount;
     const currency = attributes.currency;
 
-    console.log(`Spoynt callback: ${spoyntPaymentId} - Status: ${status}, Resolution: ${resolution}`);
+    console.log(`🟣 [CALLBACK] Processing: ${spoyntPaymentId} - Status: ${status}, Resolution: ${resolution}`);
 
     // Find payment in database
     const payment = await prisma.payment.findFirst({
