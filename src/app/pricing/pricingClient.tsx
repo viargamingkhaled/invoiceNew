@@ -17,15 +17,15 @@ import { pricingPlans, getPlanPrice } from '@/lib/plans';
 
 const COUNTRIES = Object.keys(CC);
 
-// Amount limits per currency (synced with Spoynt)
+// Amount limits per currency (from Spoynt API validation)
 const CURRENCY_LIMITS: Record<string, { min: number; max: number }> = {
-  EUR: { min: 5, max: 100000 },
-  AUD: { min: 5, max: 100000 },
-  CAD: { min: 5, max: 100000 },
-  NZD: { min: 5, max: 100000 },
-  NOK: { min: 5, max: 1000000 },
+  EUR: { min: 10, max: 5000 },
+  AUD: { min: 10, max: 5000 },
+  CAD: { min: 10, max: 5000 },
+  NZD: { min: 10, max: 5000 },
+  NOK: { min: 100, max: 50000 },
 };
-const DEFAULT_LIMITS = { min: 5, max: 100000 };
+const DEFAULT_LIMITS = { min: 10, max: 5000 };
 
 function money(n: number, currency: Currency) {
   return formatCurrency(n, currency);
