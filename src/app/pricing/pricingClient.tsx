@@ -17,6 +17,16 @@ import { pricingPlans, getPlanPrice } from '@/lib/plans';
 
 const COUNTRIES = Object.keys(CC);
 
+// Amount limits per currency (synced with Spoynt)
+const CURRENCY_LIMITS: Record<string, { min: number; max: number }> = {
+  EUR: { min: 10, max: 5000 },
+  AUD: { min: 5, max: 10000 },
+  CAD: { min: 10, max: 5000 },
+  NZD: { min: 10, max: 5000 },
+  NOK: { min: 100, max: 50000 },
+};
+const DEFAULT_LIMITS = { min: 10, max: 5000 };
+
 function money(n: number, currency: Currency) {
   return formatCurrency(n, currency);
 }
@@ -350,15 +360,20 @@ export default function PricingClient() {
 }
 
 function CustomPlanCard({ currency, onPurchase }: { currency: Currency; onPurchase: (amount: number, currency: Currency) => void; }) {
-  const [priceInput, setPriceInput] = useState<string>('5');
+  const limits = CURRENCY_LIMITS[currency] || DEFAULT_LIMITS;
+  const [priceInput, setPriceInput] = useState<string>(String(limits.min));
   const TOKENS_PER_INVOICE = 10;
-  const min = 5;
-  const max = 10000;
   const numericPrice = parseFloat(priceInput || '0');
   const validNumber = Number.isFinite(numericPrice);
-  const isValidAmount = validNumber && numericPrice >= min && numericPrice <= max;
+  const isValidAmount = validNumber && numericPrice >= limits.min && numericPrice <= limits.max;
   const tokens = Math.max(0, calculateTokens(validNumber ? numericPrice : 0, currency));
   const invoices = Math.round(tokens / TOKENS_PER_INVOICE);
+
+  // Update default when currency changes
+  useEffect(() => {
+    const newLimits = CURRENCY_LIMITS[currency] || DEFAULT_LIMITS;
+    setPriceInput(String(newLimits.min));
+  }, [currency]);
 
   const onChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     setPriceInput(e.target.value);
@@ -373,19 +388,19 @@ function CustomPlanCard({ currency, onPurchase }: { currency: Currency; onPurcha
       </div>
       <div className="mt-3 flex items-center gap-2">
         <span className="text-3xl font-bold">{getCurrencySymbol(currency)}</span>
-        <input type="number" step="any" min={min} max={max} value={priceInput}
+        <input type="number" step="any" min={limits.min} max={limits.max} value={priceInput}
           onChange={onChange}
           className="w-24 text-3xl font-bold bg-transparent border-b border-black/10 focus:outline-none focus:ring-0" aria-label="Custom price" />
         <span className="text-base font-normal text-slate-500">/one-time</span>
       </div>
       {!isValidAmount && (
-        <div className="mt-1 text-[11px] text-red-600">Amount must be between {getCurrencySymbol(currency)}{min} and {getCurrencySymbol(currency)}{max.toLocaleString()}</div>
+        <div className="mt-1 text-[11px] text-red-600">Amount must be between {getCurrencySymbol(currency)}{limits.min} and {getCurrencySymbol(currency)}{limits.max.toLocaleString()}</div>
       )}
       <div className="mt-1 text-xs text-slate-600">= {tokens} tokens (~{invoices} invoices)</div>
       <ul className="mt-4 space-y-2 text-sm text-slate-700 list-disc pl-5">
         <li>Top up your account</li>
         <li>No subscription — pay what you need</li>
-        <li>Min {getCurrencySymbol(currency)}{min} · Max {getCurrencySymbol(currency)}{max.toLocaleString()}</li>
+        <li>Min {getCurrencySymbol(currency)}{limits.min} · Max {getCurrencySymbol(currency)}{limits.max.toLocaleString()}</li>
       </ul>
       <div className="mt-6">
         <Button className="w-full" size="lg" onClick={() => onPurchase(numericPrice, currency)} disabled={!isValidAmount}>

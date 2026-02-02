@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { createPaymentInvoice, CURRENCY_TO_SERVICE } from '@/lib/spoynt';
+import { createPaymentInvoice, CURRENCY_TO_SERVICE, CURRENCY_LIMITS, DEFAULT_LIMITS } from '@/lib/spoynt';
 import { isValidCurrency, type Currency } from '@/lib/currency';
 import { randomUUID } from 'crypto';
 
@@ -34,11 +34,14 @@ export async function POST(req: Request) {
     const currency: Currency = isValidCurrency(rawCurrency) ? rawCurrency : 'EUR';
     console.log('🟢 [API] Step 3: Request parsed', { amount, currency });
 
+    // Get limits for this currency
+    const limits = CURRENCY_LIMITS[currency] || DEFAULT_LIMITS;
+    
     // Validation
-    if (!amount || amount < 5 || amount > 10000) {
-      console.log('❌ [API] Invalid amount', { amount });
+    if (!amount || amount < limits.min || amount > limits.max) {
+      console.log('❌ [API] Invalid amount', { amount, limits });
       return NextResponse.json(
-        { error: 'Amount must be between 5 and 10,000' },
+        { error: `Amount must be between ${limits.min} and ${limits.max.toLocaleString()} ${currency}` },
         { status: 400 }
       );
     }
