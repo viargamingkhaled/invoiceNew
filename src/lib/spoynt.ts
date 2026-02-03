@@ -147,9 +147,16 @@ export async function createPaymentInvoice(params: CreatePaymentParams): Promise
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       console.error('❌ [SPOYNT LIB] API Error:', response.status, JSON.stringify(errorData, null, 2));
+      
+      // Extract detailed error message
+      const errorMessage = errorData.errors?.[0]?.title || 
+                          errorData.errors?.[0]?.detail || 
+                          errorData.message || 
+                          `API error: ${response.status}`;
+      
       return {
         success: false,
-        error: errorData.errors?.[0]?.detail || `API error: ${response.status}`,
+        error: errorMessage,
       };
     }
 
