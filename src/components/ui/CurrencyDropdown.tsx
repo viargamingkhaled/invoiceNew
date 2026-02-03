@@ -8,14 +8,17 @@ interface CurrencyDropdownProps {
   value: Currency;
   onChange: (currency: Currency) => void;
   className?: string;
+  /** Optional: limit available currencies (e.g. for geo-restricted users). If not provided, all currencies are shown. */
+  availableCurrencies?: Currency[];
 }
 
-export default function CurrencyDropdown({ value, onChange, className = '' }: CurrencyDropdownProps) {
+export default function CurrencyDropdown({ value, onChange, className = '', availableCurrencies }: CurrencyDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const currencies = getAvailableCurrencies();
+  const currencies = availableCurrencies ?? getAvailableCurrencies();
+  const isSingleCurrency = currencies.length === 1;
 
   // Prevent hydration mismatch
   useEffect(() => {
@@ -65,18 +68,35 @@ export default function CurrencyDropdown({ value, onChange, className = '' }: Cu
         >
           <span className="font-medium">{getCurrencySymbol(value)}</span>
           <span className="text-slate-600">{value}</span>
-          <svg
-            className="h-4 w-4 text-slate-500 transition-transform"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polyline points="6 9 12 15 18 9" />
-          </svg>
+          {!isSingleCurrency && (
+            <svg
+              className="h-4 w-4 text-slate-500 transition-transform"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          )}
         </button>
+      </div>
+    );
+  }
+
+  // If only one currency is available, show static display (no dropdown)
+  if (isSingleCurrency) {
+    return (
+      <div className={`relative ${className}`} ref={dropdownRef}>
+        <div
+          className="flex items-center gap-2 px-3 py-2 text-sm rounded-xl border border-black/10 bg-white"
+          title={getCurrencyName(value)}
+        >
+          <span className="font-medium">{getCurrencySymbol(value)}</span>
+          <span className="text-slate-600">{value}</span>
+        </div>
       </div>
     );
   }

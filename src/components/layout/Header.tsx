@@ -10,6 +10,13 @@ import CurrencyDropdown from '@/components/ui/CurrencyDropdown';
 import { useSession, signOut } from 'next-auth/react';
 import { Currency, getAvailableCurrencies } from '@/lib/currency';
 
+/** Helper to read cookie by name (client-side) */
+function getCookie(name: string): string | null {
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? decodeURIComponent(match[2]) : null;
+}
+
 export default function Header() {
   const pathname = usePathname();
   const { data: session, status } = useSession();
@@ -27,6 +34,7 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileHelpOpen, setMobileHelpOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [geoCountry, setGeoCountry] = useState<string | null>(null);
 
   useEffect(() => {
     const t = (session?.user as any)?.tokenBalance;
@@ -52,6 +60,18 @@ export default function Header() {
 
   useEffect(() => { 
     setMounted(true);
+    
+    // Read geo-country cookie set by middleware
+    const country = getCookie('geo-country');
+    setGeoCountry(country);
+    
+    // For Norway users, force NOK currency
+    if (country === 'NO') {
+      setCurrency('NOK');
+      try { localStorage.setItem('currency', 'NOK'); } catch {}
+      return; // Skip localStorage load for Norwegian users
+    }
+    
     // Load currency from localStorage after mount to prevent hydration mismatch
     try {
       const savedCurrency = localStorage.getItem('currency') as Currency;
@@ -62,10 +82,17 @@ export default function Header() {
   }, []);
 
   const onCurrencyChange = (next: Currency) => {
+    // For Norway users, ignore currency changes (only NOK allowed)
+    if (geoCountry === 'NO') return;
     setCurrency(next);
     try { localStorage.setItem('currency', next); } catch {}
     try { bcRef.current?.postMessage({ type: 'currency-updated', currency: next }); } catch {}
   };
+
+  // Determine which currencies to show: only NOK for Norway, all others for rest
+  const availableCurrenciesForUser: Currency[] = geoCountry === 'NO' 
+    ? ['NOK'] 
+    : getAvailableCurrencies();
 
   const closeHelp = () => setHelpOpen(false);
   const toggleHelp = () => setHelpOpen((v)=>!v);
@@ -158,6 +185,7 @@ export default function Header() {
             <CurrencyDropdown
               value={currency}
               onChange={onCurrencyChange}
+              availableCurrencies={availableCurrenciesForUser}
             />
           </div>
           {!signedIn ? (
@@ -286,6 +314,7 @@ export default function Header() {
                     <CurrencyDropdown
                       value={currency}
                       onChange={onCurrencyChange}
+                      availableCurrencies={availableCurrenciesForUser}
                     />
                   </div>
 
