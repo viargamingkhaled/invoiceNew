@@ -13,6 +13,7 @@ export default function Pricing() {
   const bcRef = useRef<BroadcastChannel | null>(null);
   const [currency, setCurrency] = useState<Currency>('EUR');
   const [isLoading, setIsLoading] = useState<string | null>(null);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   useEffect(()=>{
     try {
@@ -44,6 +45,11 @@ export default function Pricing() {
   };
 
   const handleTopUp = async (planName: string) => {
+    if (!termsAccepted) {
+      alert('Please confirm that you have read and agree to the Terms of Purchase, Service Delivery, and Return Policy');
+      return;
+    }
+    
     setIsLoading(planName);
     try {
       // Определяем количество токенов для пополнения
@@ -125,7 +131,7 @@ export default function Pricing() {
             className={plan.popular ? 'md:-mt-4' : ''}
           >
             {plan.name === 'Custom' ? (
-              <CustomHomeCard currency={currency} />
+              <CustomHomeCard currency={currency} termsAccepted={termsAccepted} setTermsAccepted={setTermsAccepted} />
             ) : (
               <Card className={`${plan.popular ? 'shadow-md border-black/10' : ''} flex flex-col justify-between h-full`}>
                 <div>
@@ -165,8 +171,19 @@ export default function Pricing() {
                     ))}
                   </ul>
                 </div>
-                <div className="mt-6">
-                  <Button className="w-full" size="lg" onClick={() => handleTopUp(plan.name)} disabled={isLoading === plan.name}>
+                <div className="mt-6 space-y-3">
+                  <label className="flex items-start gap-2 text-xs text-slate-600 cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      checked={termsAccepted}
+                      onChange={(e) => setTermsAccepted(e.target.checked)}
+                      className="mt-0.5 rounded border-black/20 text-[#0F766E] focus:ring-[#0F766E] focus:ring-offset-0"
+                    />
+                    <span>
+                      I confirm that I have read and agree to the Terms of Purchase, Service Delivery, and Return Policy
+                    </span>
+                  </label>
+                  <Button className="w-full" size="lg" onClick={() => handleTopUp(plan.name)} disabled={isLoading === plan.name || !termsAccepted}>
                     {isLoading === plan.name ? 'Processing...' : plan.cta}
                   </Button>
                 </div>
@@ -181,7 +198,15 @@ export default function Pricing() {
 }
 
 
-function CustomHomeCard({ currency }: { currency: Currency }) {
+function CustomHomeCard({ 
+  currency, 
+  termsAccepted, 
+  setTermsAccepted 
+}: { 
+  currency: Currency;
+  termsAccepted: boolean;
+  setTermsAccepted: (accepted: boolean) => void;
+}) {
   const [price, setPrice] = useState<number>(0.01);
   const [isLoading, setIsLoading] = useState(false);
   const min = 0.01;
@@ -196,6 +221,11 @@ function CustomHomeCard({ currency }: { currency: Currency }) {
   };
 
   const handleCustomTopUp = async () => {
+    if (!termsAccepted) {
+      alert('Please confirm that you have read and agree to the Terms of Purchase, Service Delivery, and Return Policy');
+      return;
+    }
+    
     setIsLoading(true);
     try {
       const response = await fetch('/api/ledger', {
@@ -249,8 +279,19 @@ function CustomHomeCard({ currency }: { currency: Currency }) {
           <li>Custom numbering mask</li>
         </ul>
       </div>
-      <div className="mt-6">
-        <Button className="w-full" size="lg" onClick={handleCustomTopUp} disabled={isLoading}>
+      <div className="mt-6 space-y-3">
+        <label className="flex items-start gap-2 text-xs text-slate-600 cursor-pointer">
+          <input 
+            type="checkbox" 
+            checked={termsAccepted}
+            onChange={(e) => setTermsAccepted(e.target.checked)}
+            className="mt-0.5 rounded border-black/20 text-[#0F766E] focus:ring-[#0F766E] focus:ring-offset-0"
+          />
+          <span>
+            I confirm that I have read and agree to the Terms of Purchase, Service Delivery, and Return Policy
+          </span>
+        </label>
+        <Button className="w-full" size="lg" onClick={handleCustomTopUp} disabled={isLoading || !termsAccepted}>
           {isLoading ? 'Processing...' : 'Buy tokens'}
         </Button>
       </div>
