@@ -82,3 +82,28 @@ export function getAvailableCurrencies(): Currency[] {
 export function isValidCurrency(currency: string): currency is Currency {
   return currency in CURRENCY_RATES;
 }
+
+// Geo-restricted currencies: country code -> currency
+// Users from these countries will only see their local currency
+export const GEO_CURRENCY_MAP: Record<string, Currency> = {
+  NO: 'NOK', // Norway -> Norwegian Krone
+  AU: 'AUD', // Australia -> Australian Dollar
+  CA: 'CAD', // Canada -> Canadian Dollar
+  NZ: 'NZD', // New Zealand -> New Zealand Dollar
+} as const;
+
+/**
+ * Get the restricted currency for a given country code.
+ * Returns null if the country has no currency restrictions.
+ */
+export function getCurrencyForCountry(countryCode: string | null): Currency | null {
+  if (!countryCode) return null;
+  return GEO_CURRENCY_MAP[countryCode.toUpperCase()] || null;
+}
+
+/**
+ * Check if a country has geo-restricted currency
+ */
+export function isGeoRestrictedCountry(countryCode: string | null): boolean {
+  return getCurrencyForCountry(countryCode) !== null;
+}

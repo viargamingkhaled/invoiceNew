@@ -66,6 +66,7 @@ export default function PricingClient() {
   const [currency, setCurrency] = useState<Currency>('EUR');
   const [country, setCountry] = useState<string>('United Kingdom');
   const [isLoading, setIsLoading] = useState<string | null>(null);
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const { status } = useSession();
   const router = useRouter();
   const signedIn = status === 'authenticated';
@@ -132,6 +133,11 @@ export default function PricingClient() {
     if (!signedIn) {
       logToAll('❌ [PAYMENT] User not signed in, redirecting to login');
       return router.push('/auth/signin?mode=login');
+    }
+
+    if (!termsAccepted) {
+      toast.error('Please confirm that you have read and agree to the Terms of Purchase, Service Delivery, and Return Policy');
+      return;
     }
 
     setIsLoading(planId || 'custom');
@@ -280,12 +286,23 @@ export default function PricingClient() {
                     <li key={b}>{b}</li>
                   ))}
                 </ul>
-                <div className="mt-6">
+                <div className="mt-6 space-y-3">
+                  <label className="flex items-start gap-2 text-xs text-slate-600 cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      checked={termsAccepted}
+                      onChange={(e) => setTermsAccepted(e.target.checked)}
+                      className="mt-0.5 rounded border-black/20 text-[#0F766E] focus:ring-[#0F766E] focus:ring-offset-0"
+                    />
+                    <span>
+                      I confirm that I have read and agree to the Terms of Purchase, Service Delivery, and Return Policy
+                    </span>
+                  </label>
                   <Button
                     className="w-full"
                     size="lg"
                     onClick={() => handlePurchase(plan.id)}
-                    disabled={loading}
+                    disabled={loading || !termsAccepted}
                   >
                     {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : plan.cta}
                   </Button>
@@ -297,6 +314,8 @@ export default function PricingClient() {
           <CustomPlanCard
             currency={currency}
             onPurchase={(amount, curr) => handlePurchase(null, amount)}
+            termsAccepted={termsAccepted}
+            setTermsAccepted={setTermsAccepted}
           />
         </div>
 
@@ -359,7 +378,17 @@ export default function PricingClient() {
   );
 }
 
-function CustomPlanCard({ currency, onPurchase }: { currency: Currency; onPurchase: (amount: number, currency: Currency) => void; }) {
+function CustomPlanCard({ 
+  currency, 
+  onPurchase, 
+  termsAccepted, 
+  setTermsAccepted 
+}: { 
+  currency: Currency; 
+  onPurchase: (amount: number, currency: Currency) => void;
+  termsAccepted: boolean;
+  setTermsAccepted: (accepted: boolean) => void;
+}) {
   const limits = CURRENCY_LIMITS[currency] || DEFAULT_LIMITS;
   const [priceInput, setPriceInput] = useState<string>(String(limits.min));
   const TOKENS_PER_INVOICE = 10;
@@ -402,8 +431,19 @@ function CustomPlanCard({ currency, onPurchase }: { currency: Currency; onPurcha
         <li>No subscription — pay what you need</li>
         <li>Min {getCurrencySymbol(currency)}{limits.min}</li>
       </ul>
-      <div className="mt-6">
-        <Button className="w-full" size="lg" onClick={() => onPurchase(numericPrice, currency)} disabled={!isValidAmount}>
+      <div className="mt-6 space-y-3">
+        <label className="flex items-start gap-2 text-xs text-slate-600 cursor-pointer">
+          <input 
+            type="checkbox" 
+            checked={termsAccepted}
+            onChange={(e) => setTermsAccepted(e.target.checked)}
+            className="mt-0.5 rounded border-black/20 text-[#0F766E] focus:ring-[#0F766E] focus:ring-offset-0"
+          />
+          <span>
+            I confirm that I have read and agree to the Terms of Purchase, Service Delivery, and Return Policy
+          </span>
+        </label>
+        <Button className="w-full" size="lg" onClick={() => onPurchase(numericPrice, currency)} disabled={!isValidAmount || !termsAccepted}>
           Buy tokens
         </Button>
       </div>

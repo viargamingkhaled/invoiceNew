@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation';
 import { THEME } from '@/lib/theme';
 import CurrencyDropdown from '@/components/ui/CurrencyDropdown';
 import { useSession, signOut } from 'next-auth/react';
-import { Currency, getAvailableCurrencies } from '@/lib/currency';
+import { Currency, getAvailableCurrencies, getCurrencyForCountry, isGeoRestrictedCountry } from '@/lib/currency';
 
 /** Helper to read cookie by name (client-side) */
 function getCookie(name: string): string | null {
@@ -65,11 +65,12 @@ export default function Header() {
     const country = getCookie('geo-country');
     setGeoCountry(country);
     
-    // For Norway users, force NOK currency
-    if (country === 'NO') {
-      setCurrency('NOK');
-      try { localStorage.setItem('currency', 'NOK'); } catch {}
-      return; // Skip localStorage load for Norwegian users
+    // For geo-restricted countries, force their local currency
+    const restrictedCurrency = getCurrencyForCountry(country);
+    if (restrictedCurrency) {
+      setCurrency(restrictedCurrency);
+      try { localStorage.setItem('currency', restrictedCurrency); } catch {}
+      return; // Skip localStorage load for geo-restricted users
     }
     
     // Load currency from localStorage after mount to prevent hydration mismatch
@@ -82,16 +83,17 @@ export default function Header() {
   }, []);
 
   const onCurrencyChange = (next: Currency) => {
-    // For Norway users, ignore currency changes (only NOK allowed)
-    if (geoCountry === 'NO') return;
+    // For geo-restricted countries, ignore currency changes (only their local currency allowed)
+    if (isGeoRestrictedCountry(geoCountry)) return;
     setCurrency(next);
     try { localStorage.setItem('currency', next); } catch {}
     try { bcRef.current?.postMessage({ type: 'currency-updated', currency: next }); } catch {}
   };
 
-  // Determine which currencies to show: only NOK for Norway, all others for rest
-  const availableCurrenciesForUser: Currency[] = geoCountry === 'NO' 
-    ? ['NOK'] 
+  // Determine which currencies to show: only local currency for geo-restricted countries, all others for rest
+  const restrictedCurrency = getCurrencyForCountry(geoCountry);
+  const availableCurrenciesForUser: Currency[] = restrictedCurrency 
+    ? [restrictedCurrency] 
     : getAvailableCurrencies();
 
   const closeHelp = () => setHelpOpen(false);
