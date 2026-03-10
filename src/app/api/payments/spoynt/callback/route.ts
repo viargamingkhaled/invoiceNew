@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifyCallbackSignature, isPaymentSuccessful, isPaymentFailed, isPaymentPending } from '@/lib/spoynt';
-import { convertToEUR, TOKENS_PER_EUR, isValidCurrency } from '@/lib/currency';
+import { convertToGBP, TOKENS_PER_GBP, isValidCurrency } from '@/lib/currency';
 import type { Currency } from '@/lib/currency';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -124,9 +124,9 @@ export async function POST(req: Request) {
         }
 
         // Calculate tokens
-        const paymentCurrency: Currency = isValidCurrency(currency) ? currency : 'EUR';
-        const amountEUR = convertToEUR(amount, paymentCurrency);
-        const tokensToAdd = Math.round(amountEUR * TOKENS_PER_EUR);
+        const paymentCurrency: Currency = isValidCurrency(currency) ? currency : 'GBP';
+        const amountGBP = convertToGBP(amount, paymentCurrency);
+        const tokensToAdd = Math.round(amountGBP * TOKENS_PER_GBP);
         const newBalance = user.tokenBalance + tokensToAdd;
 
         // Update user balance

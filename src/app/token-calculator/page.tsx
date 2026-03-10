@@ -6,7 +6,7 @@ import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Segmented from '@/components/ui/Segmented';
-import { Currency, convertFromEUR, convertToEUR, formatCurrency, getCurrencySymbol, getAvailableCurrencies, calculateTokens, calculateAmountFromTokens } from '@/lib/currency';
+import { Currency, convertFromGBP, convertToGBP, formatCurrency, getCurrencySymbol, getAvailableCurrencies, calculateTokens, calculateAmountFromTokens } from '@/lib/currency';
 
 const MIN_AMOUNT = 5;
 const MAX_AMOUNT = 500;
@@ -27,7 +27,7 @@ const FAQ_ITEMS = [
 ];
 
 export default function TokenCalculatorPage() {
-  const [currency, setCurrency] = useState<Currency>('EUR');
+  const [currency, setCurrency] = useState<Currency>('GBP');
   const [amount, setAmount] = useState(50);
   const [invoicesNeeded, setInvoicesNeeded] = useState(5);
   const [isUpdatingFromAmount, setIsUpdatingFromAmount] = useState(false);

@@ -4,17 +4,17 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
-import { Currency, getAvailableCurrencies, convertFromEUR, formatCurrency } from '@/lib/currency';
+import { Currency, getAvailableCurrencies, convertFromGBP, formatCurrency } from '@/lib/currency';
 
 // Generate dynamic token packages based on selected currency
 const getTokenPackages = (currency: Currency) => {
-  const basePackagesEUR = [10, 50, 100]; // Base packages in EUR
-  return basePackagesEUR.map(amountEUR => {
-    const amount = convertFromEUR(amountEUR, currency);
-    const tokens = Math.round(amountEUR * 100);
+  const basePackagesGBP = [10, 50, 100]; // Base packages in GBP
+  return basePackagesGBP.map(amountGBP => {
+    const amount = convertFromGBP(amountGBP, currency);
+    const tokens = Math.round(amountGBP * 100);
     const invoices = Math.round(tokens / 10);
     const costPerInvoice = amount / invoices;
-    return { amount, currency, tokens, invoices, costPerInvoice };
+    return { amount, currency, tokens, invoices, costPerInvoice, baseGBP: amountGBP };
   });
 };
 
@@ -28,7 +28,7 @@ const LEDGER_SAMPLE = [
 ];
 
 export default function BillingTokensPage() {
-  const [selectedCurrency, setSelectedCurrency] = useState<Currency>('EUR');
+  const [selectedCurrency, setSelectedCurrency] = useState<Currency>('GBP');
   const [customAmount, setCustomAmount] = useState<number>(10);
   const [mounted, setMounted] = useState(false);
   const bcRef = useRef<BroadcastChannel | null>(null);
@@ -85,7 +85,7 @@ export default function BillingTokensPage() {
     }
   };
 
-  const calculateTokens = (amount: number) => Math.round(amount * 100); // 1 EUR = 100 tokens (amount in EUR equivalent)
+  const calculateTokens = (amount: number) => Math.round(amount * 100); // 1 GBP = 100 tokens
   const calculateInvoices = (tokens: number) => Math.round(tokens / 10);
   const calculateCostPerInvoice = (amount: number) => (amount / calculateInvoices(calculateTokens(amount))).toFixed(2);
 

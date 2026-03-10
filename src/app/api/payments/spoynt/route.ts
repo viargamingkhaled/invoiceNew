@@ -30,8 +30,8 @@ export async function POST(req: Request) {
 
     const body = await req.json().catch(() => ({}));
     const amount = Number(body.amount);
-    const rawCurrency = (body.currency as string) || 'EUR';
-    const currency: Currency = isValidCurrency(rawCurrency) ? rawCurrency : 'EUR';
+    const rawCurrency = (body.currency as string) || 'GBP';
+    const currency: Currency = isValidCurrency(rawCurrency) ? rawCurrency : 'GBP';
     console.log('🟢 [API] Step 3: Request parsed', { amount, currency });
 
     // Get limits for this currency

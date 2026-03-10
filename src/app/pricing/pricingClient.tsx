@@ -12,7 +12,7 @@ import Pill from '@/components/policy/Pill';
 import { Button } from '@/components/ui/Button';
 import Segmented from '@/components/ui/Segmented';
 import { CC, VAT_RATES } from '@/lib/constants';
-import { Currency, calculateTokens, convertFromEUR, convertToEUR, formatCurrency, getCurrencySymbol, getAvailableCurrencies } from '@/lib/currency';
+import { Currency, calculateTokens, convertFromGBP, formatCurrency, getCurrencySymbol, getAvailableCurrencies } from '@/lib/currency';
 import { pricingPlans, getPlanPrice } from '@/lib/plans';
 
 const COUNTRIES = Object.keys(CC);
@@ -60,7 +60,7 @@ function Price({ amount, currency, vatRate }: { amount: number; currency: Curren
 
 export default function PricingClient() {
   const bcRef = useRef<BroadcastChannel | null>(null);
-  const [currency, setCurrency] = useState<Currency>('EUR');
+  const [currency, setCurrency] = useState<Currency>('GBP');
   const [country, setCountry] = useState<string>('United Kingdom');
   const [isLoading, setIsLoading] = useState<string | null>(null);
   const [termsAccepted, setTermsAccepted] = useState(false);
@@ -147,7 +147,7 @@ export default function PricingClient() {
       } else if (planId) {
         const plan = pricingPlans.find(p => p.id === planId);
         if (plan) {
-          amountToSend = convertFromEUR(plan.baseEUR, currency);
+          amountToSend = convertFromGBP(plan.baseGBP, currency);
         }
       }
 

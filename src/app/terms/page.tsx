@@ -54,11 +54,11 @@ const sections: PolicySection[] = [
   { 
     id: 'payments', 
     title: 'Ordering, Tokens, and Payments', 
-    body: `5.1. Token top-ups are offered as one-time purchases: Beginner (€10), Pro (€50), Business (€100), and Custom (user-defined amount). Prices are shown in EUR; indicative equivalents may be displayed in GBP.
+    body: `5.1. Token top-ups are offered as one-time purchases: Beginner (£10), Pro (£50), Business (£100), and Custom (user-defined amount). Prices are shown in GBP; indicative equivalents may be displayed in EUR.
 
 5.2. Payments are processed by third-party providers. Available methods: Visa and Mastercard. Access to paid features becomes available after successful settlement.
 
-5.3. Indicative reference rate: 100 Tokens = €1.00. Displayed equivalents in GBP are for convenience only and may vary due to FX and provider fees.
+5.3. Indicative reference rate: 100 Tokens = £1.00. Displayed equivalents in EUR are for convenience only and may vary due to FX and provider fees.
 
 5.4. Token consumption. Unless otherwise stated in the interface, generating one Final File costs 10 Tokens. If the UI indicates that email dispatch consumes additional Tokens, those are charged separately and shown before you confirm the action.
 

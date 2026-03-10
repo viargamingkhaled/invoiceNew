@@ -105,18 +105,6 @@ export async function createPaymentInvoice(params: CreatePaymentParams): Promise
           ...params.metadata,
           source: 'ventira_app',
         },
-        gateway_options: {
-          cardgate: {
-            theme: 'spoynt',
-            theme_options: {
-              merchant_name: 'Ventira',
-              powered_by: false,
-              card_holder: true,
-            },
-            bypass_status_page: false,
-            retry_limit: 3,
-          },
-        },
       },
     },
   };

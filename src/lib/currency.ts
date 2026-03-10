@@ -1,31 +1,37 @@
-// Currency conversion rates (EUR as base currency)
+// Currency conversion rates (GBP as base currency)
 // Rates are approximate; update periodically
-export const TOKENS_PER_EUR = 100; // 1 EUR = 100 tokens
+export const TOKENS_PER_GBP = 100; // 1 GBP = 100 tokens
+/** @deprecated Use TOKENS_PER_GBP */
+export const TOKENS_PER_EUR = TOKENS_PER_GBP;
 
 export const CURRENCY_RATES = {
-  EUR: 1.0, // Base currency
-  GBP: 0.85, // 1 EUR = 0.85 GBP
+  GBP: 1.0, // Base currency
+  EUR: 1.18, // 1 GBP = 1.18 EUR
 } as const;
 
 export type Currency = keyof typeof CURRENCY_RATES;
 
 // Currency symbols and formatting
 export const CURRENCY_INFO = {
-  EUR: { symbol: '\u20AC', name: 'Euro', locale: 'de-DE' },
   GBP: { symbol: '£', name: 'British Pound', locale: 'en-GB' },
+  EUR: { symbol: '\u20AC', name: 'Euro', locale: 'de-DE' },
 } as const;
 
-// Convert amount from EUR to target currency
-export function convertFromEUR(amountEUR: number, targetCurrency: Currency): number {
+// Convert amount from GBP to target currency
+export function convertFromGBP(amountGBP: number, targetCurrency: Currency): number {
   const rate = CURRENCY_RATES[targetCurrency];
-  return Math.round(amountEUR * rate * 100) / 100; // Round to 2 decimal places
+  return Math.round(amountGBP * rate * 100) / 100;
 }
+/** @deprecated Use convertFromGBP */
+export const convertFromEUR = convertFromGBP;
 
-// Convert amount from target currency to EUR
-export function convertToEUR(amount: number, fromCurrency: Currency): number {
+// Convert amount from any currency to GBP
+export function convertToGBP(amount: number, fromCurrency: Currency): number {
   const rate = CURRENCY_RATES[fromCurrency];
-  return Math.round((amount / rate) * 100) / 100; // Round to 2 decimal places
+  return Math.round((amount / rate) * 100) / 100;
 }
+/** @deprecated Use convertToGBP */
+export const convertToEUR = convertToGBP;
 
 // Format currency amount with proper symbol and locale
 export function formatCurrency(amount: number, currency: Currency): string {
@@ -57,14 +63,14 @@ export function getCurrencyName(currency: Currency): string {
 
 // Calculate tokens for given amount in any currency
 export function calculateTokens(amount: number, currency: Currency): number {
-  const amountEUR = convertToEUR(amount, currency);
-  return Math.round(amountEUR * TOKENS_PER_EUR);
+  const amountGBP = convertToGBP(amount, currency);
+  return Math.round(amountGBP * TOKENS_PER_GBP);
 }
 
 // Calculate amount in any currency for given tokens
 export function calculateAmountFromTokens(tokens: number, currency: Currency): number {
-  const amountEUR = tokens / TOKENS_PER_EUR;
-  return convertFromEUR(amountEUR, currency);
+  const amountGBP = tokens / TOKENS_PER_GBP;
+  return convertFromGBP(amountGBP, currency);
 }
 
 // Get all available currencies
