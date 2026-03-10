@@ -4,10 +4,7 @@ export const TOKENS_PER_EUR = 100; // 1 EUR = 100 tokens
 
 export const CURRENCY_RATES = {
   EUR: 1.0, // Base currency
-  AUD: 1.65, // 1 EUR = 1.65 AUD
-  CAD: 1.47, // 1 EUR = 1.47 CAD
-  NZD: 1.78, // 1 EUR = 1.78 NZD
-  NOK: 11.6, // 1 EUR = 11.6 NOK
+  GBP: 0.85, // 1 EUR = 0.85 GBP
 } as const;
 
 export type Currency = keyof typeof CURRENCY_RATES;
@@ -15,10 +12,7 @@ export type Currency = keyof typeof CURRENCY_RATES;
 // Currency symbols and formatting
 export const CURRENCY_INFO = {
   EUR: { symbol: '\u20AC', name: 'Euro', locale: 'de-DE' },
-  AUD: { symbol: '$', name: 'Australian Dollar', locale: 'en-AU' },
-  CAD: { symbol: '$', name: 'Canadian Dollar', locale: 'en-CA' },
-  NZD: { symbol: '$', name: 'New Zealand Dollar', locale: 'en-NZ' },
-  NOK: { symbol: 'kr', name: 'Norwegian Krone', locale: 'nb-NO' },
+  GBP: { symbol: '£', name: 'British Pound', locale: 'en-GB' },
 } as const;
 
 // Convert amount from EUR to target currency
@@ -86,10 +80,7 @@ export function isValidCurrency(currency: string): currency is Currency {
 // Geo-restricted currencies: country code -> currency
 // Users from these countries will only see their local currency
 export const GEO_CURRENCY_MAP: Record<string, Currency> = {
-  NO: 'NOK', // Norway -> Norwegian Krone
-  AU: 'AUD', // Australia -> Australian Dollar
-  CA: 'CAD', // Canada -> Canadian Dollar
-  NZ: 'NZD', // New Zealand -> New Zealand Dollar
+  GB: 'GBP', // United Kingdom -> British Pound
 } as const;
 
 /**

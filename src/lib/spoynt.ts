@@ -16,18 +16,12 @@ const SPOYNT_PRIVATE_KEY = process.env.SPOYNT_PRIVATE_KEY || '';
 // Map currency to Spoynt payment service
 export const CURRENCY_TO_SERVICE: Record<Currency, string> = {
   EUR: 'payment_card_eur_hpp',
-  AUD: 'payment_card_aud_hpp',
-  CAD: 'payment_card_cad_hpp',
-  NZD: 'payment_card_nzd_hpp',
-  NOK: 'payment_card_nok_hpp',
+  GBP: 'payment_card_gbp_hpp',
 };
 // Amount limits per currency (from Spoynt API validation)
 export const CURRENCY_LIMITS: Record<string, { min: number; max: number }> = {
   EUR: { min: 10, max: 5000 },   // Spoynt: "between 10 and 5000"
-  AUD: { min: 10, max: 5000 },
-  CAD: { min: 10, max: 5000 },
-  NZD: { min: 10, max: 5000 },
-  NOK: { min: 100, max: 50000 }, // NOK has higher values
+  GBP: { min: 10, max: 5000 },
 };
 
 // Default limits if currency not found

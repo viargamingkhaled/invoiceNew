@@ -1,8 +1,8 @@
 import { CurrencyData, CountryCode, VatRates } from '@/types/invoice';
 
-// Only countries mapping to supported currencies: EUR, AUD, CAD, NZD, NOK
+// Only countries mapping to supported currencies: EUR and GBP
 export const CURRENCY_BY_COUNTRY: CurrencyData = {
-  "United Kingdom": "EUR",
+  "United Kingdom": "GBP",
   "Ireland": "EUR",
   "Germany": "EUR",
   "France": "EUR",
@@ -30,7 +30,7 @@ export const CURRENCY_BY_COUNTRY: CurrencyData = {
   "Bulgaria": "EUR",
   "Denmark": "EUR",
   "Sweden": "EUR",
-  "Norway": "NOK",
+  "Norway": "EUR",
   "Switzerland": "EUR",
   "Iceland": "EUR",
   "Serbia": "EUR",
@@ -48,9 +48,6 @@ export const CURRENCY_BY_COUNTRY: CurrencyData = {
   "San Marino": "EUR",
   "Liechtenstein": "EUR",
   "Vatican City": "EUR",
-  "Australia": "AUD",
-  "Canada": "CAD",
-  "New Zealand": "NZD",
 };
 
 export const CC: CountryCode = {
@@ -85,9 +82,6 @@ export const CC: CountryCode = {
   "Norway": "NO",
   "Switzerland": "CH",
   "Iceland": "IS",
-  "Australia": "AU",
-  "Canada": "CA",
-  "New Zealand": "NZ",
 };
 
 export const VAT_RATES: VatRates = {
@@ -122,7 +116,4 @@ export const VAT_RATES: VatRates = {
   NO: [0, 12, 25],
   CH: [0, 2.6, 3.8, 8.1],
   IS: [0, 11, 24],
-  AU: [0, 10],
-  CA: [0, 5, 13, 15],
-  NZ: [0, 15],
 };

@@ -320,27 +320,11 @@ export default function TokenCalculatorPage() {
               }}
             />
             <ExampleCard
-              currency="AUD"
-              amount={16}
+              currency="GBP"
+              amount={8}
               onSelect={() => {
-                setCurrency('AUD');
-                setAmount(16);
-              }}
-            />
-            <ExampleCard
-              currency="CAD"
-              amount={15}
-              onSelect={() => {
-                setCurrency('CAD');
-                setAmount(15);
-              }}
-            />
-            <ExampleCard
-              currency="NOK"
-              amount={116}
-              onSelect={() => {
-                setCurrency('NOK');
-                setAmount(116);
+                setCurrency('GBP');
+                setAmount(8);
               }}
             />
           </div>
