@@ -652,8 +652,8 @@ export default function SecurityPageClient() {
               </div>
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                 <span className="font-semibold text-slate-900 min-w-[160px]">Phone:</span>
-                <a href="tel:+447457423147" className="text-blue-600 hover:underline font-medium">
-                  +44 7457 423147
+                <a href="tel:+44 7861 902258" className="text-blue-600 hover:underline font-medium">
+                  +44 7861 902258
                 </a>
               </div>
             </div>

@@ -43,7 +43,7 @@ export default function Contact() {
             <div>Reg: 15847699</div>
             <div>Address: 43 Victoria Rd, Northampton, United Kingdom, NN1 5ED</div>
             <div>Email: info@ventira.co.uk</div>
-            <div>Phone: +44 7457 423147</div>
+            <div>Phone: +44 7861 902258</div>
           </div>
         </motion.div>
 

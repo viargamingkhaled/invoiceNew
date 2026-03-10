@@ -165,7 +165,7 @@ const sections: PolicySection[] = [
 
 Email: info@ventira.co.uk
 Address: VIARGAMING LTD, 43 Victoria Rd, Northampton, United Kingdom, NN1 5ED
-Phone: +44 7457 423147` 
+Phone: +44 7861 902258` 
   },
   { 
     id: 'governing-law', 
@@ -209,7 +209,7 @@ Phone: +44 7457 423147`
     body: `VIARGAMING LTD
 Company number: 15847699
 Registered office: 43 Victoria Rd, Northampton, United Kingdom, NN1 5ED
-Email: info@ventira.co.uk | Tel: +44 7457 423147` 
+Email: info@ventira.co.uk | Tel: +44 7861 902258` 
   },
 ];
 

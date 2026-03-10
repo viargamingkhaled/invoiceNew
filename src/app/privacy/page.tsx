@@ -12,7 +12,7 @@ const sections: PolicySection[] = [
     title: 'Introduction', 
     body: `We value your privacy and are committed to handling personal data responsibly. This Privacy Policy explains what data we collect, why we process it, how long we retain it, who we share it with, and how you can exercise your rights in connection with the services provided at ventira.co.uk operated by VIARGAMING LTD, Company No. 15847699, registered office: 43 Victoria Rd, Northampton, United Kingdom, NN1 5ED ("Ventira," "we," "us," "our").
 
-For questions or data requests, contact: info@ventira.co.uk or +44 7457 423147.
+For questions or data requests, contact: info@ventira.co.uk or +44 7861 902258.
 
 Who is the controller?
 
@@ -146,7 +146,7 @@ The updated Policy will display a new effective date.`
     id: 'contact', 
     title: 'Contact & Complaints', 
     body: `Controller: VIARGAMING LTD
-Email: info@ventira.co.uk | Tel: +44 7457 423147
+Email: info@ventira.co.uk | Tel: +44 7861 902258
 Address: 43 Victoria Rd, Northampton, United Kingdom, NN1 5ED
 
 If you are not satisfied with how we handle your request, you can lodge a complaint with the Information Commissioner's Office (ICO): ico.org.uk | Tel: 0303 123 1113.
@@ -159,7 +159,7 @@ Nothing in this Policy affects your statutory rights.`
     body: `VIARGAMING LTD
 Company number: 15847699
 Registered office: 43 Victoria Rd, Northampton, United Kingdom, NN1 5ED
-Email: info@ventira.co.uk | Tel: +44 7457 423147` 
+Email: info@ventira.co.uk | Tel: +44 7861 902258` 
   },
 ];
 

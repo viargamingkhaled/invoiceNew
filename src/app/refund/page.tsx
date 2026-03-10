@@ -136,7 +136,7 @@ This does not affect your statutory right to seek alternative dispute resolution
     body: `Payments: Visa and Mastercard via third-party processors; access to paid features is provided after confirmed settlement.
 
 Email: info@ventira.co.uk
-Phone: +44 7457 423147
+Phone: +44 7861 902258
 
 Company: VIARGAMING LTD
 Registered office: 43 Victoria Rd, Northampton, United Kingdom, NN1 5ED

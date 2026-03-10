@@ -32,7 +32,7 @@ export default function ContactPage() {
                 <h3 className="text-base font-semibold">Contact details</h3>
                 <div className="mt-3 grid gap-3 text-sm text-slate-700">
                   <div className="flex items-center justify-between"><div>Support</div><a className="underline" href="mailto:info@ventira.co.uk">info@ventira.co.uk</a></div>
-                  <div className="flex items-center justify-between"><div>Phone</div><a className="underline" href="tel:+447457423147">+44 7457 423147</a></div>
+                  <div className="flex items-center justify-between"><div>Phone</div><a className="underline" href="tel:+44 7861 902258">+44 7861 902258</a></div>
                 </div>
                 <div className="mt-4 text-xs text-slate-500">Hours: Mon-Fri, 09:00-18:00 (UK). Limited support on EU public holidays.</div>
               </Card>

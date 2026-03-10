@@ -99,7 +99,7 @@ Significant changes will be communicated by notice on the website or, where appr
     body: `If you have questions about this Cookies Policy or our use of cookies, please contact us:
 
 Email: info@ventira.co.uk
-Phone: +44 7457 423147
+Phone: +44 7861 902258
 
 Company: VIARGAMING LTD
 Registered office: 43 Victoria Rd, Northampton, United Kingdom, NN1 5ED
