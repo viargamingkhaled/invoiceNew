@@ -11,7 +11,13 @@ import Card from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { PRICING_PLANS } from '@/lib/data';
 import { THEME } from '@/lib/theme';
-import { Currency, convertFromGBP, formatCurrency, getAvailableCurrencies } from '@/lib/currency';
+import { Currency, convertFromGBP, formatCurrency, getAvailableCurrencies, calculateTokens, getCurrencySymbol } from '@/lib/currency';
+
+const CURRENCY_LIMITS: Record<string, { min: number; max: number }> = {
+  EUR: { min: 10, max: 5000 },
+  GBP: { min: 10, max: 5000 },
+};
+const DEFAULT_LIMITS = { min: 10, max: 5000 };
 
 export default function Pricing() {
   const bcRef = useRef<BroadcastChannel | null>(null);
@@ -50,7 +56,7 @@ export default function Pricing() {
     return formatCurrency(convertedAmount, currency);
   };
 
-  const handlePurchase = async (planName: string, baseGBP: number) => {
+  const handlePurchase = async (planName: string, baseGBP: number, customAmount?: number) => {
     if (!signedIn) {
       return router.push('/auth/signin?mode=login');
     }
@@ -62,7 +68,7 @@ export default function Pricing() {
 
     setIsLoading(planName);
     try {
-      const amountToSend = convertFromGBP(baseGBP, currency);
+      const amountToSend = customAmount ?? convertFromGBP(baseGBP, currency);
 
       if (amountToSend <= 0) throw new Error('Invalid amount');
 
@@ -167,9 +173,97 @@ export default function Pricing() {
             </Card>
           </motion.div>
         ))}
+        <CustomHomeCard
+          currency={currency}
+          termsAccepted={termsAccepted}
+          setTermsAccepted={setTermsAccepted}
+          onPurchase={(amount) => handlePurchase('custom', 0, amount)}
+        />
       </div>
       <p className="mt-4 text-xs text-slate-500 text-center">Prices exclude VAT. Tokens deposit to your account after purchase (signed-in users only).</p>
     </Section>
+  );
+}
+
+function CustomHomeCard({
+  currency,
+  termsAccepted,
+  setTermsAccepted,
+  onPurchase,
+}: {
+  currency: Currency;
+  termsAccepted: boolean;
+  setTermsAccepted: (v: boolean) => void;
+  onPurchase: (amount: number) => void;
+}) {
+  const limits = CURRENCY_LIMITS[currency] || DEFAULT_LIMITS;
+  const [priceInput, setPriceInput] = useState<string>(String(limits.min));
+  const numericPrice = parseFloat(priceInput || '0');
+  const validNumber = Number.isFinite(numericPrice);
+  const isValidAmount = validNumber && numericPrice >= limits.min && numericPrice <= limits.max;
+  const tokens = Math.max(0, calculateTokens(validNumber ? numericPrice : 0, currency));
+
+  useEffect(() => {
+    const newLimits = CURRENCY_LIMITS[currency] || DEFAULT_LIMITS;
+    setPriceInput(String(newLimits.min));
+  }, [currency]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3, duration: 0.5 }}
+      viewport={{ once: true }}
+    >
+      <Card className="flex flex-col justify-between h-full">
+        <div>
+          <h3 className="text-lg font-semibold">Custom</h3>
+          <div className="mt-3 flex items-center gap-2">
+            <span className="text-3xl font-bold">{getCurrencySymbol(currency)}</span>
+            <input
+              type="number"
+              step="any"
+              min={limits.min}
+              max={limits.max}
+              value={priceInput}
+              onChange={(e) => setPriceInput(e.target.value)}
+              className="w-24 text-3xl font-bold bg-transparent border-b border-black/10 focus:outline-none focus:ring-0"
+              aria-label="Custom price"
+            />
+            <span className="text-base font-normal text-slate-500">/one-time</span>
+          </div>
+          {!isValidAmount && (
+            <div className="mt-1 text-[11px] text-red-600">Minimum {getCurrencySymbol(currency)}{limits.min}</div>
+          )}
+          <div className="mt-1 text-xs text-slate-600">≈ {tokens} tokens (~{Math.round(tokens / 10)} invoices)</div>
+          <ul className="mt-4 space-y-2 text-sm text-slate-700">
+            <li className="flex items-start gap-2"><span>-</span><span>All 8 templates</span></li>
+            <li className="flex items-start gap-2"><span>-</span><span>PDF export</span></li>
+            <li className="flex items-start gap-2"><span>-</span><span>Email send</span></li>
+            <li className="flex items-start gap-2"><span>-</span><span>Custom numbering mask</span></li>
+          </ul>
+        </div>
+        <div className="mt-6 space-y-3">
+          <label className="flex items-start gap-2 text-xs text-slate-600 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={termsAccepted}
+              onChange={(e) => setTermsAccepted(e.target.checked)}
+              className="mt-0.5 rounded border-black/20 text-[#0F766E] focus:ring-[#0F766E] focus:ring-offset-0"
+            />
+            <span>I confirm that I have read and agree to the Terms of Purchase, Service Delivery, and Return Policy</span>
+          </label>
+          <Button
+            className="w-full"
+            size="lg"
+            onClick={() => onPurchase(numericPrice)}
+            disabled={!isValidAmount || !termsAccepted}
+          >
+            Buy tokens
+          </Button>
+        </div>
+      </Card>
+    </motion.div>
   );
 }
 
