@@ -251,6 +251,7 @@ export default function PricingClient() {
               className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm"
               value={country}
               onChange={(e)=>setCountry(e.target.value)}
+              aria-label="Select country"
             >
               {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
             </select>

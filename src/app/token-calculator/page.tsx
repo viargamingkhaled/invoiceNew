@@ -192,6 +192,7 @@ export default function TokenCalculatorPage() {
                   value={amount}
                   onChange={(e) => handleAmountChange(e.target.value)}
                   className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer slider"
+                  aria-label="Amount"
                 />
                 <div className="flex justify-between text-xs text-slate-500">
                   <span>{getCurrencySymbol(currency)}5</span>

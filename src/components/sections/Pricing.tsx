@@ -1,19 +1,26 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { Loader2 } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 import Section from '@/components/layout/Section';
 import Card from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { PRICING_PLANS } from '@/lib/data';
 import { THEME } from '@/lib/theme';
-import { Currency, calculateTokens, convertFromGBP, formatCurrency, getCurrencySymbol, getAvailableCurrencies } from '@/lib/currency';
+import { Currency, convertFromGBP, formatCurrency, getAvailableCurrencies } from '@/lib/currency';
 
 export default function Pricing() {
   const bcRef = useRef<BroadcastChannel | null>(null);
   const [currency, setCurrency] = useState<Currency>('GBP');
   const [isLoading, setIsLoading] = useState<string | null>(null);
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const { status } = useSession();
+  const router = useRouter();
+  const signedIn = status === 'authenticated';
 
   useEffect(()=>{
     try {
@@ -29,7 +36,6 @@ export default function Pricing() {
     return () => { try { bcRef.current?.close(); } catch {} };
   }, []);
 
-  // Load currency from localStorage after mount to prevent hydration mismatch
   useEffect(() => {
     try {
       const savedCurrency = localStorage.getItem('currency') as Currency;
@@ -44,46 +50,26 @@ export default function Pricing() {
     return formatCurrency(convertedAmount, currency);
   };
 
-  const handleTopUp = async (planName: string) => {
+  const handlePurchase = async (planName: string, baseGBP: number) => {
+    if (!signedIn) {
+      return router.push('/auth/signin?mode=login');
+    }
+
     if (!termsAccepted) {
-      alert('Please confirm that you have read and agree to the Terms of Purchase, Service Delivery, and Return Policy');
+      toast.error('Please confirm that you have read and agree to the Terms of Purchase, Service Delivery, and Return Policy');
       return;
     }
-    
+
     setIsLoading(planName);
     try {
-      // Определяем количество токенов для пополнения
-      let tokensToAdd = 0;
-      let amountGBP = 0;
-      
-      switch (planName) {
-        case 'Starter':
-          tokensToAdd = 1000;
-          amountGBP = 10;
-          break;
-        case 'Professional':
-          tokensToAdd = 2500;
-          amountGBP = 25;
-          break;
-        case 'Team':
-          tokensToAdd = 5000;
-          amountGBP = 50;
-          break;
-        case 'Custom':
-          // Custom plan handled separately
-          throw new Error('Custom plan requires special handling');
-        default:
-          throw new Error('Invalid plan');
-      }
+      const amountToSend = convertFromGBP(baseGBP, currency);
 
-      const response = await fetch('/api/ledger', {
+      if (amountToSend <= 0) throw new Error('Invalid amount');
+
+      const response = await fetch('/api/payments/spoynt', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          type: 'Top-up', 
-          amount: amountGBP,
-          currency,
-        }),
+        body: JSON.stringify({ amount: amountToSend, currency }),
       });
 
       const data = await response.json();
@@ -92,17 +78,13 @@ export default function Pricing() {
         throw new Error(data.error || 'Something went wrong.');
       }
 
-      // Обновляем BroadcastChannel для синхронизации с другими компонентами
-      try {
-        bcRef.current?.postMessage({ type: 'tokens-updated', tokenBalance: data.tokenBalance });
-      } catch {}
-
-      alert(`Successfully added ${tokensToAdd} tokens to your account!`);
-      setIsLoading(null);
-
+      if (data.redirectUrl) {
+        window.location.href = data.redirectUrl;
+      } else {
+        throw new Error('No redirect URL received');
+      }
     } catch (error) {
-      console.error("Top-up error:", error);
-      alert('Could not add tokens. Please try again.');
+      toast.error(error instanceof Error ? error.message : 'Could not initiate payment. Please try again.');
       setIsLoading(null);
     }
   };
@@ -121,7 +103,7 @@ export default function Pricing() {
       </motion.div>
 
       <div className="grid md:grid-cols-4 gap-6">
-        {PRICING_PLANS.map((plan, index) => (
+        {PRICING_PLANS.filter(p => p.name !== 'Custom').map((plan, index) => (
           <motion.div
             key={plan.name}
             initial={{ opacity: 0, y: 20 }}
@@ -130,65 +112,59 @@ export default function Pricing() {
             viewport={{ once: true }}
             className={plan.popular ? 'md:-mt-4' : ''}
           >
-            {plan.name === 'Custom' ? (
-              <CustomHomeCard currency={currency} termsAccepted={termsAccepted} setTermsAccepted={setTermsAccepted} />
-            ) : (
-              <Card className={`${plan.popular ? 'shadow-md border-black/10' : ''} flex flex-col justify-between h-full`}>
-                <div>
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold">{plan.name}</h3>
-                    {plan.popular && (
-                      <motion.span
-                        className={`text-xs rounded-full px-2 py-1 ${THEME.primary.text} bg-black/5`}
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ delay: 0.5, type: 'spring', stiffness: 400, damping: 17 }}
-                      >
-                        POPULAR
-                      </motion.span>
-                    )}
-                  </div>
-                  <div className="mt-3 text-3xl font-bold">
-                    {formatPrice(plan.baseGBP)}
-                    <span className="text-base font-normal text-slate-500">/one-time</span>
-                  </div>
-                  <div className="mt-1 text-xs text-slate-600">
-                    ≈ {plan.tokens.toLocaleString('en-US')} tokens (~{Math.round(plan.tokens / 10)} invoices)
-                  </div>
-                  <ul className="mt-4 space-y-2 text-sm text-slate-700">
-                    {plan.points.map((point, pointIndex) => (
-                      <motion.li
-                        key={point}
-                        className="flex items-start gap-2"
-                        initial={{ opacity: 0, x: -10 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.3 + pointIndex * 0.1, duration: 0.3 }}
-                        viewport={{ once: true }}
-                      >
-                        <span>-</span>
-                        <span>{point}</span>
-                      </motion.li>
-                    ))}
-                  </ul>
+            <Card className={`${plan.popular ? 'shadow-md border-black/10' : ''} flex flex-col justify-between h-full`}>
+              <div>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold">{plan.name}</h3>
+                  {plan.popular && (
+                    <motion.span
+                      className={`text-xs rounded-full px-2 py-1 ${THEME.primary.text} bg-black/5`}
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.5, type: 'spring', stiffness: 400, damping: 17 }}
+                    >
+                      POPULAR
+                    </motion.span>
+                  )}
                 </div>
-                <div className="mt-6 space-y-3">
-                  <label className="flex items-start gap-2 text-xs text-slate-600 cursor-pointer">
-                    <input 
-                      type="checkbox" 
-                      checked={termsAccepted}
-                      onChange={(e) => setTermsAccepted(e.target.checked)}
-                      className="mt-0.5 rounded border-black/20 text-[#0F766E] focus:ring-[#0F766E] focus:ring-offset-0"
-                    />
-                    <span>
-                      I confirm that I have read and agree to the Terms of Purchase, Service Delivery, and Return Policy
-                    </span>
-                  </label>
-                  <Button className="w-full" size="lg" onClick={() => handleTopUp(plan.name)} disabled={isLoading === plan.name || !termsAccepted}>
-                    {isLoading === plan.name ? 'Processing...' : plan.cta}
-                  </Button>
+                <div className="mt-3 text-3xl font-bold">
+                  {formatPrice(plan.baseGBP)}
+                  <span className="text-base font-normal text-slate-500">/one-time</span>
                 </div>
-              </Card>
-            )}
+                <div className="mt-1 text-xs text-slate-600">
+                  ≈ {plan.tokens.toLocaleString('en-US')} tokens (~{Math.round(plan.tokens / 10)} invoices)
+                </div>
+                <ul className="mt-4 space-y-2 text-sm text-slate-700">
+                  {plan.points.map((point) => (
+                    <li key={point} className="flex items-start gap-2">
+                      <span>-</span>
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="mt-6 space-y-3">
+                <label className="flex items-start gap-2 text-xs text-slate-600 cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    checked={termsAccepted}
+                    onChange={(e) => setTermsAccepted(e.target.checked)}
+                    className="mt-0.5 rounded border-black/20 text-[#0F766E] focus:ring-[#0F766E] focus:ring-offset-0"
+                  />
+                  <span>
+                    I confirm that I have read and agree to the Terms of Purchase, Service Delivery, and Return Policy
+                  </span>
+                </label>
+                <Button
+                  className="w-full"
+                  size="lg"
+                  onClick={() => handlePurchase(plan.name, plan.baseGBP)}
+                  disabled={isLoading === plan.name || !termsAccepted}
+                >
+                  {isLoading === plan.name ? <Loader2 className="h-5 w-5 animate-spin" /> : plan.cta}
+                </Button>
+              </div>
+            </Card>
           </motion.div>
         ))}
       </div>
@@ -196,108 +172,4 @@ export default function Pricing() {
     </Section>
   );
 }
-
-
-function CustomHomeCard({ 
-  currency, 
-  termsAccepted, 
-  setTermsAccepted 
-}: { 
-  currency: Currency;
-  termsAccepted: boolean;
-  setTermsAccepted: (accepted: boolean) => void;
-}) {
-  const [price, setPrice] = useState<number>(0.01);
-  const [isLoading, setIsLoading] = useState(false);
-  const min = 0.01;
-  const TOKENS_PER_INVOICE = 10;
-  const tokens = Math.max(0, calculateTokens(price, currency));
-  const invoices = Math.round(tokens / TOKENS_PER_INVOICE);
-
-  const onChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    const v = parseFloat(e.target.value || '0');
-    if (isNaN(v)) return;
-    setPrice(Math.max(min, v));
-  };
-
-  const handleCustomTopUp = async () => {
-    if (!termsAccepted) {
-      alert('Please confirm that you have read and agree to the Terms of Purchase, Service Delivery, and Return Policy');
-      return;
-    }
-    
-    setIsLoading(true);
-    try {
-      const response = await fetch('/api/ledger', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          type: 'Top-up', 
-          amount: price,
-          currency,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Something went wrong.');
-      }
-
-      alert(`Successfully added ${tokens} tokens to your account!`);
-      setIsLoading(false);
-
-    } catch (error) {
-      console.error("Top-up error:", error);
-      alert('Could not add tokens. Please try again.');
-      setIsLoading(false);
-    }
-  };
-
-  return (
-    <Card className="flex flex-col justify-between h-full">
-      <div>
-        <h3 className="text-lg font-semibold">Custom</h3>
-        <div className="mt-3 flex items-center gap-2">
-          <span className="text-sm font-medium text-slate-600">{getCurrencySymbol(currency)}</span>
-          <input
-            type="number"
-            min={min}
-            step={0.01}
-            value={price}
-            onChange={onChange}
-            className="w-24 text-3xl font-bold bg-transparent border-b border-black/10 focus:outline-none focus:ring-0"
-            aria-label="Custom price"
-          />
-          <span className="text-base font-normal text-slate-500">/one-time</span>
-        </div>
-        <div className="mt-1 text-xs text-slate-600">≈ {tokens} tokens (~{invoices} invoices)</div>
-        <ul className="mt-4 space-y-2 text-sm text-slate-700">
-          <li>All 8 templates</li>
-          <li>PDF export</li>
-          <li>Email send</li>
-          <li>Custom numbering mask</li>
-        </ul>
-      </div>
-      <div className="mt-6 space-y-3">
-        <label className="flex items-start gap-2 text-xs text-slate-600 cursor-pointer">
-          <input 
-            type="checkbox" 
-            checked={termsAccepted}
-            onChange={(e) => setTermsAccepted(e.target.checked)}
-            className="mt-0.5 rounded border-black/20 text-[#0F766E] focus:ring-[#0F766E] focus:ring-offset-0"
-          />
-          <span>
-            I confirm that I have read and agree to the Terms of Purchase, Service Delivery, and Return Policy
-          </span>
-        </label>
-        <Button className="w-full" size="lg" onClick={handleCustomTopUp} disabled={isLoading || !termsAccepted}>
-          {isLoading ? 'Processing...' : 'Buy tokens'}
-        </Button>
-      </div>
-    </Card>
-  );
-}
-
-
 

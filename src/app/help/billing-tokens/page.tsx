@@ -155,11 +155,13 @@ export default function BillingTokensPage() {
                         value={customAmount}
                         onChange={(e) => setCustomAmount(Number(e.target.value))}
                         className="flex-1 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                        title={`Amount in ${selectedCurrency}`}
                       />
                       <select
                         value={selectedCurrency}
                         onChange={(e) => onCurrencyChange(e.target.value as Currency)}
                         className="px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                        aria-label="Currency"
                       >
                         {getAvailableCurrencies().map(curr => (
                           <option key={curr} value={curr}>{curr}</option>
