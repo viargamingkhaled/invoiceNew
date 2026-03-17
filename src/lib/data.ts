@@ -2,34 +2,34 @@ import { PricingPlan, Testimonial, Feature, TemplateInfo } from '@/types';
 
 export const PRICING_PLANS: PricingPlan[] = [
   {
-    name: 'Starter',
+    name: 'Beginner',
     baseGBP: 10,
     tokens: 1000,
-    points: ['All 8 templates', 'PDF export', 'Email send', 'Custom numbering mask'],
+    points: ['Top up 1,000 tokens (~100 invoices)', 'No subscription', 'Draft/preview free'],
     cta: 'Buy tokens',
     popular: false,
   },
   {
-    name: 'Professional',
-    baseGBP: 25,
-    tokens: 2500,
-    points: ['All 8 templates', 'PDF export', 'Email send', 'Custom numbering mask'],
-    cta: 'Buy tokens',
-    popular: false,
-  },
-  {
-    name: 'Team',
+    name: 'Pro',
     baseGBP: 50,
     tokens: 5000,
-    points: ['All 8 templates', 'PDF export', 'Email send', 'Custom numbering mask'],
+    points: ['Top up 5,000 tokens (~500 invoices)', 'Templates & logo', 'Payment links', 'Read receipts'],
     cta: 'Buy tokens',
     popular: true,
   },
   {
+    name: 'Business',
+    baseGBP: 100,
+    tokens: 10000,
+    points: ['Top up 10,000 tokens (~1,000 invoices)', 'Teams & roles', 'Integrations (Wise)', 'API & webhooks'],
+    cta: 'Buy tokens',
+    popular: false,
+  },
+  {
     name: 'Custom',
-    baseGBP: 0, // Will be handled specially
-    tokens: 0, // Will be calculated based on user input
-    points: ['All 8 templates', 'PDF export', 'Email send', 'Custom numbering mask'],
+    baseGBP: 0,
+    tokens: 0,
+    points: ['Top up any amount', 'No subscription — pay what you need', 'Min GBP/EUR 10'],
     cta: 'Buy tokens',
     popular: false,
   },

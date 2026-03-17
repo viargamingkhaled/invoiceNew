@@ -303,8 +303,8 @@ export default function PricingClient() {
                 <p className="text-slate-600 mt-1">All prices are final — no VAT is added at checkout. The amount you see is the amount you pay.</p>
               </div>
               <div>
-                <div className="font-medium">Can I cancel anytime?</div>
-                <p className="text-slate-600 mt-1">Yes. You can cancel with one click. Your plan remains active until the end of the period.</p>
+                <div className="font-medium">Is this a subscription?</div>
+                <p className="text-slate-600 mt-1">No. This is pay-as-you-go — there are no subscriptions or recurring charges. Tokens never expire.</p>
               </div>
               <div>
                 <div className="font-medium">Which payment methods do you accept?</div>

@@ -150,7 +150,7 @@ export default function BillingTokensPage() {
                     <div className="flex gap-2">
                       <input
                         type="number"
-                        min="5"
+                        min="10"
                         step="1"
                         value={customAmount}
                         onChange={(e) => setCustomAmount(Number(e.target.value))}
@@ -211,7 +211,7 @@ export default function BillingTokensPage() {
                   <div className="flex items-start gap-3">
                     <div className="text-blue-600 font-semibold text-sm">💡 Custom amounts</div>
                     <p className="text-blue-800 text-sm">
-                      You can top up any amount from {formatCurrency(5, selectedCurrency)} to {formatCurrency(10000, selectedCurrency)}.
+                      You can top up any amount from {formatCurrency(10, selectedCurrency)} to {formatCurrency(5000, selectedCurrency)}.
                     </p>
                   </div>
                 </div>
@@ -339,8 +339,8 @@ export default function BillingTokensPage() {
                   <div>
                     <h3 className="font-semibold text-slate-900 mb-3">Transaction Limits</h3>
                     <ul className="text-sm text-slate-600 space-y-2">
-                      <li>• Minimum: {formatCurrency(5, selectedCurrency)} per transaction</li>
-                      <li>• Maximum: {formatCurrency(10000, selectedCurrency)} per transaction</li>
+                      <li>• Minimum: {formatCurrency(10, selectedCurrency)} per transaction</li>
+                      <li>• Maximum: {formatCurrency(5000, selectedCurrency)} per transaction</li>
                       <li>• Daily limit: {formatCurrency(25000, selectedCurrency)}</li>
                       <li>• Fraud protection: Automatic monitoring</li>
                     </ul>
