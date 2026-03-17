@@ -424,11 +424,11 @@ export default function AboutPageClient() {
                   </Button>
                 </div>
                 <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                  <span className="text-sm text-slate-600">Logo (PNG)</span>
+                  <span className="text-sm text-slate-600">Logo – dark bg (SVG)</span>
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    onClick={() => handlePressDownload('logo.png', 'logo_png')}
+                    onClick={() => handlePressDownload('logo-dark.svg', 'logo_dark')}
                   >
                     Download
                   </Button>
@@ -450,31 +450,31 @@ export default function AboutPageClient() {
               <h3 className="font-semibold text-slate-900 mb-4">Color Palette</h3>
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-blue-600 rounded border"></div>
+                  <div className="w-8 h-8 rounded border" style={{ background: '#0F766E' }}></div>
                   <div className="text-sm">
-                    <div className="font-medium text-slate-900">Primary Blue</div>
-                    <div className="text-slate-600">#2563eb</div>
+                    <div className="font-medium text-slate-900">Primary Teal</div>
+                    <div className="text-slate-600">#0F766E</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-emerald-600 rounded border"></div>
+                  <div className="w-8 h-8 rounded border" style={{ background: '#14B8A6' }}></div>
                   <div className="text-sm">
-                    <div className="font-medium text-slate-900">Accent Green</div>
-                    <div className="text-slate-600">#059669</div>
+                    <div className="font-medium text-slate-900">Accent Teal</div>
+                    <div className="text-slate-600">#14B8A6</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-slate-900 rounded border"></div>
+                  <div className="w-8 h-8 rounded border" style={{ background: '#0B1221' }}></div>
                   <div className="text-sm">
                     <div className="font-medium text-slate-900">Text Dark</div>
-                    <div className="text-slate-600">#0f172a</div>
+                    <div className="text-slate-600">#0B1221</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-slate-500 rounded border"></div>
+                  <div className="w-8 h-8 rounded border" style={{ background: '#6B7280' }}></div>
                   <div className="text-sm">
                     <div className="font-medium text-slate-900">Text Muted</div>
-                    <div className="text-slate-600">#64748b</div>
+                    <div className="text-slate-600">#6B7280</div>
                   </div>
                 </div>
               </div>
