@@ -44,7 +44,7 @@ const STEPS = [
     details: [
       'Choose from £10, £50, £100 or custom amount',
       'Tokens never expire - use them when needed',
-      'VAT is calculated at checkout based on your location',
+      'No VAT is charged — all prices are final',
       'Secure payment processing'
     ],
     cta: 'Buy tokens',

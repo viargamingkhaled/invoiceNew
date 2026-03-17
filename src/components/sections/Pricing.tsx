@@ -180,7 +180,7 @@ export default function Pricing() {
           onPurchase={(amount) => handlePurchase('custom', 0, amount)}
         />
       </div>
-      <p className="mt-4 text-xs text-slate-500 text-center">Prices exclude VAT. Tokens deposit to your account after purchase (signed-in users only).</p>
+      <p className="mt-4 text-xs text-slate-500 text-center">All prices are final — no VAT is charged. Tokens deposit to your account after purchase (signed-in users only).</p>
     </Section>
   );
 }

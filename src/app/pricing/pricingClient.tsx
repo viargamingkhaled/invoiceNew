@@ -11,11 +11,8 @@ import Section from '@/components/layout/Section';
 import Pill from '@/components/policy/Pill';
 import { Button } from '@/components/ui/Button';
 import Segmented from '@/components/ui/Segmented';
-import { CC, VAT_RATES } from '@/lib/constants';
 import { Currency, calculateTokens, convertFromGBP, formatCurrency, getCurrencySymbol, getAvailableCurrencies } from '@/lib/currency';
 import { pricingPlans, getPlanPrice } from '@/lib/plans';
-
-const COUNTRIES = Object.keys(CC);
 
 // Amount limits per currency (from Spoynt API validation)
 const CURRENCY_LIMITS: Record<string, { min: number; max: number }> = {
@@ -32,7 +29,7 @@ function Badge({ children }: { children: React.ReactNode }) {
   return <span className="text-xs rounded-full px-2 py-1 text-blue-700 bg-blue-50 border border-blue-200">{children}</span>;
 }
 
-function Price({ amount, currency, vatRate }: { amount: number; currency: Currency; vatRate: number }) {
+function Price({ amount, currency }: { amount: number; currency: Currency }) {
   const monthlyTarget = amount;
   const [display, setDisplay] = useState(0);
   // Count-up 0 -> price (400ms)
@@ -48,12 +45,10 @@ function Price({ amount, currency, vatRate }: { amount: number; currency: Curren
     raf = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(raf);
   }, [monthlyTarget]);
-  const monthly = monthlyTarget;
-  const incVatTotal = monthly * (1 + vatRate/100);
   return (
     <div>
       <div className="text-3xl font-bold">{money(display, currency)}<span className="text-base font-normal text-slate-500">/one-time</span></div>
-      <div className="text-[11px] text-slate-500 mt-1">Est. incl. VAT: {money(incVatTotal, currency)}</div>
+      <div className="text-[11px] text-slate-500 mt-1">No VAT applied</div>
     </div>
   );
 }
@@ -61,18 +56,11 @@ function Price({ amount, currency, vatRate }: { amount: number; currency: Curren
 export default function PricingClient() {
   const bcRef = useRef<BroadcastChannel | null>(null);
   const [currency, setCurrency] = useState<Currency>('GBP');
-  const [country, setCountry] = useState<string>('United Kingdom');
   const [isLoading, setIsLoading] = useState<string | null>(null);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const { status } = useSession();
   const router = useRouter();
   const signedIn = status === 'authenticated';
-
-  const vatRate = useMemo(() => {
-    const code = (CC as Record<string,string>)[country] || 'UK';
-    const rates = (VAT_RATES as Record<string, number[]>)[code] || [0,20];
-    return rates[rates.length-1] || 20;
-  }, [country]);
 
   useEffect(()=>{
     try {
@@ -242,20 +230,9 @@ export default function PricingClient() {
     <div className="bg-slate-50 min-h-screen">
       <Section className="py-12">
         <div className="text-center">
-          <div className="inline-flex items-center gap-2"><Pill>UK-first</Pill><Pill>EU-ready</Pill><Pill>Prices exclude VAT</Pill></div>
+          <div className="inline-flex items-center gap-2"><Pill>UK-first</Pill><Pill>EU-ready</Pill><Pill>No VAT charged</Pill></div>
           <h1 className="mt-4 text-3xl sm:text-4xl font-bold">Top-Up</h1>
-          <p className="mt-2 text-slate-600">Choose a top-up, set your country — we estimate VAT for transparency.</p>
-
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-            <select
-              className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm"
-              value={country}
-              onChange={(e)=>setCountry(e.target.value)}
-              aria-label="Select country"
-            >
-              {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
-            </select>
-          </div>
+          <p className="mt-2 text-slate-600">Choose a top-up — all prices are final, no VAT is added.</p>
         </div>
 
         <div className="mt-10 grid md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -276,7 +253,7 @@ export default function PricingClient() {
                   {plan.popular && <Badge>POPULAR</Badge>}
                 </div>
                 <div className="mt-3">
-                  <Price amount={base} currency={currency} vatRate={vatRate} />
+                  <Price amount={base} currency={currency} />
                 </div>
                 <div className="mt-1 text-xs text-slate-600">= {plan.tokens} tokens (~{invoices} invoices)</div>
                 <ul className="mt-4 space-y-2 text-sm text-slate-700 list-disc pl-5">
@@ -323,7 +300,7 @@ export default function PricingClient() {
             <div className="mt-4 space-y-4 text-sm text-slate-700">
               <div>
                 <div className="font-medium">Do prices include VAT?</div>
-                <p className="text-slate-600 mt-1">No. Prices exclude VAT. We calculate tax at checkout using your country and VAT ID. For eligible EU B2B customers with a valid VAT ID, reverse charge (0%) is applied.</p>
+                <p className="text-slate-600 mt-1">All prices are final — no VAT is added at checkout. The amount you see is the amount you pay.</p>
               </div>
               <div>
                 <div className="font-medium">Can I cancel anytime?</div>
@@ -335,7 +312,7 @@ export default function PricingClient() {
               </div>
               <div>
                 <div className="font-medium">Do you issue invoices?</div>
-                <p className="text-slate-600 mt-1">Yes. Invoices include your company details and VAT breakdown.</p>
+                <p className="text-slate-600 mt-1">Yes. Invoices include your company details and payment summary.</p>
               </div>
             </div>
           </div>
