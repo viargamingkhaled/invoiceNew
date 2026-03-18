@@ -37,8 +37,20 @@ export default function Header() {
   const [geoCountry, setGeoCountry] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!signedIn) return;
+    // Fetch fresh balance from the server — the JWT only captures balance at login time
+    fetch('/api/me')
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        const t = data?.user?.tokenBalance;
+        if (typeof t === 'number') setTokens(t);
+      })
+      .catch(() => {});
+  }, [signedIn]);
+
+  useEffect(() => {
     const t = (session?.user as any)?.tokenBalance;
-    if (typeof t === 'number') setTokens(t);
+    if (typeof t === 'number' && tokens === null) setTokens(t);
   }, [session]);
 
   useEffect(() => {
@@ -46,8 +58,16 @@ export default function Header() {
       bcRef.current = new BroadcastChannel('app-events');
       bcRef.current.onmessage = (ev: MessageEvent) => {
         const data: any = (ev as any)?.data || {};
-        if (data.type === 'tokens-updated' && typeof data.tokenBalance === 'number') {
-          setTokens(data.tokenBalance);
+        if (data.type === 'tokens-updated') {
+          if (typeof data.tokenBalance === 'number') {
+            setTokens(data.tokenBalance);
+          } else {
+            // No balance in the message — re-fetch from server
+            fetch('/api/me')
+              .then(r => r.ok ? r.json() : null)
+              .then(d => { const t = d?.user?.tokenBalance; if (typeof t === 'number') setTokens(t); })
+              .catch(() => {});
+          }
         }
         if (data.type === 'currency-updated' && getAvailableCurrencies().includes(data.currency)) {
           setCurrency(data.currency);
