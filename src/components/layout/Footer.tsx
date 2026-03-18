@@ -36,8 +36,9 @@ export default function Footer() {
             <div className="grid gap-1 text-[#6B7280]">
               <Link href="/privacy" className="hover:text-[#0F766E] hover:underline transition-colors">Privacy</Link>
               <Link href="/terms" className="hover:text-[#0F766E] hover:underline transition-colors">Terms</Link>
-              <Link href="/cookies" className="hover:text-[#0F766E] hover:underline transition-colors">Cookie</Link>
+              <Link href="/cookies" className="hover:text-[#0F766E] hover:underline transition-colors">Cookie Policy</Link>
               <Link href="/refund" className="hover:text-[#0F766E] hover:underline transition-colors">Refund</Link>
+              <Link href="/disclaimer" className="hover:text-[#0F766E] hover:underline transition-colors">Disclaimer</Link>
             </div>
           </div>
           <div>
@@ -76,9 +77,28 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        <div className="mt-8 flex items-center justify-between text-xs text-[#6B7280]">
-          <div>(c) {new Date().getFullYear()} Ventira - All rights reserved</div>
-          <div>Made in UK</div>
+        {/* Legal block */}
+        <div className="mt-10 pt-6 border-t border-black/10 text-xs text-[#6B7280] space-y-3">
+          <div className="flex flex-wrap gap-x-6 gap-y-1">
+            <span className="font-semibold text-[#374151]">VIARGAMING LTD</span>
+            <span>Company No.&nbsp;15847699</span>
+            <span>Registered in England &amp; Wales</span>
+          </div>
+          <div className="flex flex-wrap gap-x-6 gap-y-1">
+            <span>43 Victoria Rd, Northampton, United Kingdom, NN1&nbsp;5ED</span>
+          </div>
+          <div className="flex flex-wrap gap-x-6 gap-y-1">
+            <a href="mailto:info@ventira.co.uk" className="hover:text-[#0F766E] hover:underline transition-colors">
+              info@ventira.co.uk
+            </a>
+            <a href="tel:+447861902258" className="hover:text-[#0F766E] hover:underline transition-colors">
+              +44 7861 902258
+            </a>
+          </div>
+          <div className="flex items-center justify-between pt-2">
+            <span>&copy; {new Date().getFullYear()} Ventira &mdash; All rights reserved.</span>
+            <span>Made in UK</span>
+          </div>
         </div>
       </section>
     </motion.footer>
