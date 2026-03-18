@@ -14,12 +14,12 @@ export async function GET(req: Request) {
     { email: 'user-without-tokens@mail.com', name: 'Test User (no tokens)', tokenBalance: 0 },
   ];
 
-  const results = [] as any[];
+  const results: { id: string; email: string | null; tokenBalance: number }[] = [];
   for (const u of users) {
     const user = await prisma.user.upsert({
       where: { email: u.email },
       update: { tokenBalance: u.tokenBalance },
-      create: { email: u.email, name: u.name, tokenBalance: u.tokenBalance, currency: 'EUR' as any },
+      create: { email: u.email, name: u.name, tokenBalance: u.tokenBalance, currency: 'EUR' },
     });
     results.push({ id: user.id, email: user.email, tokenBalance: user.tokenBalance });
   }

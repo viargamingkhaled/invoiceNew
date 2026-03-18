@@ -8,10 +8,12 @@ import Card from '@/components/ui/Card';
 import DemoPreview from '@/components/demo/DemoPreview';
 import { THEME } from '@/lib/theme';
 
+type GtagWindow = Window & { gtag?: (...args: unknown[]) => void };
+
 export default function AboutPageClient() {
   const handleSecurityClick = () => {
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'about_security_click', {
+    if (typeof window !== 'undefined' && (window as GtagWindow).gtag) {
+      (window as GtagWindow).gtag?.('event', 'about_security_click', {
         event_category: 'engagement',
         event_label: 'security_link'
       });
@@ -20,8 +22,8 @@ export default function AboutPageClient() {
 
   const handlePressDownload = async (filename: string, assetType: string) => {
     // Track download event
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'about_press_download', {
+    if (typeof window !== 'undefined' && (window as GtagWindow).gtag) {
+      (window as GtagWindow).gtag?.('event', 'about_press_download', {
         event_category: 'engagement',
         event_label: `press_kit_${assetType}`
       });

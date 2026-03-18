@@ -17,11 +17,6 @@ function getResendClient() {
   return resendClient;
 }
 
-const absoluteUrl = (path: string) => {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-  return `${baseUrl}${path}`;
-};
-
 // Функция теперь принимает только один аргумент `req`
 export async function POST(req: Request) {
   try {
@@ -103,7 +98,8 @@ export async function POST(req: Request) {
     const resend = getResendClient();
     const appName = process.env.NEXT_PUBLIC_APP_NAME || 'Ventira';
     const companyName = invoice.user?.company?.name || appName;
-    const clientName = (invoice as any).clientMeta?.name || (invoice as any).client || 'Customer';
+    const invoiceClientMeta = invoice.clientMeta as Record<string, unknown> | null;
+    const clientName = (invoiceClientMeta?.name as string | undefined) || invoice.client || 'Customer';
     const totalAmount = `${invoice.currency} ${Number(invoice.total).toFixed(2)}`;
     const dueDate = invoice.due ? new Date(invoice.due).toLocaleDateString('en-GB') : 'N/A';
     

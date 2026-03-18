@@ -23,7 +23,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const userId = (session.user as any).id as string;
+    const userId = session.user.id;
     const userEmail = session.user.email!;
     const userName = session.user.name || undefined;
     console.log('🟢 [API] Step 2: User authenticated', { userId, userEmail });

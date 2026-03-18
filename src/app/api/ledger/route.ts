@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const userId = (session.user as any).id as string;
+  const userId = session.user.id;
   const ledger = await prisma.ledgerEntry.findMany({ where: { userId }, orderBy: { ts: 'desc' } });
   const normalized = ledger.map((entry) => ({
     ...entry,
@@ -26,7 +26,7 @@ export async function GET() {
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const userId = (session.user as any).id as string;
+  const userId = session.user.id;
   const body = await req.json().catch(() => ({}));
   const type = (body.type as string);
 
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const rawCurrency = (body.currency as string) || ((session.user as any).currency as string) || 'GBP';
+  const rawCurrency = (body.currency as string) || session.user.currency || 'GBP';
   const currency: Currency = isValidCurrency(rawCurrency) ? rawCurrency : 'GBP';
   const delta = -Math.abs(Number(body.delta ?? 0));
 

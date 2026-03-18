@@ -34,7 +34,7 @@ export async function POST(req: Request) {
     const { name, email, message } = validation.data;
     const resend = getResendClient();
 
-    const { data, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: "Ventira Contact Form <info@ventira.co.uk>", // Замените на ваш верифицированный домен
       to: ["info@ventira.co.uk"], // Укажите здесь ваш email
       subject: `New message from ${name}`,

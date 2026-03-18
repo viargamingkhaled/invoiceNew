@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
@@ -6,7 +6,7 @@ import { prisma } from '@/lib/prisma';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-export async function GET(req: Request, { params }: { params: Promise<any> }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user) {
@@ -15,7 +15,7 @@ export async function GET(req: Request, { params }: { params: Promise<any> }) {
     
     const resolvedParams = await params;
     const id = resolvedParams.id as string;
-    const userId = (session.user as any).id as string;
+    const userId = session.user.id;
 
     // Find the invoice with all related data
     const invoice = await prisma.invoice.findFirst({
@@ -47,7 +47,7 @@ export async function GET(req: Request, { params }: { params: Promise<any> }) {
   }
 }
 
-export async function PATCH(req: Request, { params }: { params: Promise<any> }) {
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user) {
@@ -56,7 +56,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<any> }) 
 
     const resolvedParams = await params;
     const id = resolvedParams.id as string;
-    const userId = (session.user as any).id as string;
+    const userId = session.user.id;
     const body = await req.json();
 
     // Update the invoice

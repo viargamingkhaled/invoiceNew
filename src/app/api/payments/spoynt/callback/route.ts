@@ -7,6 +7,20 @@ import type { Currency } from '@/lib/currency';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type TxClient = Parameters<Parameters<typeof prisma.$transaction>[0]>[0];
 
+interface SpoyntCallback {
+  data?: {
+    id?: string;
+    attributes?: {
+      test_mode?: boolean;
+      reference_id?: string;
+      status?: string;
+      resolution?: string;
+      amount?: number;
+      currency?: string;
+    };
+  };
+}
+
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -31,9 +45,9 @@ export async function POST(req: Request) {
     console.log('🔐 Signature present:', signature ? 'Yes' : 'No');
 
     // Parse callback data
-    let callbackData: any;
+    let callbackData!: SpoyntCallback;
     try {
-      callbackData = JSON.parse(rawBody);
+      callbackData = JSON.parse(rawBody) as SpoyntCallback;
       console.log('✅ JSON parsed successfully');
     } catch {
       console.error('❌ Invalid callback JSON');
@@ -70,10 +84,10 @@ export async function POST(req: Request) {
 
     const spoyntPaymentId = callbackData.data?.id;
     const referenceId = attributes.reference_id;
-    const status = attributes.status;
+    const status = attributes.status ?? '';
     const resolution = attributes.resolution;
-    const amount = attributes.amount;
-    const currency = attributes.currency;
+    const amount = attributes.amount ?? 0;
+    const currency = attributes.currency ?? 'GBP';
 
     console.log(`🟣 [CALLBACK] Processing: ${spoyntPaymentId} - Status: ${status}, Resolution: ${resolution}`);
 

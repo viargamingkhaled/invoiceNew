@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import type { $Enums } from '@prisma/client';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -9,12 +10,12 @@ export const dynamic = 'force-dynamic';
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const userId = (session.user as any).id as string;
+  const userId = session.user.id;
 
   const body = await req.json().catch(() => ({}));
-  const currency = (body.currency as string) || ((session.user as any).currency ?? 'EUR');
+  const currency = (body.currency as string) || (session.user.currency ?? 'EUR');
   const client = (body.client as string) || 'New Client';
-  const toDec = (v: any) => typeof v === 'number' ? v.toFixed(2) : (Number(v||0)).toFixed(2);
+  const toDec = (v: string | number | null | undefined): string => typeof v === 'number' ? v.toFixed(2) : (Number(v ?? 0)).toFixed(2);
   const subtotal = toDec(body.subtotal ?? 0);
   const tax = toDec(body.tax ?? 0);
   const total = toDec(body.total ?? (Number(body.subtotal ?? 0) + Number(body.tax ?? 0)));
@@ -34,12 +35,12 @@ export async function POST(req: Request) {
       date: new Date(),
       due: dueIso || undefined,
       client,
-      currency,
       subtotal,
       tax,
       total,
+      currency: currency as $Enums.Currency,
       status: 'Draft',
-      clientMeta: clientMeta as any,
+      clientMeta: clientMeta,
       items: items.length ? { create: items.map(it => ({ description: it.description, quantity: Math.round(it.quantity||0), rate: toDec(it.rate||0), tax: Math.round(it.tax||0) })) } : undefined,
     },
     include: { items: true },

@@ -6,7 +6,7 @@ import { authOptions } from "@/lib/auth";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function GET(req: Request, { params }: { params: Promise<any> }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const resolvedParams = await params;
     const id = resolvedParams.id as string;
@@ -68,11 +68,12 @@ export async function GET(req: Request, { params }: { params: Promise<any> }) {
         'Cache-Control': 'no-store',
       },
     });
-  } catch (e: any) {
+  } catch (e) {
+    const err = e instanceof Error ? e : new Error(String(e));
     console.error(`[PDF_API] Error:`, e);
     return NextResponse.json({ 
-      error: e?.message || 'Failed to render PDF',
-      details: e?.stack || 'No stack trace available'
+      error: err.message || 'Failed to render PDF',
+      details: err.stack || 'No stack trace available'
     }, { status: 500 });
   }
 }
