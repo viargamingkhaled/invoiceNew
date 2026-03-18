@@ -237,10 +237,9 @@ function CustomHomeCard({
           )}
           <div className="mt-1 text-xs text-slate-600">≈ {tokens} tokens (~{Math.round(tokens / 10)} invoices)</div>
           <ul className="mt-4 space-y-2 text-sm text-slate-700">
-            <li className="flex items-start gap-2"><span>-</span><span>All 8 templates</span></li>
-            <li className="flex items-start gap-2"><span>-</span><span>PDF export</span></li>
-            <li className="flex items-start gap-2"><span>-</span><span>Email send</span></li>
-            <li className="flex items-start gap-2"><span>-</span><span>Custom numbering mask</span></li>
+            <li className="flex items-start gap-2"><span>-</span><span>Top up any amount</span></li>
+            <li className="flex items-start gap-2"><span>-</span><span>No subscription — pay what you need</span></li>
+            <li className="flex items-start gap-2"><span>-</span><span>Min {getCurrencySymbol(currency)}{limits.min}</span></li>
           </ul>
         </div>
         <div className="mt-6 space-y-3">

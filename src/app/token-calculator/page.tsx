@@ -8,7 +8,7 @@ import Input from '@/components/ui/Input';
 import Segmented from '@/components/ui/Segmented';
 import { Currency, convertFromGBP, convertToGBP, formatCurrency, getCurrencySymbol, getAvailableCurrencies, calculateTokens, calculateAmountFromTokens } from '@/lib/currency';
 
-const MIN_AMOUNT = 5;
+const MIN_AMOUNT = 10;
 const MAX_AMOUNT = 500;
 
 const FAQ_ITEMS = [
@@ -195,7 +195,7 @@ export default function TokenCalculatorPage() {
                   aria-label="Amount"
                 />
                 <div className="flex justify-between text-xs text-slate-500">
-                  <span>{getCurrencySymbol(currency)}5</span>
+                  <span>{getCurrencySymbol(currency)}10</span>
                   <span>{getCurrencySymbol(currency)}500</span>
                 </div>
               </div>
