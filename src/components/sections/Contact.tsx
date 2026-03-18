@@ -37,7 +37,7 @@ export default function Contact() {
           viewport={{ once: true }}
         >
           <h2 className="text-2xl font-bold">Contact us</h2>
-          <p className="mt-2 text-slate-600">Leave a message - we'll reply within one business day.</p>
+          <p className="mt-2 text-slate-600">Leave a message - we&apos;ll reply within one business day.</p>
           <div className="mt-6 grid gap-3 text-sm text-slate-700">
             <div>Company: VIARGAMING LTD</div>
             <div>Reg: 15847699</div>

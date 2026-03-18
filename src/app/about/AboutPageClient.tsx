@@ -192,7 +192,7 @@ export default function AboutPageClient() {
               Why tokens (no subscriptions)
             </h2>
             <p className={`text-lg ${THEME.muted}`}>
-              Traditional subscription models don't work for everyone. We believe in fair, transparent pricing.
+              Traditional subscription models don&apos;t work for everyone. We believe in fair, transparent pricing.
             </p>
           </div>
 
@@ -276,7 +276,7 @@ export default function AboutPageClient() {
                 </svg>
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">Privacy-by-design</h3>
-              <p className="text-slate-600 text-sm">Your data stays yours. We don't sell it, share it, or use it for advertising.</p>
+              <p className="text-slate-600 text-sm">Your data stays yours. We don&apos;t sell it, share it, or use it for advertising.</p>
             </div>
 
             <div className="text-center">
@@ -358,7 +358,7 @@ export default function AboutPageClient() {
                 </div>
                 <div className="pt-2">
                   <p className="text-xs text-slate-500">
-                    We're committed to transparency. All security practices and incident reports are publicly available.
+                    We&apos;re committed to transparency. All security practices and incident reports are publicly available.
                   </p>
                 </div>
               </div>
@@ -528,7 +528,7 @@ export default function AboutPageClient() {
           viewport={{ once: true }}
         >
           <h2 className={`text-3xl font-bold ${THEME.text} mb-4`}>
-            Questions? We're here to help
+            Questions? We&apos;re here to help
           </h2>
           <p className={`text-lg ${THEME.muted} mb-8`}>
             Get in touch with our team for support, partnerships, or media inquiries

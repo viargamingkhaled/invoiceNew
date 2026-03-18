@@ -105,7 +105,7 @@ export default function Pricing() {
         viewport={{ once: true }}
       >
         <h2 className="text-2xl sm:text-3xl font-bold">Plans</h2>
-        <p className="mt-2 text-slate-600">Top-up and start working when you're ready</p>
+        <p className="mt-2 text-slate-600">Top-up and start working when you&apos;re ready</p>
       </motion.div>
 
       <div className="grid md:grid-cols-4 gap-6">

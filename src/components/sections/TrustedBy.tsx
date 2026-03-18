@@ -45,7 +45,7 @@ export default function TrustedBy() {
         viewport={{ once: true }}
       >
         <h2 className="text-2xl font-bold">Trusted by</h2>
-        <p className="mt-2 text-slate-600">We'll add real brands after launch.</p>
+        <p className="mt-2 text-slate-600">We&apos;ll add real brands after launch.</p>
       </motion.div>
       {showTodos && (
         <TodoPanel items={TRUSTED_BY_TODOS} />

@@ -36,7 +36,7 @@ export default function BillingTokensPage() {
   // Track page view
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      // @ts-ignore
+      // @ts-expect-error
       window.gtag?.('event', 'billing_view', {
         page_title: 'Billing & Tokens',
       });
@@ -77,7 +77,7 @@ export default function BillingTokensPage() {
 
   const handleTopUpClick = (amount?: number) => {
     if (typeof window !== 'undefined') {
-      // @ts-ignore
+      // @ts-expect-error
       window.gtag?.('event', 'billing_click_topup', {
         amount: amount || customAmount,
         currency: selectedCurrency,

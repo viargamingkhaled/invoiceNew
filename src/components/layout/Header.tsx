@@ -182,7 +182,7 @@ export default function Header() {
               <button
                 className={`rounded-xl px-3 py-2 transition-colors flex items-center gap-2 ${helpOpen ? 'bg-black/5' : 'hover:bg-black/5'}`}
                 aria-haspopup="menu"
-                aria-expanded={helpOpen ? 'true' : 'false'}
+                aria-expanded={helpOpen}
                 onClick={toggleHelp}
                 onKeyDown={onKeyDownHelp}
               >
@@ -303,7 +303,7 @@ export default function Header() {
                     <button
                       className={`mt-1 rounded-xl px-3 py-2 text-left flex items-center justify-between hover:bg-slate-50 ${mobileHelpOpen ? 'bg-black/5' : ''}`}
                       onClick={toggleMobileHelp}
-                      aria-expanded={mobileHelpOpen ? 'true' : 'false'}
+                      aria-expanded={mobileHelpOpen}
                       aria-controls="mobile-help-group"
                     >
                       <span>Help</span>

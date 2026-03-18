@@ -19,7 +19,7 @@ export default function ContactPage() {
             <Pill>Avg. reply: 1 business day</Pill>
           </div>
           <h1 className="mt-4 text-4xl sm:text-5xl font-bold text-slate-900">Contact us</h1>
-          <p className="mt-3 text-slate-600 text-lg">We're here to help with sales, support, and billing.</p>
+          <p className="mt-3 text-slate-600 text-lg">We&apos;re here to help with sales, support, and billing.</p>
         </div>
 
         <div className="mt-10 grid lg:grid-cols-3 gap-6">

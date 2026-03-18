@@ -91,7 +91,7 @@ export default function GettingStartedPage() {
   useEffect(() => {
     // Track step view
     if (typeof window !== 'undefined') {
-      // @ts-ignore
+      // @ts-expect-error
       window.gtag?.('event', 'gs_step_view', {
         step_id: STEPS[activeStep].id,
         step_number: activeStep + 1,
@@ -105,7 +105,7 @@ export default function GettingStartedPage() {
 
   const handleCtaClick = (stepId: string, ctaText: string) => {
     if (typeof window !== 'undefined') {
-      // @ts-ignore
+      // @ts-expect-error
       window.gtag?.('event', 'gs_cta_click', {
         step_id: stepId,
         cta_text: ctaText,
@@ -223,7 +223,7 @@ export default function GettingStartedPage() {
 
                   {/* Step Details */}
                   <div className="mb-6">
-                    <h3 className="font-semibold text-slate-900 mb-3">What you'll do:</h3>
+                    <h3 className="font-semibold text-slate-900 mb-3">What you&apos;ll do:</h3>
                     <ul className="space-y-2">
                       {STEPS[activeStep].details.map((detail, index) => (
                         <li key={index} className="flex items-start gap-3">
@@ -318,7 +318,7 @@ export default function GettingStartedPage() {
                 <Card className="bg-gradient-to-r from-emerald-50 to-blue-50 border-emerald-200">
                   <div className="p-8">
                     <h3 className="text-xl font-semibold text-slate-900 mb-4">
-                      🎉 Congratulations! You're all set
+                      🎉 Congratulations! You&apos;re all set
                     </h3>
                     <p className="text-slate-600 mb-6">
                       You now know how to create and send professional invoices. 

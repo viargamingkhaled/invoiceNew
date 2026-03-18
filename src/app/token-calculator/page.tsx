@@ -60,7 +60,7 @@ export default function TokenCalculatorPage() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      // @ts-ignore
+      // @ts-expect-error
       window.gtag?.('event', 'calc_open', {
         page_title: 'Token Calculator',
       });
@@ -98,7 +98,7 @@ export default function TokenCalculatorPage() {
     }, 0);
     
     if (typeof window !== 'undefined') {
-      // @ts-ignore
+      // @ts-expect-error
       window.gtag?.('event', 'calc_change_amount', {
         amount: clampedValue,
         currency: currency,
@@ -125,7 +125,7 @@ export default function TokenCalculatorPage() {
 
   const handleTopUpClick = () => {
     if (typeof window !== 'undefined') {
-      // @ts-ignore
+      // @ts-expect-error
       window.gtag?.('event', 'calc_topup_click', {
         amount: amount,
         currency: currency,
@@ -139,7 +139,7 @@ export default function TokenCalculatorPage() {
     navigator.clipboard.writeText(url);
     
     if (typeof window !== 'undefined') {
-      // @ts-ignore
+      // @ts-expect-error
       window.gtag?.('event', 'calc_copy_link', {
         amount: amount,
         currency: currency,
@@ -247,7 +247,7 @@ export default function TokenCalculatorPage() {
             
             <div className="space-y-4 mb-6">
               <div className="flex justify-between items-center py-3 border-b border-slate-200">
-                <span className="text-slate-600">Tokens you'll get</span>
+                <span className="text-slate-600">Tokens you&apos;ll get</span>
                 <span className="text-2xl font-bold text-slate-900">
                   {tokens.toLocaleString('en-US')}
                 </span>

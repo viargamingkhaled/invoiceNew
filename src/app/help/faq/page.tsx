@@ -214,7 +214,7 @@ function FAQContent() {
     
     // Track analytics event
     if (typeof window !== 'undefined') {
-      // @ts-ignore
+      // @ts-expect-error
       window.gtag?.('event', 'faq_vote_helpful', {
         question_id: id,
         helpful: helpful,
@@ -232,7 +232,7 @@ function FAQContent() {
     
     // Track analytics event
     if (typeof window !== 'undefined') {
-      // @ts-ignore
+      // @ts-expect-error
       window.gtag?.('event', 'faq_copy_link', {
         question_id: id,
       });
@@ -244,7 +244,7 @@ function FAQContent() {
 
     // Track analytics event
     if (typeof window !== 'undefined') {
-      // @ts-ignore
+      // @ts-expect-error
       window.gtag?.('event', 'faq_open_contact', {
         question_id: questionId,
         has_email: !!contactEmail,
@@ -295,7 +295,7 @@ function FAQContent() {
             />
             {searchQuery && (
               <p className="mt-2 text-sm text-slate-500">
-                Try: 'reverse charge', 'tokens', 'VAT', 'refund'
+                {`Try: 'reverse charge', 'tokens', 'VAT', 'refund'`}
               </p>
             )}
           </div>
@@ -420,7 +420,7 @@ function FAQContent() {
               Still need help?
             </h3>
             <p className="text-slate-600 mb-6">
-              Can't find what you're looking for? We're here to help.
+              Can&apos;t find what you&apos;re looking for? We&apos;re here to help.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button href="/generator" size="lg">

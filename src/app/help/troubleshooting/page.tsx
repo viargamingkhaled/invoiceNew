@@ -185,7 +185,7 @@ export default function TroubleshootingPage() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      // @ts-ignore
+      // @ts-expect-error
       window.gtag?.('event', 'ts_page_view', {
         page_title: 'Troubleshooting',
       });
@@ -229,7 +229,7 @@ export default function TroubleshootingPage() {
     setSolvedIssues(prev => new Set([...prev, issueId]));
     
     if (typeof window !== 'undefined') {
-      // @ts-ignore
+      // @ts-expect-error
       window.gtag?.('event', 'ts_issue_solved', {
         issue_id: issueId,
       });
@@ -238,7 +238,7 @@ export default function TroubleshootingPage() {
 
   const handleIssueView = (issueId: string) => {
     if (typeof window !== 'undefined') {
-      // @ts-ignore
+      // @ts-expect-error
       window.gtag?.('event', 'ts_issue_view', {
         issue_id: issueId,
       });
@@ -247,7 +247,7 @@ export default function TroubleshootingPage() {
 
   const handleOpenTicket = () => {
     if (typeof window !== 'undefined') {
-      // @ts-ignore
+      // @ts-expect-error
       window.gtag?.('event', 'ts_open_ticket', {
         action: 'open_ticket',
       });
@@ -335,7 +335,7 @@ export default function TroubleshootingPage() {
                 Still stuck?
               </h3>
               <p className="text-slate-600 mb-6">
-                Can't find a solution? Our support team is here to help.
+                Can&apos;t find a solution? Our support team is here to help.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 

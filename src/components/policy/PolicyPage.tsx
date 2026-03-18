@@ -118,7 +118,7 @@ export default function PolicyPage({
             <Card className="p-6" padding="md">
               <h3 className="text-base font-semibold">Need help?</h3>
               <p className="text-slate-600 text-sm mt-1">
-                Email <a className="underline" href={`mailto:${helpEmail}`}>{helpEmail}</a> and we'll get back to you.
+                Email <a className="underline" href={`mailto:${helpEmail}`}>{helpEmail}</a> and we&apos;ll get back to you.
               </p>
               <div className="mt-4 h-px bg-black/10" />
               <h4 className="text-sm font-medium mt-4">Change log</h4>

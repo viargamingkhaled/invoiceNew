@@ -89,7 +89,7 @@ export default function ReviewsCarousel() {
 
                 {/* Review Text */}
                 <blockquote className="text-xl sm:text-2xl font-medium text-[#0B1221] leading-relaxed mb-8">
-                  "{reviews[currentReview].text}"
+                  &ldquo;{reviews[currentReview].text}&rdquo;
                 </blockquote>
 
                 {/* Author Info */}

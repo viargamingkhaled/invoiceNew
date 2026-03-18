@@ -40,7 +40,7 @@ export const ContactEmail: React.FC<Readonly<ContactEmailProps>> = ({
         </Heading>
         <Section>
           <Text style={{ color: '#505050', fontSize: '16px', lineHeight: '1.5' }}>
-            You have received a new message from your website's contact form.
+            You have received a new message from your website&apos;s contact form.
           </Text>
           <Text style={{ color: '#505050', fontSize: '16px', lineHeight: '1.5' }}>
             <strong>From:</strong> {name}
