@@ -279,15 +279,15 @@ export default function DashboardClient() {
 
           <Card padding="sm" data-reveal>
               <div className="text-base font-semibold">Token history</div>
-              <div className="mt-3 overflow-hidden rounded-xl border border-black/10">
-                <table className="w-full text-sm">
+              <div className="mt-3 overflow-x-auto rounded-xl border border-black/10">
+                <table className="min-w-full text-sm">
                   <thead className="bg-slate-50 text-slate-600">
                     <tr>
-                      <th className="text-left px-3 py-2">Date</th>
+                      <th className="text-left px-3 py-2 whitespace-nowrap">Date</th>
                       <th className="text-left px-3 py-2">Type</th>
                       <th className="text-left px-3 py-2">Number</th>
                       <th className="text-right px-3 py-2">Amount</th>
-                      <th className="text-right px-3 py-2">Delta</th>
+                      <th className="text-right px-3 py-2">Delta (tokens)</th>
                       <th className="text-right px-3 py-2">Balance</th>
                       <th className="text-right px-3 py-2">Receipt</th>
                     </tr>
@@ -295,13 +295,15 @@ export default function DashboardClient() {
                   <tbody>
                     {ledgerView.map(row => (
                       <tr key={row.id} className="border-t border-black/10">
-                        <td className="px-3 py-2 whitespace-nowrap">{new Date(row.ts).toLocaleString('en-US')}</td>
-                        <td className="px-3 py-2">{row.type}</td>
-                        <td className="px-3 py-2">{row.invoiceNumber || '-'}</td>
-                        <td className="px-3 py-2 text-right">{row.type === 'Top-up' && row.amount != null && row.currency ? fmtMoney(Number(row.amount), row.currency) : '-'}</td>
-                        <td className={`px-3 py-2 text-right ${row.delta>0?'text-emerald-700':'text-slate-900'}`}>{row.delta>0? `+${int(row.delta)}` : `-${int(Math.abs(row.delta))}`} tokens</td>
-                        <td className="px-3 py-2 text-right">{int(row.balanceAfter)}</td>
-                        <td className="px-3 py-2 text-right">{row.type==='Top-up' ? <a className="underline text-sm" href={row.receiptUrl||'#'} target="_blank" rel="noopener noreferrer">Receipt</a> : '-'}</td>
+                        <td className="px-3 py-2 whitespace-nowrap text-slate-500 text-xs">
+                          {new Date(row.ts).toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                        </td>
+                        <td className="px-3 py-2 whitespace-nowrap">{row.type}</td>
+                        <td className="px-3 py-2 whitespace-nowrap">{row.invoiceNumber || '-'}</td>
+                        <td className="px-3 py-2 text-right whitespace-nowrap">{row.type === 'Top-up' && row.amount != null && row.currency ? fmtMoney(Number(row.amount), row.currency) : '-'}</td>
+                        <td className={`px-3 py-2 text-right whitespace-nowrap font-mono ${row.delta>0?'text-emerald-700':'text-slate-900'}`}>{row.delta>0? `+${int(row.delta)}` : `-${int(Math.abs(row.delta))}`}</td>
+                        <td className="px-3 py-2 text-right whitespace-nowrap font-mono">{int(row.balanceAfter)}</td>
+                        <td className="px-3 py-2 text-right whitespace-nowrap">{row.type==='Top-up' ? <a className="underline text-sm" href={row.receiptUrl||'#'} target="_blank" rel="noopener noreferrer">Receipt</a> : '-'}</td>
                       </tr>
                     ))}
                   </tbody>
