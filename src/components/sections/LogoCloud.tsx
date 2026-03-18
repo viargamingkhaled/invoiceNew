@@ -3,8 +3,11 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { BRANDS } from '@/lib/brands';
+import { useSession } from 'next-auth/react';
 
 export default function LogoCloud() {
+  const { data: session } = useSession();
+  const ctaHref = session?.user ? '/dashboard' : '/auth/signin?mode=signup';
   // Get only our real client brands (first 6)
   const clientBrands = BRANDS.filter(brand => 
     ['northwick-labs', 'wrenfield-supply', 'elm-pine', 'kleinwerk', 'fernstadt-digital', 'deltawave'].includes(brand.id)
@@ -70,10 +73,10 @@ export default function LogoCloud() {
           viewport={{ once: true }}
         >
           <a
-            href="/auth/signin?mode=signup"
+            href={ctaHref}
             className="inline-flex items-center px-4 py-2 text-sm font-medium text-[#0F766E] hover:text-[#0D6B63] transition-colors duration-200"
           >
-            Become a customer →
+            {session?.user ? 'Go to dashboard →' : 'Become a customer →'}
           </a>
         </motion.div>
       </div>

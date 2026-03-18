@@ -8,8 +8,11 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { BRANDS } from '@/lib/brands';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 
 export default function TrustedBy() {
+  const { data: session } = useSession();
+  const ctaHref = session?.user ? '/dashboard' : '/contact';
   const [showTodos, setShowTodos] = useState(process.env.NODE_ENV !== 'production');
   const reduce = useReducedMotion();
 
@@ -64,8 +67,8 @@ export default function TrustedBy() {
           transition={{ duration: 0.3, delay: 0.08 * items.length }}
           viewport={{ once: true }}
         >
-          <Link href="/contact" className="text-sm rounded-xl border border-black/10 px-3 py-2 hover:bg-black/5 focus-visible:ring-2 focus-visible:ring-blue-600/30 outline-none">
-            Become a customer →
+          <Link href={ctaHref} className="text-sm rounded-xl border border-black/10 px-3 py-2 hover:bg-black/5 focus-visible:ring-2 focus-visible:ring-blue-600/30 outline-none">
+            {session?.user ? 'Go to dashboard →' : 'Become a customer →'}
           </Link>
         </motion.div>
       </div>
