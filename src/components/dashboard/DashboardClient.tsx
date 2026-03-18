@@ -208,20 +208,20 @@ export default function DashboardClient() {
           </div>
         </div>
 
-        <div className="mt-4 grid lg:grid-cols-2 gap-4 items-start">
+        <div className="mt-4 flex flex-col gap-4">
           <Card padding="sm" data-reveal>
               <div className="flex items-center justify-between">
                 <div className="text-base font-semibold">Recent invoices</div>
                 <a className="text-sm underline" href="#">View all</a>
               </div>
-              <div className="mt-3 overflow-hidden rounded-xl border border-black/10">
-                <table className="w-full text-sm">
+              <div className="mt-3 overflow-x-auto rounded-xl border border-black/10">
+                <table className="min-w-full text-sm">
                   <thead className="bg-slate-50 text-slate-600">
                     <tr>
-                      <th className="text-left px-3 py-2">Number</th>
-                      <th className="text-left px-3 py-2">Date</th>
+                      <th className="text-left px-3 py-2 whitespace-nowrap">Number</th>
+                      <th className="text-left px-3 py-2 whitespace-nowrap">Date</th>
                       <th className="text-left px-3 py-2">Client</th>
-                      <th className="text-right px-3 py-2">Total</th>
+                      <th className="text-right px-3 py-2 whitespace-nowrap">Total</th>
                       <th className="text-left px-3 py-2">Status</th>
                       <th className="text-right px-3 py-2">Actions</th>
                     </tr>
