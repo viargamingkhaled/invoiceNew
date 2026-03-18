@@ -154,23 +154,6 @@ export default function DashboardClient() {
     }
   };
 
-  const topUp = async (amount: number) => {
-    if (!me) return;
-    const res = await fetch('/api/ledger', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'Top-up', amount, currency: me.currency }) });
-    if (res.ok) {
-      const { tokenBalance } = await res.json();
-      setMe({ ...me, tokenBalance });
-      try { bcRef.current?.postMessage({ type: 'tokens-updated', tokenBalance }); } catch {}
-      const ledRes = await fetch('/api/ledger');
-      if (ledRes.ok) {
-        const { ledger } = await ledRes.json();
-        setLedger(ledger);
-      }
-    } else {
-      alert('Top-up failed');
-    }
-  };
-
   const saveCompanyProfile = async (next: Company) => {
     setSavingCompany(true);
     const res = await fetch('/api/company', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(next) });

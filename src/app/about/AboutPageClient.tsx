@@ -18,7 +18,7 @@ export default function AboutPageClient() {
     }
   };
 
-  const handlePressDownload = (filename: string, assetType: string) => {
+  const handlePressDownload = async (filename: string, assetType: string) => {
     // Track download event
     if (typeof window !== 'undefined' && (window as any).gtag) {
       (window as any).gtag('event', 'about_press_download', {
@@ -27,13 +27,24 @@ export default function AboutPageClient() {
       });
     }
 
-    // Trigger download
-    const link = document.createElement('a');
-    link.href = `/${filename}`;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Fetch as blob so the browser treats it as a download regardless of
+    // Content-Type (SVGs opened inline when linked directly).
+    try {
+      const res = await fetch(`/${filename}`);
+      if (!res.ok) throw new Error(`${res.status}`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch {
+      // Fallback: direct navigation (opens in tab — better than silent failure)
+      window.open(`/${filename}`, '_blank', 'noopener');
+    }
   };
 
   return (
