@@ -690,7 +690,7 @@ function ModalInvoiceView({ invoice, onClose, onDownload, onSendEmail, onRefresh
                         setItems(prev=>prev.map((p,idx)=> idx===i? { ...p, rate: next } : p));
                       }}
                     />
-                    <input className="col-span-2 rounded border px-2 py-1 text-sm text-right" type="number" value={it.tax} onChange={(e)=>setItems(prev=>prev.map((p,idx)=> idx===i? { ...p, tax: Number(e.target.value) } : p))} />
+                    <input className="col-span-2 rounded border px-2 py-1 text-sm text-right" type="number" aria-label="Tax %" value={it.tax} onChange={(e)=>setItems(prev=>prev.map((p,idx)=> idx===i? { ...p, tax: Number(e.target.value) } : p))} />
                   </div>
                 ))}
                 <button className="rounded border border-dashed border-black/20 text-sm py-1" onClick={(e)=>{ e.preventDefault(); setItems(prev=>[...prev, { desc: 'Service', qty: 1, rate: 100, tax: 0 }]); }}>+ Add row</button>

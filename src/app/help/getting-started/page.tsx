@@ -295,6 +295,7 @@ export default function GettingStartedPage() {
                   <button
                     key={index}
                     onClick={() => setActiveStep(index)}
+                    aria-label={`Go to step ${index + 1}`}
                     className={`w-3 h-3 rounded-full transition-colors ${
                       index === activeStep
                         ? 'bg-emerald-500'

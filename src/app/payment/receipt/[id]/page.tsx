@@ -14,12 +14,13 @@ export const metadata: Metadata = {
 
 export const dynamic = 'force-dynamic';
 
-export default async function ReceiptPage({ params }: { params: { id: string } }) {
+export default async function ReceiptPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   if (!session?.user) redirect('/auth/signin?mode=login');
 
   const userId = (session.user as any).id as string;
-  const payment = await prisma.payment.findUnique({ where: { id: params.id } });
+  const { id } = await params;
+  const payment = await prisma.payment.findUnique({ where: { id } });
 
   // Security: only let the owner view their own receipt
   if (!payment || payment.userId !== userId) notFound();

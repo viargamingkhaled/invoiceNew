@@ -381,7 +381,7 @@ function IssueCard({
       <button
         onClick={onToggle}
         className="w-full text-left p-6 hover:bg-slate-50 transition-colors"
-        aria-expanded={isExpanded}
+        aria-expanded={isExpanded ? 'true' : 'false'}
       >
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">

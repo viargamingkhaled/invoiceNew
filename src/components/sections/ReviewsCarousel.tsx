@@ -151,7 +151,7 @@ export default function ReviewsCarousel() {
                   }`}
                   aria-label={`Go to review ${index + 1}`}
                   role="tab"
-                  aria-selected={index === currentReview}
+                  aria-selected={index === currentReview ? 'true' : 'false'}
                 />
               ))}
             </div>

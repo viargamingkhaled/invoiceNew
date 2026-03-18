@@ -492,7 +492,7 @@ function FAQCard({
       <button
         onClick={onToggle}
         className="w-full text-left p-6 hover:bg-slate-50 transition-colors"
-        aria-expanded={isExpanded}
+        aria-expanded={isExpanded ? 'true' : 'false'}
       >
         <div className="flex items-start justify-between gap-4">
           <h3 className="text-lg font-semibold text-slate-900 pr-4">
@@ -576,6 +576,7 @@ function FAQCard({
                         <button
                           onClick={onCloseContact}
                           className="p-1 hover:bg-slate-100 rounded"
+                          aria-label="Close contact form"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
