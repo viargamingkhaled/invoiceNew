@@ -33,6 +33,8 @@ const sections: PolicySection[] = [
     title: 'Scope and Legal Note', 
     body: `This Policy applies to refunds and cancellations relating to invoice creation, PDF export, email dispatch, template use, and other related services offered via ventira.co.uk by VIARGAMING LTD.
 
+Ventira operates on a pay-as-you-go basis. There are no recurring subscriptions, monthly plans, or auto-renewal charges. All Token packages are one-time purchases. The word "cancellation" in this Policy refers exclusively to the statutory 14-day cooling-off right that applies to one-time distance purchases under the Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013, not to any subscription arrangement.
+
 Nothing here affects your statutory rights (including, where applicable, the Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013 and the Consumer Rights Act 2015).` 
   },
   { 
@@ -40,7 +42,7 @@ Nothing here affects your statutory rights (including, where applicable, the Con
     title: 'Definitions', 
     body: `• Order / Service Fee — the amount you paid for Token Packages/Top-Ups.
 
-• Token Package / Top-Up — prepaid credits used to access the Service (100 Tokens = £1.00 / €1.16 / $1.27 / 5.12 PLN / 29.80 CZK; generating one invoice costs 10 Tokens, unless otherwise stated in the interface).
+• Token Package / Top-Up — prepaid credits used to access the Service (100 Tokens = £1.00; indicative equivalent approx. €1.18 at the exchange rate applied by the platform). Generating one invoice costs 10 Tokens, unless otherwise stated in the interface. Top-Up transactions are processed in GBP or EUR only.
 
 • Used Tokens — Tokens deducted for generating a PDF invoice, sending an email, or using other metered features.
 
@@ -53,11 +55,11 @@ Nothing here affects your statutory rights (including, where applicable, the Con
   { 
     id: 'core-rules', 
     title: 'Core Refund Rules', 
-    body: `4.1 Refund cap. Refunds will not exceed the amount actually paid (less non-refundable payment-provider fees and any FX charges). Refunds are issued in the original payment currency where possible.
+    body: `4.1 Refund cap. Refunds will not exceed the amount actually paid (less non-refundable payment-provider fees and any FX charges). Refunds are issued in the original payment currency (GBP or EUR) where possible.
 
 4.2 Used Tokens. Tokens already used are not eligible for refund, except where the Service was materially defective and could not be reasonably remedied.
 
-4.3 Cancellation before use. If you cancel before spending any Tokens, your unused Token balance may be refunded, minus reasonable costs incurred (including non-refundable processing fees).
+4.3 Statutory cooling-off right (Consumers only — 14 calendar days). Because Token packages are one-time purchases (not subscriptions), Consumers have a 14-calendar-day statutory cooling-off right under the Consumer Contracts Regulations 2013. If you are a Consumer and have not used any Tokens, you may cancel the purchase within 14 calendar days of the transaction date and receive a refund, minus any non-recoverable payment-provider fees. There is no ongoing plan to cancel; each top-up is an independent transaction.
 
 4.4 Defective or non-conforming output. If a generated PDF invoice is materially defective due to our fault, we will first attempt regeneration or re-send. If the issue cannot be resolved within a reasonable timeframe, a partial or full refund/credit may be issued.
 
@@ -150,7 +152,7 @@ export default function RefundPage() {
       title="Refund & Cancellation Policy" 
       sections={sections}
       effectiveDate="21 Oct 2025"
-      lastUpdated="21 Oct 2025"
+      lastUpdated="18 March 2026"
       version="v1.0.0"
       showRegionToggle={false}
     />

@@ -82,7 +82,7 @@ const sections: PolicySection[] = [
   { 
     id: 'refunds', 
     title: 'Cancellations and Refunds', 
-    body: `7.1. Unused Tokens (Consumers only). If you are a Consumer purchasing remotely, you may cancel a Token purchase within 14 days of the transaction provided none of the Tokens have been used. Where applicable, refunds are issued minus non-recoverable payment-provider fees.
+    body: `7.1. Statutory cooling-off right — one-time purchases (Consumers only). Ventira operates on a pay-as-you-go basis with no recurring subscriptions or plans. If you are a Consumer purchasing remotely, you may cancel a one-time Token purchase and request a full refund within 14 calendar days of the transaction date, provided none of the Tokens have been used. Refunds are issued minus non-recoverable payment-provider fees. Each top-up is an independent one-time transaction; there is no subscription to cancel.
 
 7.2. Spent Tokens are non-refundable. Tokens consumed for generation or email features cannot be returned.
 
@@ -219,7 +219,7 @@ export default function TermsPage() {
       title="Terms & Conditions" 
       sections={sections}
       effectiveDate="21 Oct 2025"
-      lastUpdated="21 Oct 2025"
+      lastUpdated="18 March 2026"
       version="v1.0.0"
       showRegionToggle={false}
     />
