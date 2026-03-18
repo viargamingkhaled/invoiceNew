@@ -143,7 +143,7 @@ export default function BillingTokensPage() {
               <div className="p-8">
                 <h2 className="text-2xl font-bold text-slate-900 mb-6">Token Calculator</h2>
                 <div className="grid md:grid-cols-2 gap-6">
-                  <div>
+                  <div className="min-w-0">
                     <label className="block text-sm font-medium text-slate-700 mb-2">
                       Amount ({selectedCurrency})
                     </label>
@@ -154,13 +154,13 @@ export default function BillingTokensPage() {
                         step="1"
                         value={customAmount}
                         onChange={(e) => setCustomAmount(Number(e.target.value))}
-                        className="flex-1 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                        className="min-w-0 flex-1 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                         title={`Amount in ${selectedCurrency}`}
                       />
                       <select
                         value={selectedCurrency}
                         onChange={(e) => onCurrencyChange(e.target.value as Currency)}
-                        className="px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                        className="shrink-0 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                         aria-label="Currency"
                       >
                         {getAvailableCurrencies().map(curr => (
@@ -169,7 +169,7 @@ export default function BillingTokensPage() {
                       </select>
                     </div>
                   </div>
-                  <div className="space-y-3">
+                  <div className="min-w-0 space-y-3">
                     <div className="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
                       <span className="text-sm text-slate-600">Tokens</span>
                       <span className="font-semibold text-slate-900">{calculateTokens(customAmount).toLocaleString('en-US')}</span>
