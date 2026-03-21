@@ -234,7 +234,7 @@ export default function Header() {
               <button
                 onClick={() => {
                   signOut({ redirect: false });
-                  window.location.href = 'http://localhost:3000/';
+                  window.location.href = window.location.origin + '/';
                 }}
                 className="rounded-xl bg-[#0B1221] hover:bg-[#0A0F1A] text-white px-4 py-2 text-sm transition-colors"
               >
@@ -356,7 +356,7 @@ export default function Header() {
                           onClick={() => { 
                             closeMobile(); 
                             signOut({ redirect: false });
-                            window.location.href = 'http://localhost:3000/';
+                            window.location.href = window.location.origin + '/';
                           }}
                           className="rounded-xl bg-[#0B1221] hover:bg-[#0A0F1A] text-white px-4 py-2 text-sm"
                         >
