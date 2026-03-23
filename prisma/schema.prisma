@@ -26,10 +26,20 @@ enum InvoiceStatus {
 model User {
   id            String   @id @default(cuid())
   name          String?
+  firstName     String?
+  lastName      String?
   email         String?  @unique
   emailVerified DateTime?
   image         String?
   password      String?
+  phone         String?
+  dateOfBirth   DateTime?
+  addressLine1  String?
+  addressCity   String?
+  addressCountry String?
+  addressPostalCode String?
+  termsAcceptedAt DateTime?
+  privacyAcceptedAt DateTime?
 
   // App-specific fields
   tokenBalance Int       @default(0)
