@@ -57,6 +57,9 @@ export default function Footer() {
               <div className="h-8 w-12 rounded border border-black/10 bg-white flex items-center justify-center p-1">
                 <img src="/mastercard-logo.svg" alt="Mastercard" className="w-full h-full object-contain" />
               </div>
+              <div className="h-8 w-12 rounded border border-black/10 bg-white flex items-center justify-center p-1">
+                <img src="/pci-dss-logo.svg" alt="PCI DSS" className="w-full h-full object-contain" />
+              </div>
             </div>
           </div>
           <div>
